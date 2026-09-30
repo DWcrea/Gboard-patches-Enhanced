@@ -22,19 +22,31 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - name: Build bundle
+      - name: Resolve version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="$(sed -nE 's/^\s*version\s*=\s*([^#[:space:]]+).*$/\1/p' gradle.properties | head -n1)"
+          if [[ -z "$VERSION" || "$VERSION" != *-dev.* ]]; then
+            echo "Expected a -dev.N version, got: $VERSION" >&2
+            exit 1
+          fi
+          echo "value=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Build and test bundle
         env:
           GITHUB_ACTOR: ${{ github.repository_owner }}
           GITHUB_TOKEN: ${{ secrets.MORPHE_PACKAGES_TOKEN }}
         run: |
           chmod +x ./gradlew
-          ./gradlew :patches:buildAndroid generatePatchesList
+          ./gradlew :extensions:extension:test :patches:test :patches:buildAndroid generatePatchesList
 
       - name: Inspect bundle
         shell: bash
         run: |
           set -euo pipefail
-          VERSION="$(sed -nE 's/^\s*version\s*=\s*([^#[:space:]]+).*$/\1/p' gradle.properties | head -n1)"
+          VERSION="${{ steps.version.outputs.value }}"
           MPP="patches/build/libs/patches-$VERSION.mpp"
           test -f "$MPP"
           unzip -t "$MPP"
@@ -50,11 +62,26 @@ jobs:
             unzip -l "$MPP" | head -n 120
           } > /tmp/bundle-diagnostics.txt
 
+      - name: Publish GitHub prerelease
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.value }}
+          target_commitish: ${{ github.sha }}
+          prerelease: true
+          make_latest: false
+          fail_on_unmatched_files: true
+          body: |
+            Automated development build for remote Morphe testing.
+
+            Version: `${{ steps.version.outputs.value }}`
+          files: |
+            patches/build/libs/patches-${{ steps.version.outputs.value }}.mpp
+
       - name: Publish files to remote-dev
         shell: bash
         run: |
           set -euo pipefail
-          VERSION="$(sed -nE 's/^\s*version\s*=\s*([^#[:space:]]+).*$/\1/p' gradle.properties | head -n1)"
+          VERSION="${{ steps.version.outputs.value }}"
           cp "patches/build/libs/patches-$VERSION.mpp" /tmp/patches-latest.mpp
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
