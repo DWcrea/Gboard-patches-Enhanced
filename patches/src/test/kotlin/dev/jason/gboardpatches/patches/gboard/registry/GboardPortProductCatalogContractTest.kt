@@ -325,6 +325,8 @@ class GboardPortProductCatalogContractTest {
                     "LONG_PRESS_QUICK_ACTIONS_RUNTIME_MAYBE_ENSURE_LONG_PRESS_SCHEDULED",
                     "LONG_PRESS_QUICK_ACTIONS_RUNTIME_ON_GLOBE_POINTER_FINISH",
                     "LONG_PRESS_QUICK_ACTIONS_RUNTIME_ON_GLOBE_POINTER_CANCEL",
+                    "LONG_PRESS_QUICK_ACTIONS_RUNTIME_MAYBE_INTERCEPT_BACKSPACE_MOTION",
+                    "LONG_PRESS_QUICK_ACTIONS_RUNTIME_MAYBE_SUPPRESS_BACKSPACE_RETARGET",
                 ),
                 "swipeable_custom_top_row.pointer" to listOf(
                     "TOP_ROW_SWIPE_RUNTIME_MAYBE_ARM_AND_RESOLVE_TOP_ROW_OWNER",
