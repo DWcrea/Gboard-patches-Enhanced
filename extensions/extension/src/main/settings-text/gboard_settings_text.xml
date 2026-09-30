@@ -14,7 +14,7 @@
     </string>
     <string name="gboard_patches_header_title">
         <translation locale="en">Patch settings</translation>
-        <translation locale="zh-Hant">Patch 设定</translation>
+        <translation locale="zh-Hant">Patch 设置</translation>
     </string>
     <string name="gboard_patches_header_summary">
         <translation locale="en"></translation>
@@ -38,7 +38,7 @@
     </string>
     <string name="gboard_patches_dialog_save">
         <translation locale="en">Save</translation>
-        <translation locale="zh-Hant">储存</translation>
+        <translation locale="zh-Hant">保存</translation>
     </string>
     <string name="gboard_patches_dialog_close">
         <translation locale="en">Close</translation>
@@ -62,11 +62,11 @@
     </string>
     <string name="gboard_patches_dialog_error_save_failed">
         <translation locale="en">Failed to save setting.</translation>
-        <translation locale="zh-Hant">储存设定失败。</translation>
+        <translation locale="zh-Hant">保存设置失败。</translation>
     </string>
     <string name="gboard_patches_confirm_reset_title">
         <translation locale="en">Reset setting</translation>
-        <translation locale="zh-Hant">重设设定</translation>
+        <translation locale="zh-Hant">重设设置</translation>
     </string>
     <string name="gboard_patches_section_preferences">
         <translation locale="en">Preferences</translation>
@@ -94,15 +94,15 @@
     </string>
     <string name="gboard_patches_error_header_summary">
         <translation locale="en">This settings page failed to load and was safely disabled.</translation>
-        <translation locale="zh-Hant">这个设定页载入失败，已安全停用。</translation>
+        <translation locale="zh-Hant">这个设置页加载失败，已安全禁用。</translation>
     </string>
     <string name="gboard_patches_error_row_title">
         <translation locale="en">Unable to load feature</translation>
-        <translation locale="zh-Hant">无法载入功能</translation>
+        <translation locale="zh-Hant">无法加载功能</translation>
     </string>
     <string name="gboard_patches_error_row_summary">
         <translation locale="en">The host app stayed alive. Reopen Gboard settings and try again.</translation>
-        <translation locale="zh-Hant">宿主 App 仍维持运作。请重新开启 Gboard 设定再试一次。</translation>
+        <translation locale="zh-Hant">宿主 App 仍维持运作。请重新打开 Gboard 设置再试一次。</translation>
     </string>
     <string name="gboard_patches_fatal_fallback_title">
         <translation locale="en">Patches temporarily unavailable</translation>
@@ -110,11 +110,11 @@
     </string>
     <string name="gboard_patches_fatal_fallback_summary">
         <translation locale="en">This screen hit an internal error and was safely disabled. Gboard stays alive. Reopen settings and try again.</translation>
-        <translation locale="zh-Hant">这个画面发生内部错误，已安全停用。Gboard 仍维持运作。请重新开启设定再试一次。</translation>
+        <translation locale="zh-Hant">这个界面发生内部错误，已安全禁用。Gboard 仍维持运作。请重新打开设置再试一次。</translation>
     </string>
     <string name="gboard_patches_preview_load_failed">
         <translation locale="en">Failed to load preview media.</translation>
-        <translation locale="zh-Hant">载入预览媒体失败。</translation>
+        <translation locale="zh-Hant">加载预览媒体失败。</translation>
     </string>
     <string name="gboard_patches_navigate_up">
         <translation locale="en">Navigate up</translation>
@@ -126,7 +126,7 @@
     </string>
     <string name="gboard_patches_restart_failed">
         <translation locale="en">Gboard could not be restarted. Reopen Gboard settings and try again.</translation>
-        <translation locale="zh-Hant">无法重新启动 Gboard。请重新开启 Gboard 设定后再试一次。</translation>
+        <translation locale="zh-Hant">无法重新启动 Gboard。请重新打开 Gboard 设置后再试一次。</translation>
     </string>
     <string name="gboard_patches_language_title">
         <translation locale="en">Language</translation>
@@ -166,11 +166,11 @@
     </string>
     <string name="gboard_patches_group_ai_voice_summary">
         <translation locale="en">AI writing tools, advanced voice typing, and Bluetooth microphone.</translation>
-        <translation locale="zh-Hant">AI 撰写工具、进阶语音输入与蓝牙麦克风。</translation>
+        <translation locale="zh-Hant">AI 撰写工具、高级语音输入与蓝牙麦克风。</translation>
     </string>
     <string name="gboard_patches_group_keyboard_layout_title">
         <translation locale="en">Keys, Layout &amp; Symbols</translation>
-        <translation locale="zh-Hant">按键、版面与符号</translation>
+        <translation locale="zh-Hant">按键、布局与符号</translation>
     </string>
     <string name="gboard_patches_group_keyboard_layout_summary">
         <translation locale="en">Hyperspeed typing animation, globe key behavior, English uppercase, Zhuyin bottom row, and emoji, sticker, and GIF tab order.</translation>
@@ -182,11 +182,11 @@
     </string>
     <string name="gboard_patches_group_keyboard_empty_title">
         <translation locale="en">No keyboard settings available</translation>
-        <translation locale="zh-Hant">没有可用的键盘设定</translation>
+        <translation locale="zh-Hant">没有可用的键盘设置</translation>
     </string>
     <string name="gboard_patches_group_keyboard_empty_summary">
         <translation locale="en">This build does not include any keyboard settings features.</translation>
-        <translation locale="zh-Hant">这个 build 没有包含任何键盘设定功能。</translation>
+        <translation locale="zh-Hant">这个 build 没有包含任何键盘设置功能。</translation>
     </string>
     <string name="gboard_patches_flow_mode_title">
         <translation locale="en">Hyperspeed Typing Animation</translation>
@@ -202,7 +202,7 @@
     </string>
     <string name="gboard_patches_flow_mode_error_summary">
         <translation locale="en">The Flow Mode settings screen failed to load. Reopen Gboard settings and try again.</translation>
-        <translation locale="zh-Hant">Flow Mode 设定画面载入失败。请重新开启 Gboard 设定再试一次。</translation>
+        <translation locale="zh-Hant">Flow Mode 设置界面加载失败。请重新打开 Gboard 设置再试一次。</translation>
     </string>
     <string name="gboard_patches_flow_mode_section">
         <translation locale="en">Behavior</translation>
@@ -210,7 +210,7 @@
     </string>
     <string name="gboard_patches_flow_mode_enabled_title">
         <translation locale="en">Enable</translation>
-        <translation locale="zh-Hant">启用</translation>
+        <translation locale="zh-Hant">激活</translation>
     </string>
     <string name="gboard_patches_flow_mode_enabled_summary">
         <translation locale="en">Shows the animation during sustained fast typing. Force-stop and restart Gboard for the change to take effect.</translation>
@@ -222,11 +222,11 @@
     </string>
     <string name="gboard_patches_quick_insert_error_title">
         <translation locale="en">Quick Insert setting unavailable</translation>
-        <translation locale="zh-Hant">快速插入设定无法使用</translation>
+        <translation locale="zh-Hant">快速插入设置无法使用</translation>
     </string>
     <string name="gboard_patches_quick_insert_error_summary">
         <translation locale="en">The Quick Insert settings screen failed to load. Reopen Gboard settings and try again.</translation>
-        <translation locale="zh-Hant">快速插入设定画面载入失败。请重新开启 Gboard 设定再试一次。</translation>
+        <translation locale="zh-Hant">快速插入设置界面加载失败。请重新打开 Gboard 设置再试一次。</translation>
     </string>
     <string name="gboard_patches_quick_insert_section_feature">
         <translation locale="en">Feature</translation>
@@ -238,11 +238,11 @@
     </string>
     <string name="gboard_patches_close_proactive_suggestions_error_title">
         <translation locale="en">Dismiss suggestions button unavailable</translation>
-        <translation locale="zh-Hant">关闭建议按钮设定无法使用</translation>
+        <translation locale="zh-Hant">关闭建议按钮设置无法使用</translation>
     </string>
     <string name="gboard_patches_close_proactive_suggestions_error_summary">
         <translation locale="en">The dismiss suggestions button settings screen failed to load. Reopen Gboard settings and try again.</translation>
-        <translation locale="zh-Hant">关闭建议按钮设定画面载入失败。请重新开启 Gboard 设定再试一次。</translation>
+        <translation locale="zh-Hant">关闭建议按钮设置界面加载失败。请重新打开 Gboard 设置再试一次。</translation>
     </string>
     <string name="gboard_patches_close_proactive_suggestions_section_feature">
         <translation locale="en">Feature</translation>
@@ -250,7 +250,7 @@
     </string>
     <string name="gboard_patches_access_point_count_title">
         <translation locale="en">Top Toolbar Item Count</translation>
-        <translation locale="zh-Hant">顶端工具列项目数量</translation>
+        <translation locale="zh-Hant">顶端工具栏项目数量</translation>
     </string>
     <string name="gboard_patches_access_point_count_summary">
         <translation locale="en"></translation>
@@ -258,11 +258,11 @@
     </string>
     <string name="gboard_patches_access_point_count_error_title">
         <translation locale="en">Top toolbar item count unavailable</translation>
-        <translation locale="zh-Hant">顶端工具列项目数量设定无法使用</translation>
+        <translation locale="zh-Hant">顶端工具栏项目数量设置无法使用</translation>
     </string>
     <string name="gboard_patches_access_point_count_error_summary">
         <translation locale="en">The top toolbar item count settings screen failed to load. Reopen Gboard settings and try again.</translation>
-        <translation locale="zh-Hant">顶端工具列项目数量设定画面载入失败。请重新开启 Gboard 设定再试一次。</translation>
+        <translation locale="zh-Hant">顶端工具栏项目数量设置界面加载失败。请重新打开 Gboard 设置再试一次。</translation>
     </string>
     <string name="gboard_patches_access_point_count_section">
         <translation locale="en">Behavior</translation>
@@ -270,7 +270,7 @@
     </string>
     <string name="gboard_patches_access_point_count_enabled_title">
         <translation locale="en">Enable</translation>
-        <translation locale="zh-Hant">启用</translation>
+        <translation locale="zh-Hant">激活</translation>
     </string>
     <string name="gboard_patches_access_point_count_enabled_summary">
         <translation locale="en">Force-stop and restart Gboard for the change to take effect.</translation>
@@ -282,7 +282,7 @@
     </string>
     <string name="gboard_patches_access_point_count_value_summary">
         <translation locale="en">Enter the number of toolbar items, from 3 through 8.</translation>
-        <translation locale="zh-Hant">输入工具列项目数量，范围为 3 到 8。</translation>
+        <translation locale="zh-Hant">输入工具栏项目数量，范围为 3 到 8。</translation>
     </string>
     <string name="gboard_patches_access_point_count_value_hint">
         <translation locale="en">3–8</translation>
@@ -298,15 +298,15 @@
     </string>
     <string name="gboard_patches_developer_options_summary">
         <translation locale="en">Open Developer options and the Flag Editor.</translation>
-        <translation locale="zh-Hant">开启 开发人员选项 与 Flag 编辑器。</translation>
+        <translation locale="zh-Hant">打开 开发人员选项 与 Flag 编辑器。</translation>
     </string>
     <string name="gboard_patches_developer_options_package_warning_title">
         <translation locale="en">Unsupported Gboard package</translation>
-        <translation locale="zh-Hant">不支援的 Gboard 套件名称</translation>
+        <translation locale="zh-Hant">不支持的 Gboard 套件名称</translation>
     </string>
     <string name="gboard_patches_developer_options_package_warning_message">
         <translation locale="en">The current Gboard package is %1$s. Gboard Patches supports only the official package com.google.android.inputmethod.latin and dev.jason.com.google.android.inputmethod.latin. Mixing Gboard builds from multiple sources may cause instability.</translation>
-        <translation locale="zh-Hant">目前的 Gboard 套件名称是 %1$s。Gboard Patches 只支援官方套件名称 com.google.android.inputmethod.latin 与 dev.jason.com.google.android.inputmethod.latin，混用多个来源的 Gboard 可能导致不稳定。</translation>
+        <translation locale="zh-Hant">目前的 Gboard 套件名称是 %1$s。Gboard Patches 只支持官方套件名称 com.google.android.inputmethod.latin 与 dev.jason.com.google.android.inputmethod.latin，混用多个来源的 Gboard 可能导致不稳定。</translation>
     </string>
     <string name="gboard_patches_developer_options_try_anyway">
         <translation locale="en">Try anyway</translation>
@@ -314,7 +314,7 @@
     </string>
     <string name="gboard_patches_developer_options_launch_failed">
         <translation locale="en">Unable to open Developer options for %1$s.</translation>
-        <translation locale="zh-Hant">无法开启 %1$s 的开发人员选项。</translation>
+        <translation locale="zh-Hant">无法打开 %1$s 的开发人员选项。</translation>
     </string>
     <string name="gboard_patches_top_row_title">
         <translation locale="en">Custom Top Row</translation>
@@ -326,15 +326,15 @@
     </string>
     <string name="gboard_patches_top_row_header_summary">
         <translation locale="en">Controls the custom first-row page opened by horizontal top-row swipe.</translation>
-        <translation locale="zh-Hant">设定由第一排左右滑动打开的自订列。</translation>
+        <translation locale="zh-Hant">设置由第一排左右滑动打开的自订列。</translation>
     </string>
     <string name="gboard_patches_top_row_error_title">
         <translation locale="en">Custom Top Row settings unavailable</translation>
-        <translation locale="zh-Hant">自订第一排按键设定无法使用</translation>
+        <translation locale="zh-Hant">自订第一排按键设置无法使用</translation>
     </string>
     <string name="gboard_patches_top_row_error_summary">
         <translation locale="en">The Custom Top Row settings screen failed to load. Reopen Gboard settings and try again.</translation>
-        <translation locale="zh-Hant">自订第一排按键设定画面载入失败。请重新开启 Gboard 设定再试一次。</translation>
+        <translation locale="zh-Hant">自订第一排按键设置界面加载失败。请重新打开 Gboard 设置再试一次。</translation>
     </string>
     <string name="gboard_patches_top_row_section_behavior">
         <translation locale="en">Behavior</translation>
@@ -342,7 +342,7 @@
     </string>
     <string name="gboard_patches_top_row_section_layouts">
         <translation locale="en">Supported layouts</translation>
-        <translation locale="zh-Hant">支援的版面</translation>
+        <translation locale="zh-Hant">支持的布局</translation>
     </string>
     <string name="gboard_patches_top_row_section_javascript">
         <translation locale="en">JavaScript</translation>
@@ -354,11 +354,11 @@
     </string>
     <string name="gboard_patches_top_row_section_transfer">
         <translation locale="en">Transfer</translation>
-        <translation locale="zh-Hant">汇入汇出</translation>
+        <translation locale="zh-Hant">导入导出</translation>
     </string>
     <string name="gboard_patches_top_row_section_advanced">
         <translation locale="en">Advanced</translation>
-        <translation locale="zh-Hant">进阶</translation>
+        <translation locale="zh-Hant">高级</translation>
     </string>
     <string name="gboard_patches_top_row_section_javascript_guide">
         <translation locale="en">JavaScript Guide</translation>
@@ -366,11 +366,11 @@
     </string>
     <string name="gboard_patches_top_row_enabled_title">
         <translation locale="en">Enabled</translation>
-        <translation locale="zh-Hant">启用</translation>
+        <translation locale="zh-Hant">激活</translation>
     </string>
     <string name="gboard_patches_top_row_enabled_summary">
         <translation locale="en">Enable the custom first-row page opened by horizontal top-row swipe.</translation>
-        <translation locale="zh-Hant">启用由第一排左右滑动打开的自订列。</translation>
+        <translation locale="zh-Hant">激活由第一排左右滑动打开的自订列。</translation>
     </string>
     <string name="gboard_patches_top_row_layout_zhuyin_title">
         <translation locale="en">Zhuyin</translation>
@@ -378,7 +378,7 @@
     </string>
     <string name="gboard_patches_top_row_layout_zhuyin_summary">
         <translation locale="en">Enable horizontal swipe on the Zhuyin top row.</translation>
-        <translation locale="zh-Hant">在注音第一排启用左右滑动。</translation>
+        <translation locale="zh-Hant">在注音第一排激活左右滑动。</translation>
     </string>
     <string name="gboard_patches_top_row_layout_english_qwerty_title">
         <translation locale="en">English QWERTY</translation>
@@ -386,7 +386,7 @@
     </string>
     <string name="gboard_patches_top_row_layout_english_qwerty_summary">
         <translation locale="en">Enable horizontal swipe on the English q-p top row.</translation>
-        <translation locale="zh-Hant">在英文 q-p 第一排启用左右滑动。</translation>
+        <translation locale="zh-Hant">在英文 q-p 第一排激活左右滑动。</translation>
     </string>
     <string name="gboard_patches_top_row_global_javascript_title">
         <translation locale="en">Global JavaScript</translation>
@@ -398,7 +398,7 @@
     </string>
     <string name="gboard_patches_top_row_global_javascript_empty_summary">
         <translation locale="en">No shared helpers configured.</translation>
-        <translation locale="zh-Hant">目前没有设定共用 helper。</translation>
+        <translation locale="zh-Hant">目前没有设置共用 helper。</translation>
     </string>
     <string name="gboard_patches_top_row_global_javascript_configured_summary">
         <translation locale="en">Script: %1$s</translation>
@@ -410,11 +410,11 @@
     </string>
     <string name="gboard_patches_top_row_runtime_limits_title">
         <translation locale="en">JavaScript Runtime Limits</translation>
-        <translation locale="zh-Hant">JavaScript 执行限制</translation>
+        <translation locale="zh-Hant">JavaScript 运行限制</translation>
     </string>
     <string name="gboard_patches_top_row_runtime_limits_summary">
         <translation locale="en">Configure the global response, timeout, memory, and stack limits used by JavaScript slots.</translation>
-        <translation locale="zh-Hant">设定 JavaScript slot 使用的全域 response、timeout、memory 与 stack 限制。</translation>
+        <translation locale="zh-Hant">设置 JavaScript slot 使用的全域 response、timeout、memory 与 stack 限制。</translation>
     </string>
     <string name="gboard_patches_top_row_runtime_limits_value">
         <translation locale="en">%1$s • %2$s • %3$s • %4$s</translation>
@@ -422,7 +422,7 @@
     </string>
     <string name="gboard_patches_top_row_runtime_limits_dialog_title">
         <translation locale="en">JavaScript Runtime Limits</translation>
-        <translation locale="zh-Hant">JavaScript 执行限制</translation>
+        <translation locale="zh-Hant">JavaScript 运行限制</translation>
     </string>
     <string name="gboard_patches_top_row_runtime_limits_response_body_label">
         <translation locale="en">Response body limit (KiB)</translation>
@@ -458,43 +458,43 @@
     </string>
     <string name="gboard_patches_top_row_runtime_limits_dialog_error">
         <translation locale="en">Enter valid values for all JavaScript runtime limits.</translation>
-        <translation locale="zh-Hant">请输入有效的 JavaScript 执行限制。</translation>
+        <translation locale="zh-Hant">请输入有效的 JavaScript 运行限制。</translation>
     </string>
     <string name="gboard_patches_top_row_export_title">
         <translation locale="en">Export settings</translation>
-        <translation locale="zh-Hant">汇出设定</translation>
+        <translation locale="zh-Hant">导出设置</translation>
     </string>
     <string name="gboard_patches_top_row_export_summary">
         <translation locale="en">Save Global JavaScript, runtime limits, and all 10 slot mappings as a JSON file.</translation>
-        <translation locale="zh-Hant">把全域 JavaScript、执行限制与 10 个 slot 汇出成 JSON 档。</translation>
+        <translation locale="zh-Hant">把全域 JavaScript、运行限制与 10 个 slot 导出成 JSON 档。</translation>
     </string>
     <string name="gboard_patches_top_row_import_title">
         <translation locale="en">Import settings</translation>
-        <translation locale="zh-Hant">汇入设定</translation>
+        <translation locale="zh-Hant">导入设置</translation>
     </string>
     <string name="gboard_patches_top_row_import_summary">
         <translation locale="en">Open a JSON file and replace Global JavaScript, runtime limits, and all 10 slots.</translation>
-        <translation locale="zh-Hant">开启 JSON 档，取代全域 JavaScript、执行限制与 10 个 slot。</translation>
+        <translation locale="zh-Hant">打开 JSON 档，取代全域 JavaScript、运行限制与 10 个 slot。</translation>
     </string>
     <string name="gboard_patches_top_row_export_done">
         <translation locale="en">Exported settings</translation>
-        <translation locale="zh-Hant">已汇出设定</translation>
+        <translation locale="zh-Hant">已导出设置</translation>
     </string>
     <string name="gboard_patches_top_row_import_done">
         <translation locale="en">Imported settings</translation>
-        <translation locale="zh-Hant">已汇入设定</translation>
+        <translation locale="zh-Hant">已导入设置</translation>
     </string>
     <string name="gboard_patches_top_row_import_failed_title">
         <translation locale="en">Import failed</translation>
-        <translation locale="zh-Hant">汇入失败</translation>
+        <translation locale="zh-Hant">导入失败</translation>
     </string>
     <string name="gboard_patches_top_row_import_failed_summary">
         <translation locale="en">The selected file could not be imported.</translation>
-        <translation locale="zh-Hant">无法汇入选取的档案。</translation>
+        <translation locale="zh-Hant">无法导入选取的文档。</translation>
     </string>
     <string name="gboard_patches_top_row_import_invalid_summary">
         <translation locale="en">The selected file is not valid.</translation>
-        <translation locale="zh-Hant">选取的档案格式无效。</translation>
+        <translation locale="zh-Hant">选取的文档格式无效。</translation>
     </string>
     <string name="gboard_patches_top_row_reset_title">
         <translation locale="en">Reset slots</translation>
@@ -570,7 +570,7 @@
     </string>
     <string name="gboard_patches_top_row_editor_test_running">
         <translation locale="en">Running...</translation>
-        <translation locale="zh-Hant">执行中...</translation>
+        <translation locale="zh-Hant">运行中...</translation>
     </string>
     <string name="gboard_patches_top_row_editor_display_blank_error">
         <translation locale="en">Display text cannot be blank</translation>
@@ -594,7 +594,7 @@
     </string>
     <string name="gboard_patches_top_row_test_result_timed_out">
         <translation locale="en">Timed out</translation>
-        <translation locale="zh-Hant">执行逾时</translation>
+        <translation locale="zh-Hant">运行逾时</translation>
     </string>
     <string name="gboard_patches_top_row_test_result_failed">
         <translation locale="en">Failed: %1$s</translation>
@@ -614,15 +614,15 @@
     </string>
     <string name="gboard_patches_top_row_js_guide_execution_title">
         <translation locale="en">Execution Model</translation>
-        <translation locale="zh-Hant">执行模型</translation>
+        <translation locale="zh-Hant">运行模型</translation>
     </string>
     <string name="gboard_patches_top_row_js_guide_execution_summary">
         <translation locale="en">Use input for selected text. Return a string to commit it. Each tap starts a fresh QuickJS runtime.</translation>
-        <translation locale="zh-Hant">可用 input 读取目前选字；return 字串就会送出；每次点按都会建立新的 QuickJS runtime。</translation>
+        <translation locale="zh-Hant">可用 input 读取目前选字；return 字符串就会送出；每次点按都会创建新的 QuickJS runtime。</translation>
     </string>
     <string name="gboard_patches_top_row_js_guide_execution_dialog_message">
         <translation locale="en">Use input to read the current selection. If nothing is selected, input is an empty string.\n\nReturn a string to commit it to the editor. Returning null, undefined, or nothing finishes without commit.\n\nGlobal JavaScript runs before the slot body on every key press.\n\nThe slot body and Global JavaScript share the same execution, but every tap creates a fresh QuickJS runtime and context. Do not rely on state from an earlier run.\n\nIf Global JavaScript needs input, define a helper there and pass input into it from the slot body.\n\nThis environment is synchronous-only. DOM, Node.js APIs, fetch, and async request pipelines are not available.</translation>
-        <translation locale="zh-Hant">可用 input 读取目前选取中的文字；如果没有选字，input 就是空字串。\n\nreturn 字串时，会把它送到 editor；回传 null、undefined，或根本没有 return，都会完成但不送出。\n\n每次按键都会先跑 Global JavaScript，再在同一次 execution 内跑 slot body。\n\nslot body 和 Global JavaScript 共用同一次执行，但每次点按都会建立新的 QuickJS runtime / context，不会保留上一轮留下的状态。\n\n如果 Global JavaScript 需要处理 input，请在那里定义 helper，并从 slot body 把 input 传进去。\n\n这个环境只支援同步执行；没有 DOM、Node.js API、fetch，也没有 async request pipeline。</translation>
+        <translation locale="zh-Hant">可用 input 读取目前选取中的文字；如果没有选字，input 就是空字符串。\n\nreturn 字符串时，会把它送到 editor；回传 null、undefined，或根本没有 return，都会完成但不送出。\n\n每次按键都会先跑 Global JavaScript，再在同一次 execution 内跑 slot body。\n\nslot body 和 Global JavaScript 共用同一次运行，但每次点按都会创建新的 QuickJS runtime / context，不会保留上一轮留下的状态。\n\n如果 Global JavaScript 需要处理 input，请在那里定义 helper，并从 slot body 把 input 传进去。\n\n这个环境只支持同步运行；没有 DOM、Node.js API、fetch，也没有 async request pipeline。</translation>
     </string>
     <string name="gboard_patches_top_row_js_guide_return_title">
         <translation locale="en">Return &amp; Commit</translation>
@@ -630,11 +630,11 @@
     </string>
     <string name="gboard_patches_top_row_js_guide_return_summary">
         <translation locale="en">Only non-null return values commit text, and commit is skipped if InputConnection changed during execution.</translation>
-        <translation locale="zh-Hant">只有非 null 的回传值才会 commit，而且执行期间若 InputConnection 改变，就会跳过 commit。</translation>
+        <translation locale="zh-Hant">只有非 null 的回传值才会 commit，而且运行期间若 InputConnection 改变，就会跳过 commit。</translation>
     </string>
     <string name="gboard_patches_top_row_js_guide_return_dialog_message">
         <translation locale="en">Return contract:\n- return a non-null and non-undefined value to commit it as text\n- return null, return undefined, or omit return to finish without commit\n\nEven after a successful run, text only commits when the InputConnection at the end is still the same object captured at the start. Focus changes or editor switches fail closed.</translation>
-        <translation locale="zh-Hant">回传规则：\n- 回传非 null 且非 undefined 的值时，会先转成字串再 commit\n- 回传 null、回传 undefined，或根本没有 return，都会成功结束但不 commit\n\n即使脚本成功跑完，也只有在结束时的 InputConnection 还是启动时那个同一个 object 时才会 commit。若焦点切换或 editor 改变，就会 fail closed。</translation>
+        <translation locale="zh-Hant">回传规则：\n- 回传非 null 且非 undefined 的值时，会先转成字符串再 commit\n- 回传 null、回传 undefined，或根本没有 return，都会成功结束但不 commit\n\n即使脚本成功跑完，也只有在结束时的 InputConnection 还是启动时那个同一个 object 时才会 commit。若焦点切换或 editor 改变，就会 fail closed。</translation>
     </string>
     <string name="gboard_patches_top_row_js_guide_http_title">
         <translation locale="en">Host APIs</translation>
@@ -646,7 +646,7 @@
     </string>
     <string name="gboard_patches_top_row_js_guide_http_dialog_message">
         <translation locale="en">Beyond standard QuickJS features, this patch provides these extra host APIs:\n- input\n- httpRequest(options)\n- httpGet(url)\n- httpPost(url, body)\n\nhttpRequest only accepts GET, POST, PUT, PATCH, and DELETE. Only http:// and https:// URLs are allowed. headers must be a plain object, and body is sent as UTF-8.\n\nNon-2xx status, invalid method, invalid URL scheme, timeout, invalid headers, transport errors, and response bodies over the configured limit all throw script errors.</translation>
-        <translation locale="zh-Hant">除了标准 QuickJS 功能外，这个 patch 额外提供下面这些 API：\n- input\n- httpRequest(options)\n- httpGet(url)\n- httpPost(url, body)\n\nhttpRequest 只接受 GET、POST、PUT、PATCH、DELETE，URL 只允许 http:// 与 https://。headers 必须是 plain object，body 会以 UTF-8 传送。\n\n非 2xx status、无效 method、无效 URL scheme、timeout、无效 headers、transport error，以及超过 response body limit 的回应，都会直接 throw script error。</translation>
+        <translation locale="zh-Hant">除了标准 QuickJS 功能外，这个 patch 额外提供下面这些 API：\n- input\n- httpRequest(options)\n- httpGet(url)\n- httpPost(url, body)\n\nhttpRequest 只接受 GET、POST、PUT、PATCH、DELETE，URL 只允许 http:// 与 https://。headers 必须是 plain object，body 会以 UTF-8 发送。\n\n非 2xx status、无效 method、无效 URL scheme、timeout、无效 headers、transport error，以及超过 response body limit 的回应，都会直接 throw script error。</translation>
     </string>
     <string name="gboard_patches_top_row_js_guide_limits_title">
         <translation locale="en">Limits &amp; Fail-Closed</translation>
@@ -654,11 +654,11 @@
     </string>
     <string name="gboard_patches_top_row_js_guide_limits_summary">
         <translation locale="en">Slots are clamped by global timeout, response, memory, and stack limits; syntax and runtime errors fail only that run.</translation>
-        <translation locale="zh-Hant">slot 会受全域 timeout、response、memory、stack 限制，syntax 与 runtime error 只会让该次执行失败。</translation>
+        <translation locale="zh-Hant">slot 会受全域 timeout、response、memory、stack 限制，syntax 与 runtime error 只会让该次运行失败。</translation>
     </string>
     <string name="gboard_patches_top_row_js_guide_limits_dialog_message">
         <translation locale="en">Runtime limits:\n- slot timeoutMs input must stay within 0..global timeoutMaxMs; after sanitize the runtime minimum is 1 ms\n- response body limit, memory limit, and max stack come from JavaScript Runtime Limits\n\nDefaults:\n- timeoutMaxMs: 30000 ms\n- response body: 1 MiB\n- memory: 8 MiB\n- max stack: 512 KiB\n\nSyntax errors, runtime errors, timeouts, HTTP failures, oversized responses, and InputConnection changes fail closed for the current run only. They do not disable the whole Custom Top Row feature.</translation>
-        <translation locale="zh-Hant">执行限制：\n- slot 的 timeoutMs 输入值只能在 0..全域 timeoutMaxMs 内；sanitize 后的执行期最小值仍是 1 ms\n- response body limit、memory limit、max stack 都来自 JavaScript Runtime Limits\n\n预设值：\n- timeoutMaxMs：30000 ms\n- response body：1 MiB\n- memory：8 MiB\n- max stack：512 KiB\n\nsyntax error、runtime error、timeout、HTTP 失败、response 过大，以及 commit 前 InputConnection 改变，都只会让当次执行 fail closed，不会把整个自订第一排按键功能停掉。</translation>
+        <translation locale="zh-Hant">运行限制：\n- slot 的 timeoutMs 输入值只能在 0..全域 timeoutMaxMs 内；sanitize 后的运行期最小值仍是 1 ms\n- response body limit、memory limit、max stack 都来自 JavaScript Runtime Limits\n\n默认值：\n- timeoutMaxMs：30000 ms\n- response body：1 MiB\n- memory：8 MiB\n- max stack：512 KiB\n\nsyntax error、runtime error、timeout、HTTP 失败、response 过大，以及 commit 前 InputConnection 改变，都只会让当次运行 fail closed，不会把整个自订第一排按键功能停掉。</translation>
     </string>
     <string name="gboard_patches_top_row_js_guide_examples_title">
         <translation locale="en">Examples</translation>
@@ -666,7 +666,7 @@
     </string>
     <string name="gboard_patches_top_row_js_guide_examples_summary">
         <translation locale="en">Copy ready-to-use snippets, from basic return examples to IP lookup, OpenAI calls, timestamps, UK time, and unit conversion.</translation>
-        <translation locale="zh-Hant">可直接复制常用脚本，从基本 return 范例到 IP、OpenAI、timestamp、英国时间与单位换算都有。</translation>
+        <translation locale="zh-Hant">可直接拷贝常用脚本，从基本 return 范例到 IP、OpenAI、timestamp、英国时间与单位换算都有。</translation>
     </string>
     <string name="gboard_patches_top_row_js_guide_examples_dialog_title">
         <translation locale="en">JavaScript Examples</translation>
@@ -674,7 +674,7 @@
     </string>
     <string name="gboard_patches_top_row_js_guide_examples_copy_button">
         <translation locale="en">Copy to clipboard</translation>
-        <translation locale="zh-Hant">复制到剪贴簿</translation>
+        <translation locale="zh-Hant">拷贝到剪贴板</translation>
     </string>
     <string name="gboard_patches_top_row_js_guide_examples_expand_button">
         <translation locale="en">Expand</translation>
@@ -686,11 +686,11 @@
     </string>
     <string name="gboard_patches_top_row_js_guide_examples_copied_format">
         <translation locale="en">Copied example: %1$s</translation>
-        <translation locale="zh-Hant">已复制范例：%1$s</translation>
+        <translation locale="zh-Hant">已拷贝范例：%1$s</translation>
     </string>
     <string name="gboard_patches_top_row_js_guide_examples_clipboard_unavailable">
         <translation locale="en">Clipboard unavailable</translation>
-        <translation locale="zh-Hant">系统剪贴簿无法使用</translation>
+        <translation locale="zh-Hant">系统剪贴板无法使用</translation>
     </string>
     <string name="gboard_patches_top_row_js_example_hello_world_title">
         <translation locale="en">Hello World</translation>
@@ -698,7 +698,7 @@
     </string>
     <string name="gboard_patches_top_row_js_example_hello_world_summary">
         <translation locale="en">Returns a fixed string literal to the editor.</translation>
-        <translation locale="zh-Hant">回传固定字串到编辑器。</translation>
+        <translation locale="zh-Hant">回传固定字符串到编辑器。</translation>
     </string>
     <string name="gboard_patches_top_row_js_example_return_input_title">
         <translation locale="en">Return Input</translation>
@@ -722,7 +722,7 @@
     </string>
     <string name="gboard_patches_top_row_js_example_openai_summary">
         <translation locale="en">Calls the OpenAI Responses API with gpt-5.5 using httpRequest.</translation>
-        <translation locale="zh-Hant">用 httpRequest 呼叫 OpenAI Responses API 与 gpt-5.5。</translation>
+        <translation locale="zh-Hant">用 httpRequest 调用 OpenAI Responses API 与 gpt-5.5。</translation>
     </string>
     <string name="gboard_patches_top_row_js_example_timestamp_title">
         <translation locale="en">Current Timestamp</translation>
@@ -738,7 +738,7 @@
     </string>
     <string name="gboard_patches_top_row_js_example_uk_time_summary">
         <translation locale="en">Fetches the current London time and formats it as a local timestamp string.</translation>
-        <translation locale="zh-Hant">抓取目前 London time，并格式化成可直接送出的时间字串。</translation>
+        <translation locale="zh-Hant">抓取目前 London time，并格式化成可直接送出的时间字符串。</translation>
     </string>
     <string name="gboard_patches_top_row_js_example_unit_convert_title">
         <translation locale="en">Unit Auto Conversion</translation>
@@ -766,15 +766,15 @@
     </string>
     <string name="gboard_patches_latin_globe_error_summary">
         <translation locale="en">The English globe key settings screen failed to load. Reopen Gboard settings and try again.</translation>
-        <translation locale="zh-Hant">英文地球键设定画面载入失败。请重新开启 Gboard 设定再试一次。</translation>
+        <translation locale="zh-Hant">英文地球键设置界面加载失败。请重新打开 Gboard 设置再试一次。</translation>
     </string>
     <string name="gboard_patches_latin_globe_enabled_title">
         <translation locale="en">Enabled</translation>
-        <translation locale="zh-Hant">启用</translation>
+        <translation locale="zh-Hant">激活</translation>
     </string>
     <string name="gboard_patches_latin_globe_enabled_summary">
         <translation locale="en">Enable this runtime override for the English keyboard globe key ignore delay.</translation>
-        <translation locale="zh-Hant">启用这个执行期覆写，让英文键盘套用地球键忽略时间。</translation>
+        <translation locale="zh-Hant">激活这个运行期覆写，让英文键盘套用地球键忽略时间。</translation>
     </string>
     <string name="gboard_patches_latin_globe_interval_title">
         <translation locale="en">Ignore delay</translation>
@@ -834,11 +834,11 @@
     </string>
     <string name="gboard_patches_english_uppercase_toggle_error_summary">
         <translation locale="en">The English up-flick uppercase settings screen failed to load. Reopen Gboard settings and try again.</translation>
-        <translation locale="zh-Hant">英文键盘上滑大小写设定画面载入失败。请重新开启 Gboard 设定再试一次。</translation>
+        <translation locale="zh-Hant">英文键盘上滑大小写设置界面加载失败。请重新打开 Gboard 设置再试一次。</translation>
     </string>
     <string name="gboard_patches_english_uppercase_toggle_enabled_title">
         <translation locale="en">Enable English Up-Flick Uppercase</translation>
-        <translation locale="zh-Hant">启用英文键盘上滑大小写</translation>
+        <translation locale="zh-Hant">激活英文键盘上滑大小写</translation>
     </string>
     <string name="gboard_patches_english_uppercase_toggle_enabled_summary">
         <translation locale="en">Flicking up on lowercase letters outputs uppercase, and flicking up on uppercase letters outputs lowercase.</translation>
@@ -866,15 +866,15 @@
     </string>
     <string name="gboard_patches_zhuyin_bottom_row_error_summary">
         <translation locale="en">The Zhuyin bottom row settings screen failed to load. Reopen Gboard settings and try again.</translation>
-        <translation locale="zh-Hant">注音底排按键大小设定画面载入失败。请重新开启 Gboard 设定再试一次。</translation>
+        <translation locale="zh-Hant">注音底排按键大小设置界面加载失败。请重新打开 Gboard 设置再试一次。</translation>
     </string>
     <string name="gboard_patches_zhuyin_bottom_row_enabled_title">
         <translation locale="en">Enabled</translation>
-        <translation locale="zh-Hant">启用</translation>
+        <translation locale="zh-Hant">激活</translation>
     </string>
     <string name="gboard_patches_zhuyin_bottom_row_enabled_summary">
         <translation locale="en">Enable custom weight override.</translation>
-        <translation locale="zh-Hant">启用自订权重复写</translation>
+        <translation locale="zh-Hant">激活自订权重复写</translation>
     </string>
     <string name="gboard_patches_zhuyin_bottom_row_section_behavior">
         <translation locale="en">Behavior</translation>
@@ -886,7 +886,7 @@
     </string>
     <string name="gboard_patches_zhuyin_bottom_row_section_advanced">
         <translation locale="en">Advanced</translation>
-        <translation locale="zh-Hant">进阶</translation>
+        <translation locale="zh-Hant">高级</translation>
     </string>
     <string name="gboard_patches_zhuyin_bottom_row_apply_recommended_title">
         <translation locale="en">Apply Recommended Values</translation>
@@ -902,11 +902,11 @@
     </string>
     <string name="gboard_patches_zhuyin_bottom_row_apply_recommended_confirm_message">
         <translation locale="en">This sets Space and Delete to 200, and restores the other five slots to stock defaults.</translation>
-        <translation locale="zh-Hant">要把空白键设成 200、删除键设成 200，并把其他注音底排 slot 还原成预设值吗？</translation>
+        <translation locale="zh-Hant">要把空白键设成 200、删除键设成 200，并把其他注音底排 slot 还原成默认值吗？</translation>
     </string>
     <string name="gboard_patches_zhuyin_bottom_row_reset_title">
         <translation locale="en">Reset to Default</translation>
-        <translation locale="zh-Hant">重设为预设值</translation>
+        <translation locale="zh-Hant">重设为默认值</translation>
     </string>
     <string name="gboard_patches_zhuyin_bottom_row_reset_summary">
         <translation locale="en">Restore all 7 bottom-row slot weights to the stock layout values.</translation>
@@ -970,7 +970,7 @@
     </string>
     <string name="gboard_patches_zhuyin_bottom_row_weight_ime_action_title">
         <translation locale="en">Search / Enter</translation>
-        <translation locale="zh-Hant">搜寻 / 送出键</translation>
+        <translation locale="zh-Hant">搜索 / 送出键</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_title">
         <translation locale="en">AI Writing Tools</translation>
@@ -978,7 +978,7 @@
     </string>
     <string name="gboard_patches_ai_writing_tools_summary">
         <translation locale="en">Controls Gboard AI Writing Tools availability, keyboard support, and backend routing.</translation>
-        <translation locale="zh-Hant">控制 Gboard AI 撰写工具的可用性、键盘支援与后端路由。</translation>
+        <translation locale="zh-Hant">控制 Gboard AI 撰写工具的可用性、键盘支持与后端路由。</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_header_summary">
         <translation locale="en"></translation>
@@ -990,23 +990,23 @@
     </string>
     <string name="gboard_patches_ai_writing_tools_error_summary">
         <translation locale="en">The AI Writing Tools settings screen failed to load. Reopen Gboard settings and try again.</translation>
-        <translation locale="zh-Hant">AI 撰写工具设定画面载入失败。请重新开启 Gboard 设定再试一次。</translation>
+        <translation locale="zh-Hant">AI 撰写工具设置界面加载失败。请重新打开 Gboard 设置再试一次。</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_enabled_title">
         <translation locale="en">Enable AI Writing Tools</translation>
-        <translation locale="zh-Hant">启用 AI 撰写工具</translation>
+        <translation locale="zh-Hant">激活 AI 撰写工具</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_enabled_summary">
         <translation locale="en">Force-show Corrections &amp; suggestions &gt; Writing tools &gt; Show writing tools icon in suggestion strip while typing. Force-stop and restart Gboard for changes to take effect.</translation>
-        <translation locale="zh-Hant">强制显示 修正和建议 &gt; 撰写工具 中的 输入时在建议列显示撰写工具图示。强制停止并重新启动Gboard生效</translation>
+        <translation locale="zh-Hant">强制显示 修正和建议 &gt; 撰写工具 中的 输入时在建议列显示撰写工具图标。强制停止并重新启动Gboard生效</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_all_keyboards_title">
         <translation locale="en">Support All Keyboards</translation>
-        <translation locale="zh-Hant">支援所有键盘</translation>
+        <translation locale="zh-Hant">支持所有键盘</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_all_keyboards_summary">
         <translation locale="en">When enabled, force writing tools to work on every keyboard. Force-stop and restart Gboard for the change to take effect.</translation>
-        <translation locale="zh-Hant">开启后，会强制把撰写工具在所有键盘生效。需要强制停止并重新启动 Gboard 才会生效。</translation>
+        <translation locale="zh-Hant">打开后，会强制把撰写工具在所有键盘生效。需要强制停止并重新启动 Gboard 才会生效。</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_backend_type_title">
         <translation locale="en">Backend type</translation>
@@ -1014,7 +1014,7 @@
     </string>
     <string name="gboard_patches_ai_writing_tools_backend_type_summary">
         <translation locale="en">If you select AI CORE or ASTREA, your account or device must be eligible to enable it.</translation>
-        <translation locale="zh-Hant">如果选择AI CORE或是ASTREA，你的帐号或装置必须要有权限才能启用</translation>
+        <translation locale="zh-Hant">如果选择AI CORE或是ASTREA，你的帐号或设备必须要有权限才能激活</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_backend_type_dialog_title">
         <translation locale="en">Backend type</translation>
@@ -1026,19 +1026,19 @@
     </string>
     <string name="gboard_patches_clipboard_title">
         <translation locale="en">Clipboard</translation>
-        <translation locale="zh-Hant">剪贴簿</translation>
+        <translation locale="zh-Hant">剪贴板</translation>
     </string>
     <string name="gboard_patches_clipboard_summary">
         <translation locale="en">Adjusts clipboard retention, item limits, preview lines, metadata labels, order index, columns, and the phone-hosted Web Clipboard.</translation>
-        <translation locale="zh-Hant">调整剪贴簿保留时间、项目数量上限、预览行数、metadata 标签、排序索引、栏数，以及由手机提供的网页剪贴簿。</translation>
+        <translation locale="zh-Hant">调整剪贴板保留时间、项目数量上限、预览行数、metadata 标签、排序索引、栏数，以及由手机提供的网页剪贴板。</translation>
     </string>
     <string name="gboard_patches_clipboard_error_title">
         <translation locale="en">Clipboard settings unavailable</translation>
-        <translation locale="zh-Hant">剪贴簿设定无法使用</translation>
+        <translation locale="zh-Hant">剪贴板设置无法使用</translation>
     </string>
     <string name="gboard_patches_clipboard_error_summary">
         <translation locale="en">The clipboard settings screen failed to load. Reopen Gboard settings and try again.</translation>
-        <translation locale="zh-Hant">剪贴簿设定画面载入失败。请重新开启 Gboard 设定再试一次。</translation>
+        <translation locale="zh-Hant">剪贴板设置界面加载失败。请重新打开 Gboard 设置再试一次。</translation>
     </string>
     <string name="gboard_patches_clipboard_section_general">
         <translation locale="en">General</translation>
@@ -1050,7 +1050,7 @@
     </string>
     <string name="gboard_patches_clipboard_section_layout">
         <translation locale="en">Layout</translation>
-        <translation locale="zh-Hant">版面</translation>
+        <translation locale="zh-Hant">布局</translation>
     </string>
     <string name="gboard_patches_clipboard_section_retention">
         <translation locale="en">Retention</translation>
@@ -1062,23 +1062,23 @@
     </string>
     <string name="gboard_patches_clipboard_card_preview_limit_title">
         <translation locale="en">Show only the first 1,000 characters on clipboard cards</translation>
-        <translation locale="zh-Hant">剪贴簿卡片只显示前1000字</translation>
+        <translation locale="zh-Hant">剪贴板卡片只显示前1000字</translation>
     </string>
     <string name="gboard_patches_clipboard_card_preview_limit_summary">
         <translation locale="en">Gboard puts the entire text into each card on the Clipboard page and renders it repeatedly, which can make vertical scrolling stutter. This switch makes each clipboard card actually hold only the first 1,000 characters while it is rendered to avoid scrolling lag.</translation>
-        <translation locale="zh-Hant">由于 Gboard 官方在剪贴簿页面中会把整个 text 放在卡片中并且重复渲染，会导致上下滑动卡顿，所以这个开关会让剪贴簿卡片实际只存前 1000 字元，避免上下滑动卡顿。</translation>
+        <translation locale="zh-Hant">由于 Gboard 官方在剪贴板页面中会把整个 text 放在卡片中并且重复渲染，会导致上下滑动卡顿，所以这个开关会让剪贴板卡片实际只存前 1000 字符，避免上下滑动卡顿。</translation>
     </string>
     <string name="gboard_patches_clipboard_show_sensitive_content_title">
         <translation locale="en">Show sensitive clipboard contents</translation>
-        <translation locale="zh-Hant">显示敏感剪贴簿内容</translation>
+        <translation locale="zh-Hant">显示敏感剪贴板内容</translation>
     </string>
     <string name="gboard_patches_clipboard_show_sensitive_content_summary">
         <translation locale="en">Show the original text instead of dots for clipboard items marked sensitive by password managers, incognito browsing, or other apps. This can expose passwords and private data on screen.</translation>
-        <translation locale="zh-Hant">对密码管理器、无痕浏览或其他 App 标记为敏感的剪贴簿项目，显示原始文字而非圆点。这可能会让密码与私人资料直接显示在画面上。</translation>
+        <translation locale="zh-Hant">对密码管理器、无痕浏览或其他 App 标记为敏感的剪贴板项目，显示原始文字而非圆点。这可能会让密码与私人数据直接显示在界面上。</translation>
     </string>
     <string name="gboard_patches_preview_sensitive_content_enabled_caption">
         <translation locale="en">Enabled: original text</translation>
-        <translation locale="zh-Hant">开启：显示原文</translation>
+        <translation locale="zh-Hant">打开：显示原文</translation>
     </string>
     <string name="gboard_patches_preview_sensitive_content_disabled_caption">
         <translation locale="en">Disabled: dots</translation>
@@ -1086,19 +1086,19 @@
     </string>
     <string name="gboard_patches_clipboard_content_limit_title">
         <translation locale="en">Clipboard Custom Character Limit</translation>
-        <translation locale="zh-Hant">剪贴簿自订字元上限</translation>
+        <translation locale="zh-Hant">剪贴板自订字符上限</translation>
     </string>
     <string name="gboard_patches_clipboard_content_limit_summary">
         <translation locale="en">Customize the maximum character count for each text clipboard item. Official default: 20000</translation>
-        <translation locale="zh-Hant">自订每个文字剪贴簿项目的最大字元数。官方预设为20000</translation>
+        <translation locale="zh-Hant">自订每个文字剪贴板项目的最大字符数。官方预设为20000</translation>
     </string>
     <string name="gboard_patches_clipboard_content_limit_dialog_title">
         <translation locale="en">Clipboard Custom Character Limit</translation>
-        <translation locale="zh-Hant">剪贴簿自订字元上限</translation>
+        <translation locale="zh-Hant">剪贴板自订字符上限</translation>
     </string>
     <string name="gboard_patches_clipboard_content_limit_dialog_hint">
         <translation locale="en">Maximum characters</translation>
-        <translation locale="zh-Hant">最大字元数</translation>
+        <translation locale="zh-Hant">最大字符数</translation>
     </string>
     <string name="gboard_patches_pref_show_expiry_countdown">
         <translation locale="en">Show expiry countdown</translation>
@@ -1106,15 +1106,15 @@
     </string>
     <string name="gboard_patches_pref_show_expiry_countdown_summary">
         <translation locale="en">Shows the remaining retention time above each clipboard item.</translation>
-        <translation locale="zh-Hant">在每个剪贴簿项目上方显示剩余保留时间。</translation>
+        <translation locale="zh-Hant">在每个剪贴板项目上方显示剩余保留时间。</translation>
     </string>
     <string name="gboard_patches_pref_show_creation_time">
         <translation locale="en">Show creation time</translation>
-        <translation locale="zh-Hant">显示建立时间</translation>
+        <translation locale="zh-Hant">显示创建时间</translation>
     </string>
     <string name="gboard_patches_pref_show_creation_time_summary">
         <translation locale="en">Shows when each clipboard item was created in the current device time zone.</translation>
-        <translation locale="zh-Hant">以目前装置时区显示每个剪贴簿项目的建立时间。</translation>
+        <translation locale="zh-Hant">以目前设备时区显示每个剪贴板项目的创建时间。</translation>
     </string>
     <string name="gboard_patches_pref_show_order_index">
         <translation locale="en">Show order index</translation>
@@ -1122,7 +1122,7 @@
     </string>
     <string name="gboard_patches_pref_show_order_index_summary">
         <translation locale="en">Shows [1], [2], and so on above each clipboard item.</translation>
-        <translation locale="zh-Hant">在每个剪贴簿项目上方显示 [1]、[2] 等标记。</translation>
+        <translation locale="zh-Hant">在每个剪贴板项目上方显示 [1]、[2] 等标记。</translation>
     </string>
     <string name="gboard_patches_pref_order_index_direction">
         <translation locale="en">Order index direction</translation>
@@ -1130,7 +1130,7 @@
     </string>
     <string name="gboard_patches_pref_order_index_direction_summary">
         <translation locale="en">Controls whether [1] marks the newest or oldest clipboard item.</translation>
-        <translation locale="zh-Hant">控制 [1] 代表最新还是最旧的剪贴簿项目。</translation>
+        <translation locale="zh-Hant">控制 [1] 代表最新还是最旧的剪贴板项目。</translation>
     </string>
     <string name="gboard_patches_order_index_newest_first_default">
         <translation locale="en">Newest first (Default)</translation>
@@ -1146,7 +1146,7 @@
     </string>
     <string name="gboard_patches_preview_creation_time_caption">
         <translation locale="en">Creation time example</translation>
-        <translation locale="zh-Hant">建立时间范例</translation>
+        <translation locale="zh-Hant">创建时间范例</translation>
     </string>
     <string name="gboard_patches_preview_order_index_caption">
         <translation locale="en">Order index example</translation>
@@ -1154,19 +1154,19 @@
     </string>
     <string name="gboard_patches_pref_clipboard_columns">
         <translation locale="en">Clipboard columns</translation>
-        <translation locale="zh-Hant">剪贴簿栏数</translation>
+        <translation locale="zh-Hant">剪贴板栏数</translation>
     </string>
     <string name="gboard_patches_pref_clipboard_columns_summary">
         <translation locale="en">Controls how many columns the clipboard grid uses.</translation>
-        <translation locale="zh-Hant">控制剪贴簿网格使用几栏。</translation>
+        <translation locale="zh-Hant">控制剪贴板网格使用几栏。</translation>
     </string>
     <string name="gboard_patches_pref_content_max_lines">
         <translation locale="en">Clipboard preview lines</translation>
-        <translation locale="zh-Hant">剪贴簿预览行数</translation>
+        <translation locale="zh-Hant">剪贴板预览行数</translation>
     </string>
     <string name="gboard_patches_pref_content_max_lines_summary">
         <translation locale="en">Controls how many preview lines each clipboard item can show before truncation.</translation>
-        <translation locale="zh-Hant">控制每个剪贴簿项目在截断前最多显示几行预览文字。</translation>
+        <translation locale="zh-Hant">控制每个剪贴板项目在截断前最多显示几行预览文字。</translation>
     </string>
     <string name="gboard_patches_clipboard_columns_one">
         <translation locale="en">1</translation>
@@ -1222,7 +1222,7 @@
     </string>
     <string name="gboard_patches_pref_ttl_summary">
         <translation locale="en">Controls how long unpinned clipboard items are retained.</translation>
-        <translation locale="zh-Hant">控制未钉选的剪贴簿项目保留时间。</translation>
+        <translation locale="zh-Hant">控制未钉选的剪贴板项目保留时间。</translation>
     </string>
     <string name="gboard_patches_pref_max_count">
         <translation locale="en">Max count</translation>
@@ -1230,7 +1230,7 @@
     </string>
     <string name="gboard_patches_pref_max_count_summary">
         <translation locale="en">Limits how many unpinned clipboard items stay visible at the same time.</translation>
-        <translation locale="zh-Hant">限制同时可见的未钉选剪贴簿项目数量。</translation>
+        <translation locale="zh-Hant">限制同时可见的未钉选剪贴板项目数量。</translation>
     </string>
     <string name="gboard_patches_option_infinite">
         <translation locale="en">Infinite</translation>
@@ -1288,19 +1288,19 @@
     </plurals>
     <string name="gboard_patches_web_clipboard_title">
         <translation locale="en">Web Clipboard</translation>
-        <translation locale="zh-Hant">网页剪贴簿</translation>
+        <translation locale="zh-Hant">网页剪贴板</translation>
     </string>
     <string name="gboard_patches_web_clipboard_summary">
         <translation locale="en">Zero-install clipboard sharing hosted by this phone. Open the same LAN page on multiple devices to keep your phone and browsers in sync. Recommended: turn on Quick Settings Tile.</translation>
-        <translation locale="zh-Hant">由这支手机提供、免安装的网页剪贴簿分享功能。在同一个区网中于多个装置开启同一个页面，即可让手机与浏览器保持同步。建议：开启快速设定磁贴。</translation>
+        <translation locale="zh-Hant">由这支手机提供、免安装的网页剪贴板分享功能。在同一个区网中于多个设备打开同一个页面，即可让手机与浏览器保持同步。建议：打开快速设置磁贴。</translation>
     </string>
     <string name="gboard_patches_web_clipboard_entry_summary">
         <translation locale="en">Hosted on this phone at %1$s when enabled.</translation>
-        <translation locale="zh-Hant">启用时会在这支手机的 %1$s 提供服务。</translation>
+        <translation locale="zh-Hant">激活时会在这支手机的 %1$s 提供服务。</translation>
     </string>
     <string name="gboard_patches_web_clipboard_clients_feature_summary">
         <translation locale="en">View connected Web Clipboard clients and kick browser sessions.</translation>
-        <translation locale="zh-Hant">检视已连线的网页剪贴簿用户端并中断浏览器工作阶段。</translation>
+        <translation locale="zh-Hant">查看已连接的网页剪贴板用户端并中断浏览器工作阶段。</translation>
     </string>
     <string name="gboard_patches_web_clipboard_section_security">
         <translation locale="en">Security</translation>
@@ -1308,23 +1308,23 @@
     </string>
     <string name="gboard_patches_web_clipboard_section_network">
         <translation locale="en">Network</translation>
-        <translation locale="zh-Hant">网路</translation>
+        <translation locale="zh-Hant">网络</translation>
     </string>
     <string name="gboard_patches_web_clipboard_section_connected_clients">
         <translation locale="en">Connected clients</translation>
-        <translation locale="zh-Hant">已连线的用户端</translation>
+        <translation locale="zh-Hant">已连接的用户端</translation>
     </string>
     <string name="gboard_patches_web_clipboard_section_advanced">
         <translation locale="en">Advanced / Troubleshooting</translation>
-        <translation locale="zh-Hant">进阶 / 疑难排解</translation>
+        <translation locale="zh-Hant">高级 / 疑难排解</translation>
     </string>
     <string name="gboard_patches_web_clipboard_enable_title">
         <translation locale="en">Enable Web Clipboard</translation>
-        <translation locale="zh-Hant">启用网页剪贴簿</translation>
+        <translation locale="zh-Hant">激活网页剪贴板</translation>
     </string>
     <string name="gboard_patches_web_clipboard_port_title">
         <translation locale="en">Web server port</translation>
-        <translation locale="zh-Hant">Web 伺服器连接埠</translation>
+        <translation locale="zh-Hant">Web 服务器连接端口</translation>
     </string>
     <string name="gboard_patches_web_clipboard_pairing_title">
         <translation locale="en">Require pairing code</translation>
@@ -1340,7 +1340,7 @@
     </string>
     <string name="gboard_patches_web_clipboard_clients_title">
         <translation locale="en">Connected clients</translation>
-        <translation locale="zh-Hant">已连线的用户端</translation>
+        <translation locale="zh-Hant">已连接的用户端</translation>
     </string>
     <string name="gboard_patches_web_clipboard_pairing_error">
         <translation locale="en">Enter a 4-digit code.</translation>
@@ -1348,19 +1348,19 @@
     </string>
     <string name="gboard_patches_web_clipboard_pairing_summary">
         <translation locale="en">Default is on. Desktop browsers must enter a simple 4-digit code before they can sync unless you turn this off.</translation>
-        <translation locale="zh-Hant">预设为开启。桌面浏览器在同步前必须输入简单的 4 位数配对码，除非你关闭这个选项。</translation>
+        <translation locale="zh-Hant">预设为打开。桌面浏览器在同步前必须输入简单的 4 位数配对码，除非你关闭这个选项。</translation>
     </string>
     <string name="gboard_patches_web_clipboard_pairing_code_summary_on">
         <translation locale="en">Desktop users enter this 4-digit code or open a URL that includes ?code=%1$s.</translation>
-        <translation locale="zh-Hant">桌面使用者必须输入这组 4 位数配对码，或开启包含 ?code=%1$s 的网址。</translation>
+        <translation locale="zh-Hant">桌面用户必须输入这组 4 位数配对码，或打开包含 ?code=%1$s 的网址。</translation>
     </string>
     <string name="gboard_patches_web_clipboard_pairing_code_summary_off">
         <translation locale="en">Pairing is off; this code is only used after you enable the switch.</translation>
-        <translation locale="zh-Hant">配对功能目前关闭；只有在重新启用后才会使用这组配对码。</translation>
+        <translation locale="zh-Hant">配对功能目前关闭；只有在重新激活后才会使用这组配对码。</translation>
     </string>
     <string name="gboard_patches_web_clipboard_port_summary">
         <translation locale="en">Choose the port used by the phone-hosted web UI.</translation>
-        <translation locale="zh-Hant">选择由手机提供的 Web UI 所使用的连接埠。</translation>
+        <translation locale="zh-Hant">选择由手机提供的 Web UI 所使用的连接端口。</translation>
     </string>
     <string name="gboard_patches_web_clipboard_regenerate_code_title">
         <translation locale="en">Regenerate pairing code</translation>
@@ -1368,19 +1368,19 @@
     </string>
     <string name="gboard_patches_web_clipboard_regenerate_code_summary">
         <translation locale="en">Create a new 4-digit code and restart the portal if it is running.</translation>
-        <translation locale="zh-Hant">建立新的 4 位数配对码，并在入口正在执行时重新启动服务。</translation>
+        <translation locale="zh-Hant">创建新的 4 位数配对码，并在入口正在运行时重新启动服务。</translation>
     </string>
     <string name="gboard_patches_web_clipboard_no_clients">
         <translation locale="en">No browser clients are connected.</translation>
-        <translation locale="zh-Hant">目前没有浏览器用户端连线。</translation>
+        <translation locale="zh-Hant">目前没有浏览器用户端连接。</translation>
     </string>
     <string name="gboard_patches_web_clipboard_clients_summary">
         <translation locale="en">Tap to view and kick browser clients.</translation>
-        <translation locale="zh-Hant">点一下可检视并中断浏览器用户端。</translation>
+        <translation locale="zh-Hant">点一下可查看并中断浏览器用户端。</translation>
     </string>
     <string name="gboard_patches_web_clipboard_connected_summary">
         <translation locale="en">Browser clients currently connected to the Web Clipboard portal.</translation>
-        <translation locale="zh-Hant">目前连线到网页剪贴簿入口网站的浏览器用户端。</translation>
+        <translation locale="zh-Hant">目前连接到网页剪贴板门户网站的浏览器用户端。</translation>
     </string>
     <string name="gboard_patches_web_clipboard_kick_title">
         <translation locale="en">Kick %1$s</translation>
@@ -1388,11 +1388,11 @@
     </string>
     <string name="gboard_patches_web_clipboard_kick_confirm_title">
         <translation locale="en">Kick connected client</translation>
-        <translation locale="zh-Hant">中断已连线的用户端</translation>
+        <translation locale="zh-Hant">中断已连接的用户端</translation>
     </string>
     <string name="gboard_patches_web_clipboard_kick_confirm_message">
         <translation locale="en">Disconnect %1$s from Web Clipboard?</translation>
-        <translation locale="zh-Hant">要将 %1$s 从网页剪贴簿中断吗？</translation>
+        <translation locale="zh-Hant">要将 %1$s 从网页剪贴板中断吗？</translation>
     </string>
     <string name="gboard_patches_web_clipboard_client_title">
         <translation locale="en">%1$s %2$s</translation>
@@ -1416,31 +1416,31 @@
     </string>
     <string name="gboard_patches_web_clipboard_qs_recommendation">
         <translation locale="en">Recommended: turn on Quick Settings Tile.</translation>
-        <translation locale="zh-Hant">建议：开启快速设定磁贴。</translation>
+        <translation locale="zh-Hant">建议：打开快速设置磁贴。</translation>
     </string>
     <string name="gboard_patches_settings_homepage_title">
         <translation locale="en">Settings Style</translation>
-        <translation locale="zh-Hant">设定样式</translation>
+        <translation locale="zh-Hant">设置样式</translation>
     </string>
     <string name="gboard_patches_settings_homepage_summary">
         <translation locale="en">Choose whether Gboard settings use the new or legacy settings style.</translation>
-        <translation locale="zh-Hant">选择 Gboard 设定使用新样式或旧样式。</translation>
+        <translation locale="zh-Hant">选择 Gboard 设置使用新样式或旧样式。</translation>
     </string>
     <string name="gboard_patches_settings_homepage_header_summary">
         <translation locale="en">Control whether Gboard settings use the new or legacy settings experience. Reopen Gboard settings after changing this option.</translation>
-        <translation locale="zh-Hant">控制 Gboard 设定使用新的或旧的设定体验。变更后请重新开启 Gboard 设定。</translation>
+        <translation locale="zh-Hant">控制 Gboard 设置使用新的或旧的设置体验。变更后请重新打开 Gboard 设置。</translation>
     </string>
     <string name="gboard_patches_settings_homepage_error_title">
         <translation locale="en">Settings homepage unavailable</translation>
-        <translation locale="zh-Hant">设定首页无法使用</translation>
+        <translation locale="zh-Hant">设置首页无法使用</translation>
     </string>
     <string name="gboard_patches_settings_homepage_error_summary">
         <translation locale="en">The homepage selector failed to load. Reopen Gboard settings and try again.</translation>
-        <translation locale="zh-Hant">首页切换器载入失败。请重新开启 Gboard 设定再试一次。</translation>
+        <translation locale="zh-Hant">首页切换器加载失败。请重新打开 Gboard 设置再试一次。</translation>
     </string>
     <string name="gboard_patches_settings_homepage_safeguard_title">
         <translation locale="en">Compatibility safeguard</translation>
-        <translation locale="zh-Hant">相容性保护</translation>
+        <translation locale="zh-Hant">兼容性保护</translation>
     </string>
     <string name="gboard_patches_settings_homepage_recovery_title">
         <translation locale="en">Crash safeguard</translation>
@@ -1448,15 +1448,15 @@
     </string>
     <string name="gboard_patches_settings_homepage_trial_title">
         <translation locale="en">Trial window</translation>
-        <translation locale="zh-Hant">试用视窗</translation>
+        <translation locale="zh-Hant">试用窗口</translation>
     </string>
     <string name="gboard_patches_settings_homepage_mode_title">
         <translation locale="en">Settings style</translation>
-        <translation locale="zh-Hant">设定样式</translation>
+        <translation locale="zh-Hant">设置样式</translation>
     </string>
     <string name="gboard_patches_settings_homepage_current_title">
         <translation locale="en">Current active style</translation>
-        <translation locale="zh-Hant">目前启用的样式</translation>
+        <translation locale="zh-Hant">目前激活的样式</translation>
     </string>
     <string name="gboard_patches_settings_homepage_label_auto">
         <translation locale="en">Auto</translation>
@@ -1488,23 +1488,23 @@
     </string>
     <string name="gboard_patches_settings_homepage_safeguard_summary">
         <translation locale="en">This Android version does not expose the expected expressive runtime. New still remains selectable, but it runs under crash recovery protection.</translation>
-        <translation locale="zh-Hant">这个 Android 版本没有提供预期的 expressive runtime。仍可选择新样式，但会受当机复原保护。</translation>
+        <translation locale="zh-Hant">这个 Android 版本没有提供预期的 expressive runtime。仍可选择新样式，但会受当机撤销保护。</translation>
     </string>
     <string name="gboard_patches_settings_homepage_trial_armed_summary">
         <translation locale="en">Open Gboard settings within %1$d seconds. If nothing launches in that window, it falls back to Legacy automatically.</translation>
-        <translation locale="zh-Hant">请在 %1$d 秒内开启 Gboard 设定。如果在这段时间内没有成功启动，会自动回退到旧样式。</translation>
+        <translation locale="zh-Hant">请在 %1$d 秒内打开 Gboard 设置。如果在这段时间内没有成功启动，会自动回退到旧样式。</translation>
     </string>
     <string name="gboard_patches_settings_homepage_recovery_summary">
         <translation locale="en">The previous New settings launch did not finish cleanly. Legacy stays active so you can reopen settings and retry safely.</translation>
-        <translation locale="zh-Hant">上一次的新设定样式启动没有正常完成。旧样式会维持启用，让你能安全地重新开启设定并重试。</translation>
+        <translation locale="zh-Hant">上一次的新设置样式启动没有正常完成。旧样式会维持激活，让你能安全地重新打开设置并重试。</translation>
     </string>
     <string name="gboard_patches_settings_homepage_trial_expired_summary">
         <translation locale="en">The New launch window expired before Gboard opened its settings page. Legacy stays active until you choose New again.</translation>
-        <translation locale="zh-Hant">新样式的启动视窗已过期，Gboard 尚未成功开启设定页。旧样式会维持启用，直到你再次选择新样式。</translation>
+        <translation locale="zh-Hant">新样式的启动窗口已过期，Gboard 尚未成功打开设置页。旧样式会维持激活，直到你再次选择新样式。</translation>
     </string>
     <string name="gboard_patches_settings_homepage_mode_new_recovered">
         <translation locale="en">New (recovered)</translation>
-        <translation locale="zh-Hant">新（已复原）</translation>
+        <translation locale="zh-Hant">新（已撤销）</translation>
     </string>
     <string name="gboard_patches_settings_homepage_mode_new_expired">
         <translation locale="en">New (expired)</translation>
@@ -1516,47 +1516,47 @@
     </string>
     <string name="gboard_patches_settings_homepage_mode_summary_new_recovered">
         <translation locale="en">The previous New launch crashed. Legacy stays active until you switch modes or choose New again to retry.</translation>
-        <translation locale="zh-Hant">前一次的新样式启动发生当机。旧样式会维持启用，直到你切换模式，或再次选择新样式重试。</translation>
+        <translation locale="zh-Hant">前一次的新样式启动发生当机。旧样式会维持激活，直到你切换模式，或再次选择新样式重试。</translation>
     </string>
     <string name="gboard_patches_settings_homepage_mode_summary_new_expired">
         <translation locale="en">The New launch window expired. Choose New again, then open Gboard settings within 10 seconds to retry.</translation>
-        <translation locale="zh-Hant">新样式的启动视窗已过期。请再次选择新样式，并在 10 秒内开启 Gboard 设定重试。</translation>
+        <translation locale="zh-Hant">新样式的启动窗口已过期。请再次选择新样式，并在 10 秒内打开 Gboard 设置重试。</translation>
     </string>
     <string name="gboard_patches_settings_homepage_mode_summary_new_armed">
         <translation locale="en">Open Gboard settings within 10 seconds. If the launch crashes or never starts, it falls back to Legacy automatically.</translation>
-        <translation locale="zh-Hant">请在 10 秒内开启 Gboard 设定。如果启动当机或没有成功开始，会自动回退到旧样式。</translation>
+        <translation locale="zh-Hant">请在 10 秒内打开 Gboard 设置。如果启动当机或没有成功开始，会自动回退到旧样式。</translation>
     </string>
     <string name="gboard_patches_settings_homepage_mode_summary_new_guarded">
         <translation locale="en">New stays available on this Android version, but it runs with automatic fallback protection if the settings launch fails.</translation>
-        <translation locale="zh-Hant">在这个 Android 版本上仍可使用新样式，但如果设定启动失败，会自动回退保护。</translation>
+        <translation locale="zh-Hant">在这个 Android 版本上仍可使用新样式，但如果设置启动失败，会自动回退保护。</translation>
     </string>
     <string name="gboard_patches_settings_homepage_mode_summary_new">
         <translation locale="en">Always use the new settings style. Reopen Gboard settings to apply.</translation>
-        <translation locale="zh-Hant">永远使用新设定样式。变更后请重新开启 Gboard 设定。</translation>
+        <translation locale="zh-Hant">永远使用新设置样式。变更后请重新打开 Gboard 设置。</translation>
     </string>
     <string name="gboard_patches_settings_homepage_mode_summary_legacy">
         <translation locale="en">Always use the legacy settings style. Reopen Gboard settings to apply.</translation>
-        <translation locale="zh-Hant">永远使用旧设定样式。变更后请重新开启 Gboard 设定。</translation>
+        <translation locale="zh-Hant">永远使用旧设置样式。变更后请重新打开 Gboard 设置。</translation>
     </string>
     <string name="gboard_patches_settings_homepage_mode_summary_auto">
         <translation locale="en">Follow Gboard automatic selection. Reopen Gboard settings after switching modes.</translation>
-        <translation locale="zh-Hant">跟随 Gboard 的自动选择。切换模式后请重新开启 Gboard 设定。</translation>
+        <translation locale="zh-Hant">跟随 Gboard 的自动选择。切换模式后请重新打开 Gboard 设置。</translation>
     </string>
     <string name="gboard_patches_settings_homepage_current_summary_guarded">
         <translation locale="en">Legacy settings style is active right now because New is being held back by the safety guard.</translation>
-        <translation locale="zh-Hant">目前实际启用的是旧设定样式，因为安全保护暂时阻挡了新样式。</translation>
+        <translation locale="zh-Hant">目前实际激活的是旧设置样式，因为安全保护暂时阻挡了新样式。</translation>
     </string>
     <string name="gboard_patches_settings_homepage_current_summary_queued">
         <translation locale="en">New settings style is queued for the next Gboard settings launch.</translation>
-        <translation locale="zh-Hant">新设定样式已排入下一次 Gboard 设定启动。</translation>
+        <translation locale="zh-Hant">新设置样式已排入下一次 Gboard 设置启动。</translation>
     </string>
     <string name="gboard_patches_settings_homepage_current_summary_protected">
         <translation locale="en">New settings style is selected with crash recovery protection on this Android version.</translation>
-        <translation locale="zh-Hant">在这个 Android 版本上已选择新设定样式，并启用当机复原保护。</translation>
+        <translation locale="zh-Hant">在这个 Android 版本上已选择新设置样式，并激活当机撤销保护。</translation>
     </string>
     <string name="gboard_patches_settings_homepage_current_summary_default">
         <translation locale="en">%1$s settings style is active right now.</translation>
-        <translation locale="zh-Hant">目前启用的是 %1$s 设定样式。</translation>
+        <translation locale="zh-Hant">目前激活的是 %1$s 设置样式。</translation>
     </string>
     <string name="gboard_patches_symbol_footer_title">
         <translation locale="en">Emojis, stickers &amp; GIFs Tab Order</translation>
@@ -1576,7 +1576,7 @@
     </string>
     <string name="gboard_patches_symbol_footer_error_summary">
         <translation locale="en">The footer order screen failed to load. Reopen Gboard settings and try again.</translation>
-        <translation locale="zh-Hant">底部分页顺序画面载入失败。请重新开启 Gboard 设定再试一次。</translation>
+        <translation locale="zh-Hant">底部分页顺序界面加载失败。请重新打开 Gboard 设置再试一次。</translation>
     </string>
     <string name="gboard_patches_symbol_footer_current_title">
         <translation locale="en">Current order</translation>
@@ -1604,7 +1604,7 @@
     </string>
     <string name="gboard_patches_symbol_footer_section_current">
         <translation locale="en">Current configuration</translation>
-        <translation locale="zh-Hant">目前设定</translation>
+        <translation locale="zh-Hant">目前设置</translation>
     </string>
     <string name="gboard_patches_symbol_footer_section_behavior">
         <translation locale="en">Behavior</translation>
@@ -1612,7 +1612,7 @@
     </string>
     <string name="gboard_patches_symbol_footer_section_advanced">
         <translation locale="en">Advanced</translation>
-        <translation locale="zh-Hant">进阶</translation>
+        <translation locale="zh-Hant">高级</translation>
     </string>
     <string name="gboard_patches_symbol_footer_reset_confirm_title">
         <translation locale="en">Reset tab order</translation>
@@ -1648,7 +1648,7 @@
     </string>
     <string name="gboard_patches_manual_incognito_summary">
         <translation locale="en">Add a manual Incognito toolbar button and configure clipboard and voice typing behavior.</translation>
-        <translation locale="zh-Hant">新增手动无痕模式按钮，并设定无痕模式下的剪贴簿与语音输入行为。</translation>
+        <translation locale="zh-Hant">添加手动无痕模式按钮，并设置无痕模式下的剪贴板与语音输入行为。</translation>
     </string>
     <string name="gboard_patches_manual_incognito_section_behavior">
         <translation locale="en">Behavior</translation>
@@ -1656,35 +1656,35 @@
     </string>
     <string name="gboard_patches_manual_incognito_enabled_title">
         <translation locale="en">Add Incognito button</translation>
-        <translation locale="zh-Hant">新增无痕模式按钮</translation>
+        <translation locale="zh-Hant">添加无痕模式按钮</translation>
     </string>
     <string name="gboard_patches_manual_incognito_enabled_summary">
         <translation locale="en">Adds an Incognito button to the Access Point toolbar. Force-stop and restart Gboard for the change to take effect.</translation>
-        <translation locale="zh-Hant">启用后会在 Access Point 工具列中新增 Incognito 按钮。强制关闭并重新启动 Gboard 后生效。</translation>
+        <translation locale="zh-Hant">激活后会在 Access Point 工具栏中添加 Incognito 按钮。强制关闭并重新启动 Gboard 后生效。</translation>
     </string>
     <string name="gboard_patches_manual_incognito_clipboard_title">
         <translation locale="en">Enable clipboard in incognito</translation>
-        <translation locale="zh-Hant">无痕模式时启用剪贴簿</translation>
+        <translation locale="zh-Hant">无痕模式时激活剪贴板</translation>
     </string>
     <string name="gboard_patches_manual_incognito_clipboard_summary">
         <translation locale="en">Allow Gboard to process new system clipboard changes while incognito is active. Applies when the keyboard is reopened.</translation>
-        <translation locale="zh-Hant">允许 Gboard 在无痕模式中处理新的系统剪贴簿内容。重新开启键盘后套用。</translation>
+        <translation locale="zh-Hant">允许 Gboard 在无痕模式中处理新的系统剪贴板内容。重新打开键盘后套用。</translation>
     </string>
     <string name="gboard_patches_manual_incognito_voice_title">
         <translation locale="en">Enable voice typing in incognito</translation>
-        <translation locale="zh-Hant">无痕模式时启用语音输入</translation>
+        <translation locale="zh-Hant">无痕模式时激活语音输入</translation>
     </string>
     <string name="gboard_patches_manual_incognito_voice_summary">
         <translation locale="en">Allow voice typing while incognito is active. Google services or the network may still be used. Applies when the keyboard is reopened.</translation>
-        <translation locale="zh-Hant">允许在无痕模式中使用语音输入。Google 服务或网路仍可能被使用。重新开启键盘后套用。</translation>
+        <translation locale="zh-Hant">允许在无痕模式中使用语音输入。Google 服务或网络仍可能被使用。重新打开键盘后套用。</translation>
     </string>
     <string name="gboard_patches_manual_incognito_error_title">
         <translation locale="en">Incognito settings unavailable</translation>
-        <translation locale="zh-Hant">无痕模式设定无法使用</translation>
+        <translation locale="zh-Hant">无痕模式设置无法使用</translation>
     </string>
     <string name="gboard_patches_manual_incognito_error_summary">
         <translation locale="en">The incognito settings screen failed to load. Reopen Gboard settings and try again.</translation>
-        <translation locale="zh-Hant">无痕模式设定画面载入失败。请重新开启 Gboard 设定再试一次。</translation>
+        <translation locale="zh-Hant">无痕模式设置界面加载失败。请重新打开 Gboard 设置再试一次。</translation>
     </string>
     <string name="gboard_patches_long_press_quick_actions_title">
         <translation locale="en">Long-Press Editing Shortcuts</translation>
@@ -1692,7 +1692,7 @@
     </string>
     <string name="gboard_patches_long_press_quick_actions_summary">
         <translation locale="en">Long-press designated letter keys for editing actions. Swipe up from Backspace to clear all text.</translation>
-        <translation locale="zh-Hant">长按指定字母键执行编辑操作；从删除键向上滑可一键清空文字。</translation>
+        <translation locale="zh-Hant">长按指定字母键运行编辑操作；从删除键向上滑可一键清空文字。</translation>
     </string>
     <string name="gboard_patches_long_press_quick_actions_error_title">
         <translation locale="en">Long-Press Editing Shortcuts unavailable</translation>
@@ -1700,15 +1700,15 @@
     </string>
     <string name="gboard_patches_long_press_quick_actions_error_summary">
         <translation locale="en">The Long-Press Editing Shortcuts settings screen failed to load. Reopen Gboard settings and try again.</translation>
-        <translation locale="zh-Hant">长按编辑快捷键设定画面载入失败。请重新开启 Gboard 设定再试一次。</translation>
+        <translation locale="zh-Hant">长按编辑快捷键设置界面加载失败。请重新打开 Gboard 设置再试一次。</translation>
     </string>
     <string name="gboard_patches_long_press_quick_actions_enabled_title">
         <translation locale="en">Enable Long-Press Editing Shortcuts</translation>
-        <translation locale="zh-Hant">启用长按编辑快捷键</translation>
+        <translation locale="zh-Hant">激活长按编辑快捷键</translation>
     </string>
     <string name="gboard_patches_long_press_quick_actions_enabled_summary">
         <translation locale="en">Reopen the keyboard or switch layouts to fully apply changes. Backspace swipe-up clears the current editor.</translation>
-        <translation locale="zh-Hant">重新叫出键盘或切换键盘版面后会完整套用变更；删除键上滑会清空目前输入框。</translation>
+        <translation locale="zh-Hant">重新叫出键盘或切换键盘布局后会完整套用变更；删除键上滑会清空目前输入框。</translation>
     </string>
     <string name="gboard_patches_long_press_quick_actions_globe_drag_title">
         <translation locale="en">Hold and drag from globe key</translation>
@@ -1716,7 +1716,7 @@
     </string>
     <string name="gboard_patches_long_press_quick_actions_globe_drag_summary">
         <translation locale="en">Swipe from the globe key to A/Z/X/C/V/Y for editing actions.</translation>
-        <translation locale="zh-Hant">从地球键滑到 A/Z/X/C/V/Y，执行编辑操作。</translation>
+        <translation locale="zh-Hant">从地球键滑到 A/Z/X/C/V/Y，运行编辑操作。</translation>
     </string>
     <string name="gboard_patches_long_press_quick_actions_section_feature">
         <translation locale="en">Feature</translation>
@@ -1732,19 +1732,19 @@
     </string>
     <string name="gboard_patches_long_press_quick_actions_action_undo">
         <translation locale="en">Undo</translation>
-        <translation locale="zh-Hant">复原</translation>
+        <translation locale="zh-Hant">撤销</translation>
     </string>
     <string name="gboard_patches_long_press_quick_actions_action_copy">
         <translation locale="en">Copy</translation>
-        <translation locale="zh-Hant">复制</translation>
+        <translation locale="zh-Hant">拷贝</translation>
     </string>
     <string name="gboard_patches_long_press_quick_actions_action_cut">
         <translation locale="en">Cut</translation>
-        <translation locale="zh-Hant">剪下</translation>
+        <translation locale="zh-Hant">剪切</translation>
     </string>
     <string name="gboard_patches_long_press_quick_actions_action_paste">
         <translation locale="en">Paste</translation>
-        <translation locale="zh-Hant">贴上</translation>
+        <translation locale="zh-Hant">粘贴</translation>
     </string>
     <string name="gboard_patches_long_press_quick_actions_action_redo">
         <translation locale="en">Redo</translation>
@@ -1752,7 +1752,7 @@
     </string>
     <string name="gboard_patches_advanced_voice_title">
         <translation locale="en">Advanced Voice Typing</translation>
-        <translation locale="zh-Hant">进阶语音输入</translation>
+        <translation locale="zh-Hant">高级语音输入</translation>
     </string>
     <string name="gboard_patches_bluetooth_microphone_title">
         <translation locale="en">Use Bluetooth microphone</translation>
@@ -1768,7 +1768,7 @@
     </string>
     <string name="gboard_patches_bluetooth_microphone_error_summary">
         <translation locale="en">The Bluetooth microphone settings screen failed to load. Reopen Gboard settings and try again.</translation>
-        <translation locale="zh-Hant">蓝芽麦克风设定画面载入失败。请重新开启 Gboard 设定再试一次。</translation>
+        <translation locale="zh-Hant">蓝芽麦克风设置界面加载失败。请重新打开 Gboard 设置再试一次。</translation>
     </string>
     <string name="gboard_patches_bluetooth_microphone_section_behavior">
         <translation locale="en">Behavior</translation>
@@ -1776,23 +1776,23 @@
     </string>
     <string name="gboard_patches_advanced_voice_summary">
         <translation locale="en">Controls whether Advanced Voice Typing is forced on.</translation>
-        <translation locale="zh-Hant">控制是否强制启用进阶语音输入。</translation>
+        <translation locale="zh-Hant">控制是否强制激活高级语音输入。</translation>
     </string>
     <string name="gboard_patches_advanced_voice_header_summary">
         <translation locale="en">Voice typing -&gt; Advanced features、 Add punctuation</translation>
-        <translation locale="zh-Hant">语音输入 -&gt; 进阶功能、 加入标点符号</translation>
+        <translation locale="zh-Hant">语音输入 -&gt; 高级功能、 加入标点符号</translation>
     </string>
     <string name="gboard_patches_advanced_voice_error_title">
         <translation locale="en">Advanced Voice Typing unavailable</translation>
-        <translation locale="zh-Hant">进阶语音输入无法使用</translation>
+        <translation locale="zh-Hant">高级语音输入无法使用</translation>
     </string>
     <string name="gboard_patches_advanced_voice_error_summary">
         <translation locale="en">The Advanced Voice Typing settings screen failed to load. Reopen Gboard settings and try again.</translation>
-        <translation locale="zh-Hant">进阶语音输入设定画面载入失败。请重新开启 Gboard 设定再试一次。</translation>
+        <translation locale="zh-Hant">高级语音输入设置界面加载失败。请重新打开 Gboard 设置再试一次。</translation>
     </string>
     <string name="gboard_patches_advanced_voice_enabled_title">
         <translation locale="en">Enable Advanced Voice Typing</translation>
-        <translation locale="zh-Hant">启用进阶语音输入</translation>
+        <translation locale="zh-Hant">激活高级语音输入</translation>
     </string>
     <string name="gboard_patches_advanced_voice_enabled_summary">
         <translation locale="en">Voice typing &gt; Dictation type. Force-stop and restart Gboard for changes to take effect.</translation>
@@ -1816,11 +1816,11 @@
     </string>
     <string name="gboard_patches_advanced_voice_backend_rambler_current_label">
         <translation locale="en">Rambler (online only)</translation>
-        <translation locale="zh-Hant">Rambler(限线上)</translation>
+        <translation locale="zh-Hant">Rambler(限在线)</translation>
     </string>
     <string name="gboard_patches_advanced_voice_backend_rambler_label">
         <translation locale="en">Rambler (online only)</translation>
-        <translation locale="zh-Hant">Rambler(限线上)</translation>
+        <translation locale="zh-Hant">Rambler(限在线)</translation>
     </string>
     <string name="gboard_patches_advanced_voice_zh_tw_punctuation_title">
         <translation locale="en">Automatically Add Punctuation to Chinese Input</translation>
@@ -1840,23 +1840,23 @@
     </string>
     <string name="gboard_patches_advanced_voice_section_offline_speech_model">
         <translation locale="en">Offline speech model</translation>
-        <translation locale="zh-Hant">离线语音模型</translation>
+        <translation locale="zh-Hant">脱机语音模型</translation>
     </string>
     <string name="gboard_patches_advanced_voice_section_supported_languages">
         <translation locale="en">Supported languages</translation>
-        <translation locale="zh-Hant">支援的语言</translation>
+        <translation locale="zh-Hant">支持的语言</translation>
     </string>
     <string name="gboard_patches_advanced_voice_supported_languages_title">
         <translation locale="en">Supported languages</translation>
-        <translation locale="zh-Hant">支援的语言</translation>
+        <translation locale="zh-Hant">支持的语言</translation>
     </string>
     <string name="gboard_patches_advanced_voice_supported_languages_summary">
         <translation locale="en">Only en-US supports the complete feature set.\n\nEnglish en-AU, en-CA, en-GB, en-IE, en-IN, en-SG, en-US\nGerman de-AT, de-BE, de-CH, de-DE\nFrench fr-BE, fr-CA, fr-CH, fr-FR\nItalian it-CH, it-IT\nJapanese ja-JP\nSpanish es-ES, es-US</translation>
-        <translation locale="zh-Hant">只有 en-US 可以支援完整功能\n\n英文 en-AU、en-CA、en-GB、en-IE、en-IN、en-SG、en-US\n德文 de-AT、de-BE、de-CH、de-DE\n法文 fr-BE、fr-CA、fr-CH、fr-FR\n义大利文 it-CH、it-IT\n日文 ja-JP\n西班牙文 es-ES、es-US</translation>
+        <translation locale="zh-Hant">只有 en-US 可以支持完整功能\n\n英文 en-AU、en-CA、en-GB、en-IE、en-IN、en-SG、en-US\n德文 de-AT、de-BE、de-CH、de-DE\n法文 fr-BE、fr-CA、fr-CH、fr-FR\n意大利文 it-CH、it-IT\n日文 ja-JP\n西班牙文 es-ES、es-US</translation>
     </string>
     <string name="gboard_patches_advanced_voice_github_star_title">
         <translation locale="en">Support this project on GitHub 😊</translation>
-        <translation locale="zh-Hant">在 GitHub 上支持这个专案 😊</translation>
+        <translation locale="zh-Hant">在 GitHub 上支持这个项目 😊</translation>
     </string>
     <string name="gboard_patches_advanced_voice_github_star_summary">
         <translation locale="en">This feature took a significant amount of time to build. If it helps you, please give the project a Star on GitHub.</translation>
@@ -1876,35 +1876,35 @@
     </string>
     <string name="gboard_patches_advanced_voice_speech_services_status_summary">
         <translation locale="en">Package: com.google.android.tts. Required for Advanced Voice Typing: install Speech Recognition &amp; Synthesis and download the offline speech recognition model for every language you use. Tap to open its Google Play page.</translation>
-        <translation locale="zh-Hant">套件：com.google.android.tts。启用进阶语音输入的必要条件：必须安装 Speech Recognition &amp; Synthesis，并下载目前使用语言的离线语音辨识模型。点击即可开启 Google Play 页面。</translation>
+        <translation locale="zh-Hant">套件：com.google.android.tts。激活高级语音输入的必要条件：必须安装 Speech Recognition &amp; Synthesis，并下载目前使用语言的脱机语音识别模型。点击即可打开 Google Play 页面。</translation>
     </string>
     <string name="gboard_patches_advanced_voice_speech_services_open_failed">
         <translation locale="en">Unable to open the Speech Recognition &amp; Synthesis Google Play page.</translation>
-        <translation locale="zh-Hant">无法开启 Speech Recognition &amp; Synthesis 的 Google Play 页面。</translation>
+        <translation locale="zh-Hant">无法打开 Speech Recognition &amp; Synthesis 的 Google Play 页面。</translation>
     </string>
     <string name="gboard_patches_advanced_voice_downloaded_languages_title">
         <translation locale="en">Downloaded offline languages</translation>
-        <translation locale="zh-Hant">已下载的离线语言</translation>
+        <translation locale="zh-Hant">已下载的脱机语言</translation>
     </string>
     <string name="gboard_patches_advanced_voice_downloaded_languages_loading_summary">
         <translation locale="en">Checking downloaded offline languages…</translation>
-        <translation locale="zh-Hant">正在读取已下载的离线语言…</translation>
+        <translation locale="zh-Hant">正在读取已下载的脱机语言…</translation>
     </string>
     <string name="gboard_patches_advanced_voice_downloaded_languages_empty_summary">
         <translation locale="en">No downloaded offline languages detected.</translation>
-        <translation locale="zh-Hant">尚未侦测到已下载的离线语言。</translation>
+        <translation locale="zh-Hant">尚未侦测到已下载的脱机语言。</translation>
     </string>
     <string name="gboard_patches_advanced_voice_downloaded_languages_unsupported_summary">
         <translation locale="en">This Android version cannot query downloaded offline languages.</translation>
-        <translation locale="zh-Hant">这个 Android 版本不支援查询已下载的离线语言。</translation>
+        <translation locale="zh-Hant">这个 Android 版本不支持查找已下载的脱机语言。</translation>
     </string>
     <string name="gboard_patches_advanced_voice_downloaded_languages_unavailable_summary">
         <translation locale="en">No on-device speech recognition service is available.</translation>
-        <translation locale="zh-Hant">找不到装置端语音辨识服务。</translation>
+        <translation locale="zh-Hant">找不到设备端语音识别服务。</translation>
     </string>
     <string name="gboard_patches_advanced_voice_downloaded_languages_error_summary">
         <translation locale="en">Unable to read downloaded offline languages. Check them in Live Transcribe.</translation>
-        <translation locale="zh-Hant">无法读取已下载的离线语言，请在即时转录中确认。</translation>
+        <translation locale="zh-Hant">无法读取已下载的脱机语言，请在实时转录中确认。</translation>
     </string>
     <string name="gboard_patches_advanced_voice_downloaded_languages_separator">
         <translation locale="en">, </translation>
@@ -1912,15 +1912,15 @@
     </string>
     <string name="gboard_patches_advanced_voice_live_transcribe_manage_title">
         <translation locale="en">Manage languages with Live Transcribe</translation>
-        <translation locale="zh-Hant">使用即时转录管理语言</translation>
+        <translation locale="zh-Hant">使用实时转录管理语言</translation>
     </string>
     <string name="gboard_patches_advanced_voice_live_transcribe_manage_summary">
         <translation locale="en">Use Google’s official Live Transcribe app to download the Speech Recognition &amp; Synthesis offline recognition models required for Advanced Voice Typing. In Live Transcribe, open Settings → More settings → Primary language.\nTap to open Live Transcribe.</translation>
-        <translation locale="zh-Hant">使用 Google 官方「即时转录」下载启用进阶语音输入所需的 Speech Recognition &amp; Synthesis 离线语音辨识模型。请在即时转录中开启：设定 → 更多设定 → 主要语言。\n点击即可开启即时转录。</translation>
+        <translation locale="zh-Hant">使用 Google 官方「实时转录」下载激活高级语音输入所需的 Speech Recognition &amp; Synthesis 脱机语音识别模型。请在实时转录中打开：设置 → 更多设置 → 主要语言。\n点击即可打开实时转录。</translation>
     </string>
     <string name="gboard_patches_advanced_voice_live_transcribe_open_failed">
         <translation locale="en">Unable to open Live Transcribe or its Google Play page.</translation>
-        <translation locale="zh-Hant">无法开启即时转录或其 Google Play 页面。</translation>
+        <translation locale="zh-Hant">无法打开实时转录或其 Google Play 页面。</translation>
     </string>
     <string name="gboard_patches_advanced_voice_payload_present_title">
         <translation locale="en">Dictation payload (Installed)</translation>
@@ -1928,7 +1928,7 @@
     </string>
     <string name="gboard_patches_advanced_voice_payload_present_summary">
         <translation locale="en">The currently installed %1$s meets the APK payload requirement for Advanced Voice Typing.</translation>
-        <translation locale="zh-Hant">目前安装的 %1$s 已符合进阶语音输入的 APK payload 需求。</translation>
+        <translation locale="zh-Hant">目前安装的 %1$s 已符合高级语音输入的 APK payload 需求。</translation>
     </string>
     <string name="gboard_patches_advanced_voice_payload_present_requirement_title">
         <translation locale="en">Installation requirement (currently met)</translation>
@@ -1944,7 +1944,7 @@
     </string>
     <string name="gboard_patches_advanced_voice_payload_absent_summary">
         <translation locale="en">The currently installed %1$s does not contain libdictation_jni.so, which Advanced Voice Typing requires.</translation>
-        <translation locale="zh-Hant">目前安装的 %1$s 不包含进阶语音输入需要的 libdictation_jni.so。</translation>
+        <translation locale="zh-Hant">目前安装的 %1$s 不包含高级语音输入需要的 libdictation_jni.so。</translation>
     </string>
     <string name="gboard_patches_advanced_voice_payload_absent_requirement_title">
         <translation locale="en">Get a bundle or split APKM</translation>
@@ -1952,7 +1952,7 @@
     </string>
     <string name="gboard_patches_advanced_voice_payload_absent_requirement_summary">
         <translation locale="en">Get a bundle or split APKM and apply the patch in Morphe; a standalone APK cannot work.\nTap to open the APKMirror download page</translation>
-        <translation locale="zh-Hant">请重新取得 bundle 或 split APKM，并在 Morphe 中套用 patch；standalone APK 无法生效。\n点此开启 APKMirror 下载页</translation>
+        <translation locale="zh-Hant">请重新取得 bundle 或 split APKM，并在 Morphe 中套用 patch；standalone APK 无法生效。\n点此打开 APKMirror 下载页</translation>
     </string>
     <string name="gboard_patches_advanced_voice_payload_unknown_title">
         <translation locale="en">Dictation payload (Unable to verify)</translation>
@@ -1976,23 +1976,23 @@
     </string>
     <string name="gboard_patches_ocr_summary">
         <translation locale="en">Control the backend engine used for text recognition.</translation>
-        <translation locale="zh-Hant">控制文字辨识的后端引擎。</translation>
+        <translation locale="zh-Hant">控制文字识别的后端引擎。</translation>
     </string>
     <string name="gboard_patches_ocr_header_summary">
         <translation locale="en">Official models must be downloaded through Google Play services.</translation>
-        <translation locale="zh-Hant">需要透过 Google Play services 下载官方模型</translation>
+        <translation locale="zh-Hant">需要通过 Google Play services 下载官方模型</translation>
     </string>
     <string name="gboard_patches_ocr_error_title">
         <translation locale="en">OCR settings unavailable</translation>
-        <translation locale="zh-Hant">OCR 设定无法使用</translation>
+        <translation locale="zh-Hant">OCR 设置无法使用</translation>
     </string>
     <string name="gboard_patches_ocr_error_summary">
         <translation locale="en">The OCR settings screen failed to load. Reopen Gboard settings and try again.</translation>
-        <translation locale="zh-Hant">OCR 设定画面载入失败。请重新开启 Gboard 设定再试一次。</translation>
+        <translation locale="zh-Hant">OCR 设置界面加载失败。请重新打开 Gboard 设置再试一次。</translation>
     </string>
     <string name="gboard_patches_ocr_engine_title">
         <translation locale="en">Recognition backend</translation>
-        <translation locale="zh-Hant">文字辨识后端引擎</translation>
+        <translation locale="zh-Hant">文字识别后端引擎</translation>
     </string>
     <string name="gboard_patches_ocr_status_installed">
         <translation locale="en">Installed</translation>
@@ -2044,11 +2044,11 @@
     </string>
     <string name="gboard_patches_flag_patch_error_title">
         <translation locale="en">Patch setting unavailable</translation>
-        <translation locale="zh-Hant">Patch 设定无法使用</translation>
+        <translation locale="zh-Hant">Patch 设置无法使用</translation>
     </string>
     <string name="gboard_patches_flag_patch_error_summary">
         <translation locale="en">The patch setting screen failed to load. Reopen Gboard settings and try again.</translation>
-        <translation locale="zh-Hant">Patch 设定画面载入失败。请重新开启 Gboard 设定再试一次。</translation>
+        <translation locale="zh-Hant">Patch 设置界面加载失败。请重新打开 Gboard 设置再试一次。</translation>
     </string>
     <string name="gboard_patches_flag_patch_section_feature">
         <translation locale="en">Feature</translation>
@@ -2060,19 +2060,19 @@
     </string>
     <string name="gboard_patches_cursor_trackpad_title">
         <translation locale="en">Enable cursor trackpad mode</translation>
-        <translation locale="zh-Hant">启用游标触控板模式</translation>
+        <translation locale="zh-Hant">激活光标触摸板模式</translation>
     </string>
     <string name="gboard_patches_cursor_trackpad_summary">
         <translation locale="en">Long-press the space bar to open a trackpad for moving the cursor freely through your text, with a lock mode for easier control.</translation>
-        <translation locale="zh-Hant">长按空白键即可开启触控板，在文字中自由移动游标，并提供锁定模式以便控制。</translation>
+        <translation locale="zh-Hant">长按空白键即可打开触摸板，在文字中自由移动光标，并提供锁定模式以便控制。</translation>
     </string>
     <string name="gboard_patches_access_points_menu_title">
         <translation locale="en">Access Points menu style</translation>
-        <translation locale="zh-Hant">Access Points 选单样式</translation>
+        <translation locale="zh-Hant">Access Points 菜单样式</translation>
     </string>
     <string name="gboard_patches_access_points_menu_toggle_title">
         <translation locale="en">Enable new Access Points menu style</translation>
-        <translation locale="zh-Hant">启用新版 Access Points 选单样式</translation>
+        <translation locale="zh-Hant">激活新版 Access Points 菜单样式</translation>
     </string>
     <string name="gboard_patches_split_keyboard_title">
         <translation locale="en">Split keyboard</translation>
@@ -2080,7 +2080,7 @@
     </string>
     <string name="gboard_patches_split_keyboard_toggle_title">
         <translation locale="en">Enable split keyboard</translation>
-        <translation locale="zh-Hant">启用分离式键盘</translation>
+        <translation locale="zh-Hant">激活分离式键盘</translation>
     </string>
     <string name="gboard_patches_split_keyboard_auto_title">
         <translation locale="en">Auto split</translation>
@@ -2100,15 +2100,15 @@
     </string>
     <string name="gboard_patches_rounded_keyboard_summary">
         <translation locale="en">Customize which corners of the keyboard panel are rounded, and set the top and bottom radii separately.</translation>
-        <translation locale="zh-Hant">自订键盘面板哪些角落呈现圆角，并分别设定上方与下方半径。</translation>
+        <translation locale="zh-Hant">自订键盘面板哪些角落呈现圆角，并分别设置上方与下方半径。</translation>
     </string>
     <string name="gboard_patches_rounded_keyboard_error_title">
         <translation locale="en">Rounded keyboard settings unavailable</translation>
-        <translation locale="zh-Hant">圆角键盘设定无法使用</translation>
+        <translation locale="zh-Hant">圆角键盘设置无法使用</translation>
     </string>
     <string name="gboard_patches_rounded_keyboard_error_summary">
         <translation locale="en">The rounded keyboard settings screen failed to load. Reopen Gboard settings and try again.</translation>
-        <translation locale="zh-Hant">圆角键盘设定画面载入失败。请重新开启 Gboard 设定再试一次。</translation>
+        <translation locale="zh-Hant">圆角键盘设置界面加载失败。请重新打开 Gboard 设置再试一次。</translation>
     </string>
     <string name="gboard_patches_rounded_keyboard_section">
         <translation locale="en">Appearance</translation>
@@ -2116,7 +2116,7 @@
     </string>
     <string name="gboard_patches_rounded_keyboard_enabled_title">
         <translation locale="en">Enable rounded keyboard panel</translation>
-        <translation locale="zh-Hant">启用圆角键盘面板</translation>
+        <translation locale="zh-Hant">激活圆角键盘面板</translation>
     </string>
     <string name="gboard_patches_rounded_keyboard_enabled_summary">
         <translation locale="en">Force-stop and restart Gboard for changes to take effect.</translation>
@@ -2152,7 +2152,7 @@
     </string>
     <string name="gboard_patches_rounded_keyboard_top_radius_summary">
         <translation locale="en">Set the radius for the upper corners.</translation>
-        <translation locale="zh-Hant">设定上方两个角落的半径。</translation>
+        <translation locale="zh-Hant">设置上方两个角落的半径。</translation>
     </string>
     <string name="gboard_patches_rounded_keyboard_top_radius_dialog_title">
         <translation locale="en">Top radius</translation>
@@ -2164,7 +2164,7 @@
     </string>
     <string name="gboard_patches_rounded_keyboard_bottom_radius_summary">
         <translation locale="en">Set the radius for the lower corners.</translation>
-        <translation locale="zh-Hant">设定下方两个角落的半径。</translation>
+        <translation locale="zh-Hant">设置下方两个角落的半径。</translation>
     </string>
     <string name="gboard_patches_rounded_keyboard_bottom_radius_dialog_title">
         <translation locale="en">Bottom radius</translation>
@@ -2184,7 +2184,7 @@
     </string>
     <string name="gboard_patches_rounded_keyboard_advanced_section">
         <translation locale="en">Advanced</translation>
-        <translation locale="zh-Hant">进阶</translation>
+        <translation locale="zh-Hant">高级</translation>
     </string>
     <string name="gboard_patches_rounded_keyboard_reset_title">
         <translation locale="en">Restore corner radii to 32 dp</translation>
@@ -2204,23 +2204,23 @@
     </string>
     <string name="gboard_patches_cursor_trackpad_preview_mode">
         <translation locale="en">Trackpad mode</translation>
-        <translation locale="zh-Hant">触控板模式</translation>
+        <translation locale="zh-Hant">触摸板模式</translation>
     </string>
     <string name="gboard_patches_cursor_trackpad_preview_setting">
         <translation locale="en">Long press spacebar for Trackpad setting</translation>
-        <translation locale="zh-Hant">长按空白键启用触控板设定</translation>
+        <translation locale="zh-Hant">长按空白键激活触摸板设置</translation>
     </string>
     <string name="gboard_patches_access_points_preview_legacy">
         <translation locale="en">Legacy Access Points menu</translation>
-        <translation locale="zh-Hant">旧版 Access Points 选单</translation>
+        <translation locale="zh-Hant">旧版 Access Points 菜单</translation>
     </string>
     <string name="gboard_patches_access_points_preview_redesigned">
         <translation locale="en">Redesigned Access Points menu</translation>
-        <translation locale="zh-Hant">新版 Access Points 选单</translation>
+        <translation locale="zh-Hant">新版 Access Points 菜单</translation>
     </string>
     <string name="gboard_patches_emoji_size_preview_setting">
         <translation locale="en">Emoji size setting</translation>
-        <translation locale="zh-Hant">表情符号大小设定</translation>
+        <translation locale="zh-Hant">表情符号大小设置</translation>
     </string>
     <string name="gboard_patches_accessibility_preview_keyboard">
         <translation locale="en">Accessibility keyboard layout</translation>
@@ -2228,7 +2228,7 @@
     </string>
     <string name="gboard_patches_accessibility_preview_setting">
         <translation locale="en">Show accessibility layout setting</translation>
-        <translation locale="zh-Hant">显示无障碍键盘配置设定</translation>
+        <translation locale="zh-Hant">显示无障碍键盘配置设置</translation>
     </string>
     <string name="gboard_patches_split_keyboard_preview_layout">
         <translation locale="en">Split keyboard layout</translation>
@@ -2240,7 +2240,7 @@
     </string>
     <string name="gboard_patches_spacebar_logo_summary">
         <translation locale="en">Show an icon instead of the language name on the spacebar</translation>
-        <translation locale="zh-Hant">在空白键显示图示并隐藏语言名称</translation>
+        <translation locale="zh-Hant">在空白键显示图标并隐藏语言名称</translation>
     </string>
     <string name="gboard_patches_spacebar_logo_section_appearance">
         <translation locale="en">Appearance</translation>
@@ -2248,15 +2248,15 @@
     </string>
     <string name="gboard_patches_spacebar_logo_icon_title">
         <translation locale="en">Spacebar icon</translation>
-        <translation locale="zh-Hant">空白键图示</translation>
+        <translation locale="zh-Hant">空白键图标</translation>
     </string>
     <string name="gboard_patches_spacebar_logo_icon_summary">
         <translation locale="en">Choose the icon shown on the spacebar</translation>
-        <translation locale="zh-Hant">选择空白键上显示的图示</translation>
+        <translation locale="zh-Hant">选择空白键上显示的图标</translation>
     </string>
     <string name="gboard_patches_spacebar_logo_icon_dialog_title">
         <translation locale="en">Spacebar icon</translation>
-        <translation locale="zh-Hant">空白键图示</translation>
+        <translation locale="zh-Hant">空白键图标</translation>
     </string>
     <string name="gboard_patches_spacebar_logo_icon_google_g">
         <translation locale="en">Google G</translation>
@@ -2276,7 +2276,7 @@
     </string>
     <string name="gboard_patches_spacebar_logo_color_summary">
         <translation locale="en">Use the original icon color or choose a fixed color</translation>
-        <translation locale="zh-Hant">使用图示原色或选择固定颜色</translation>
+        <translation locale="zh-Hant">使用图标原色或选择固定颜色</translation>
     </string>
     <string name="gboard_patches_spacebar_logo_color_dialog_title">
         <translation locale="en">Logo color</translation>
@@ -2288,7 +2288,7 @@
     </string>
     <string name="gboard_patches_spacebar_logo_color_automatic_summary">
         <translation locale="en">Original icon color</translation>
-        <translation locale="zh-Hant">图示原色</translation>
+        <translation locale="zh-Hant">图标原色</translation>
     </string>
     <string name="gboard_patches_spacebar_logo_color_google_blue">
         <translation locale="en">Google Blue</translation>
@@ -2336,23 +2336,23 @@
     </string>
     <string name="gboard_patches_spacebar_logo_error_title">
         <translation locale="en">Spacebar Logo unavailable</translation>
-        <translation locale="zh-Hant">无法载入空白键 Logo</translation>
+        <translation locale="zh-Hant">无法加载空白键 Logo</translation>
     </string>
     <string name="gboard_patches_spacebar_logo_error_summary">
         <translation locale="en">The feature settings could not be loaded.</translation>
-        <translation locale="zh-Hant">目前无法载入这项功能的设定。</translation>
+        <translation locale="zh-Hant">目前无法加载这项功能的设置。</translation>
     </string>
     <string name="gboard_patches_floating_web_search_title">
         <translation locale="en">Floating Web Search</translation>
-        <translation locale="zh-Hant">悬浮网页搜寻</translation>
+        <translation locale="zh-Hant">悬浮网页搜索</translation>
     </string>
     <string name="gboard_patches_floating_web_search_summary">
         <translation locale="en">Open a browser-owned floating web page from Gboard. The selected browser supplies its cookies, login state, toolbar, and site compatibility.</translation>
-        <translation locale="zh-Hant">从 Gboard 开启由浏览器管理的悬浮网页。Cookie、登入状态、工具列与网站相容性皆由选定的浏览器提供。</translation>
+        <translation locale="zh-Hant">从 Gboard 打开由浏览器管理的悬浮网页。Cookie、登录状态、工具栏与网站兼容性皆由选定的浏览器提供。</translation>
     </string>
     <string name="gboard_patches_floating_web_search_enable_title">
         <translation locale="en">Enable Floating Web Search</translation>
-        <translation locale="zh-Hant">启用悬浮网页搜寻</translation>
+        <translation locale="zh-Hant">激活悬浮网页搜索</translation>
     </string>
     <string name="gboard_patches_floating_web_search_enable_summary">
         <translation locale="en">Force-stop and restart Gboard for changes to take effect.</translation>
@@ -2372,7 +2372,7 @@
     </string>
     <string name="gboard_patches_floating_web_search_start_page_summary">
         <translation locale="en">Choose the HTTPS page opened whenever Web Search starts.</translation>
-        <translation locale="zh-Hant">选择每次启动 Web Search 时开启的 HTTPS 页面。</translation>
+        <translation locale="zh-Hant">选择每次启动 Web Search 时打开的 HTTPS 页面。</translation>
     </string>
     <string name="gboard_patches_floating_web_search_start_page_custom">
         <translation locale="en">Custom HTTPS URL</translation>
@@ -2384,7 +2384,7 @@
     </string>
     <string name="gboard_patches_floating_web_search_custom_url_summary">
         <translation locale="en">The complete HTTPS URL opened by the Web Search button.</translation>
-        <translation locale="zh-Hant">Web Search 按钮将开启的完整 HTTPS 网址。</translation>
+        <translation locale="zh-Hant">Web Search 按钮将打开的完整 HTTPS 网址。</translation>
     </string>
     <string name="gboard_patches_floating_web_search_custom_url_error">
         <translation locale="en">Enter a complete HTTPS URL.</translation>
@@ -2392,11 +2392,11 @@
     </string>
     <string name="gboard_patches_floating_web_search_height_title">
         <translation locale="en">Initial window height</translation>
-        <translation locale="zh-Hant">初始视窗高度</translation>
+        <translation locale="zh-Hant">初始窗口高度</translation>
     </string>
     <string name="gboard_patches_floating_web_search_height_summary" formatted="false">
         <translation locale="en">Choose 50–100%. The default is 100%; supported browsers may still let you resize the tab.</translation>
-        <translation locale="zh-Hant">可选择 50–100%。预设为 100%；支援的浏览器仍可让使用者调整分页大小。</translation>
+        <translation locale="zh-Hant">可选择 50–100%。预设为 100%；支持的浏览器仍可让用户调整分页大小。</translation>
     </string>
     <string name="gboard_patches_floating_web_search_browser_title">
         <translation locale="en">Browser</translation>
@@ -2404,7 +2404,7 @@
     </string>
     <string name="gboard_patches_floating_web_search_browser_summary">
         <translation locale="en">Follow the system default or select an installed browser that supports Custom Tabs. Chrome, Edge, and Brave are recommended.</translation>
-        <translation locale="zh-Hant">跟随系统预设，或选择已安装且支援 Custom Tabs 的浏览器。推荐使用 Chrome、Edge、Brave。</translation>
+        <translation locale="zh-Hant">跟随系统预设，或选择已安装且支持 Custom Tabs 的浏览器。推荐使用 Chrome、Edge、Brave。</translation>
     </string>
     <string name="gboard_patches_floating_web_search_browser_system_default">
         <translation locale="en">System default</translation>
@@ -2412,31 +2412,31 @@
     </string>
     <string name="gboard_patches_floating_web_search_test_title">
         <translation locale="en">Test open</translation>
-        <translation locale="zh-Hant">测试开启</translation>
+        <translation locale="zh-Hant">测试打开</translation>
     </string>
     <string name="gboard_patches_floating_web_search_test_summary">
         <translation locale="en">Open the current page, browser, and height settings now.</translation>
-        <translation locale="zh-Hant">立即使用目前的页面、浏览器与高度设定开启。</translation>
+        <translation locale="zh-Hant">立即使用目前的页面、浏览器与高度设置打开。</translation>
     </string>
     <string name="gboard_patches_floating_web_search_error_title">
         <translation locale="en">Floating Web Search setting unavailable</translation>
-        <translation locale="zh-Hant">悬浮网页搜寻设定无法使用</translation>
+        <translation locale="zh-Hant">悬浮网页搜索设置无法使用</translation>
     </string>
     <string name="gboard_patches_floating_web_search_error_summary">
         <translation locale="en">The Floating Web Search settings screen failed to load. Reopen Gboard settings and try again.</translation>
-        <translation locale="zh-Hant">悬浮网页搜寻设定画面载入失败。请重新开启 Gboard 设定再试一次。</translation>
+        <translation locale="zh-Hant">悬浮网页搜索设置界面加载失败。请重新打开 Gboard 设置再试一次。</translation>
     </string>
     <string name="gboard_patches_lan_ftp_title">
         <translation locale="en">FTP Server</translation>
-        <translation locale="zh-Hant">FTP 伺服器</translation>
+        <translation locale="zh-Hant">FTP 服务器</translation>
     </string>
     <string name="gboard_patches_lan_ftp_summary">
         <translation locale="en">Transfer files with an FTP client on the local network</translation>
-        <translation locale="zh-Hant">使用区域网路内的 FTP 用户端传输档案</translation>
+        <translation locale="zh-Hant">使用局域网络内的 FTP 用户端传输文档</translation>
     </string>
     <string name="gboard_patches_lan_ftp_section_server">
         <translation locale="en">Server</translation>
-        <translation locale="zh-Hant">伺服器</translation>
+        <translation locale="zh-Hant">服务器</translation>
     </string>
     <string name="gboard_patches_lan_ftp_section_account">
         <translation locale="en">Account</translation>
@@ -2448,47 +2448,47 @@
     </string>
     <string name="gboard_patches_lan_ftp_enabled_title">
         <translation locale="en">Enabled</translation>
-        <translation locale="zh-Hant">启用</translation>
+        <translation locale="zh-Hant">激活</translation>
     </string>
     <string name="gboard_patches_lan_ftp_enabled_summary">
         <translation locale="en">Select a root folder before starting the server.</translation>
-        <translation locale="zh-Hant">启动伺服器前必须先选择根目录。</translation>
+        <translation locale="zh-Hant">启动服务器前必须先选择根目录。</translation>
     </string>
     <string name="gboard_patches_lan_ftp_screen_off_title">
         <translation locale="en">Keep connection when screen is off</translation>
-        <translation locale="zh-Hant">关萤幕时保持连线</translation>
+        <translation locale="zh-Hant">关屏幕时保持连接</translation>
     </string>
     <string name="gboard_patches_lan_ftp_screen_off_summary">
         <translation locale="en">If FTP disconnects after the screen turns off, set this app\&apos;s battery policy to No restrictions.</translation>
-        <translation locale="zh-Hant">若关萤幕后 FTP 会断线，请将此应用程式的省电策略设为「无限制」。</translation>
+        <translation locale="zh-Hant">若关屏幕后 FTP 会断线，请将此应用程序的省电策略设为「无限制」。</translation>
     </string>
     <string name="gboard_patches_lan_ftp_battery_settings_unavailable">
         <translation locale="en">Battery optimization settings are unavailable.</translation>
-        <translation locale="zh-Hant">无法开启省电策略设定。</translation>
+        <translation locale="zh-Hant">无法打开省电策略设置。</translation>
     </string>
     <string name="gboard_patches_lan_ftp_port_title">
         <translation locale="en">Control port</translation>
-        <translation locale="zh-Hant">控制连接埠</translation>
+        <translation locale="zh-Hant">控制连接端口</translation>
     </string>
     <string name="gboard_patches_lan_ftp_port_summary">
         <translation locale="en">FTP clients connect to this port.</translation>
-        <translation locale="zh-Hant">FTP 用户端使用此连接埠连线。</translation>
+        <translation locale="zh-Hant">FTP 用户端使用此连接端口连接。</translation>
     </string>
     <string name="gboard_patches_lan_ftp_passive_start_title">
         <translation locale="en">Passive port start</translation>
-        <translation locale="zh-Hant">被动模式起始连接埠</translation>
+        <translation locale="zh-Hant">被动模式起始连接端口</translation>
     </string>
     <string name="gboard_patches_lan_ftp_passive_end_title">
         <translation locale="en">Passive port end</translation>
-        <translation locale="zh-Hant">被动模式结束连接埠</translation>
+        <translation locale="zh-Hant">被动模式结束连接端口</translation>
     </string>
     <string name="gboard_patches_lan_ftp_passive_range_title">
         <translation locale="en">Passive port range</translation>
-        <translation locale="zh-Hant">被动模式连接埠范围</translation>
+        <translation locale="zh-Hant">被动模式连接端口范围</translation>
     </string>
     <string name="gboard_patches_lan_ftp_passive_summary">
         <translation locale="en">Each directory listing or file transfer uses one available data port. The default 10 ports already exceed this server\&apos;s concurrency limits; a larger range does not increase transfer speed.</translation>
-        <translation locale="zh-Hant">每次浏览目录或传输档案都会使用一个可用的资料连接埠。预设 10 个已高于此伺服器的同时连线上限；扩大范围不会提升传输速度。</translation>
+        <translation locale="zh-Hant">每次浏览目录或传输文档都会使用一个可用的数据连接端口。预设 10 个已高于此服务器的同时连在线限；扩大范围不会提升传输速度。</translation>
     </string>
     <string name="gboard_patches_lan_ftp_root_title">
         <translation locale="en">Root folder</translation>
@@ -2496,7 +2496,7 @@
     </string>
     <string name="gboard_patches_lan_ftp_root_summary">
         <translation locale="en">Only this folder and its contents are shared.</translation>
-        <translation locale="zh-Hant">只分享此资料夹及其内容。</translation>
+        <translation locale="zh-Hant">只分享此文档夹及其内容。</translation>
     </string>
     <string name="gboard_patches_lan_ftp_root_unselected">
         <translation locale="en">Not selected</translation>
@@ -2504,43 +2504,43 @@
     </string>
     <string name="gboard_patches_lan_ftp_root_shared">
         <translation locale="en">Shared storage (/sdcard)</translation>
-        <translation locale="zh-Hant">共用储存空间（/sdcard）</translation>
+        <translation locale="zh-Hant">共用保存空间（/sdcard）</translation>
     </string>
     <string name="gboard_patches_lan_ftp_root_choose">
         <translation locale="en">Choose another folder…</translation>
-        <translation locale="zh-Hant">选择其他资料夹…</translation>
+        <translation locale="zh-Hant">选择其他文档夹…</translation>
     </string>
     <string name="gboard_patches_lan_ftp_all_files_title">
         <translation locale="en">All files access</translation>
-        <translation locale="zh-Hant">所有档案存取权</translation>
+        <translation locale="zh-Hant">所有文档访问权</translation>
     </string>
     <string name="gboard_patches_lan_ftp_all_files_granted">
         <translation locale="en">Granted for /sdcard</translation>
-        <translation locale="zh-Hant">已授权存取 /sdcard</translation>
+        <translation locale="zh-Hant">已授权访问 /sdcard</translation>
     </string>
     <string name="gboard_patches_lan_ftp_all_files_required">
         <translation locale="en">Required before the /sdcard server can start</translation>
-        <translation locale="zh-Hant">启动 /sdcard 伺服器前必须授权</translation>
+        <translation locale="zh-Hant">启动 /sdcard 服务器前必须授权</translation>
     </string>
     <string name="gboard_patches_lan_ftp_all_files_required_message">
         <translation locale="en">All files access is required to share /sdcard.</translation>
-        <translation locale="zh-Hant">分享 /sdcard 必须授予所有档案存取权。</translation>
+        <translation locale="zh-Hant">分享 /sdcard 必须授予所有文档访问权。</translation>
     </string>
     <string name="gboard_patches_lan_ftp_all_files_settings_unavailable">
         <translation locale="en">All files access settings are unavailable.</translation>
-        <translation locale="zh-Hant">无法开启所有档案存取权设定。</translation>
+        <translation locale="zh-Hant">无法打开所有文档访问权设置。</translation>
     </string>
     <string name="gboard_patches_lan_ftp_read_only_title">
         <translation locale="en">Read-only access</translation>
-        <translation locale="zh-Hant">唯读存取</translation>
+        <translation locale="zh-Hant">唯读访问</translation>
     </string>
     <string name="gboard_patches_lan_ftp_read_only_summary">
         <translation locale="en">Prevent FTP clients from changing files.</translation>
-        <translation locale="zh-Hant">禁止 FTP 用户端变更档案。</translation>
+        <translation locale="zh-Hant">禁止 FTP 用户端变更文档。</translation>
     </string>
     <string name="gboard_patches_lan_ftp_username_title">
         <translation locale="en">Username</translation>
-        <translation locale="zh-Hant">使用者名称</translation>
+        <translation locale="zh-Hant">用户名称</translation>
     </string>
     <string name="gboard_patches_lan_ftp_password_title">
         <translation locale="en">Password</translation>
@@ -2548,7 +2548,7 @@
     </string>
     <string name="gboard_patches_lan_ftp_password_summary">
         <translation locale="en">Tap to set exactly six lowercase letters.</translation>
-        <translation locale="zh-Hant">点击设定恰好六位英文小写字母。</translation>
+        <translation locale="zh-Hant">点击设置恰好六位英文小写字母。</translation>
     </string>
     <string name="gboard_patches_lan_ftp_password_hint">
         <translation locale="en">Six lowercase letters</translation>
@@ -2560,11 +2560,11 @@
     </string>
     <string name="gboard_patches_lan_ftp_anonymous_title">
         <translation locale="en">Allow anonymous login</translation>
-        <translation locale="zh-Hant">允许匿名登入</translation>
+        <translation locale="zh-Hant">允许匿名登录</translation>
     </string>
     <string name="gboard_patches_lan_ftp_anonymous_summary">
         <translation locale="en">Clients can sign in as anonymous without a password.</translation>
-        <translation locale="zh-Hant">用户端可使用 anonymous 帐号登入，不需要密码。</translation>
+        <translation locale="zh-Hant">用户端可使用 anonymous 帐号登录，不需要密码。</translation>
     </string>
     <string name="gboard_patches_lan_ftp_regenerate_title">
         <translation locale="en">Regenerate password</translation>
@@ -2572,19 +2572,19 @@
     </string>
     <string name="gboard_patches_lan_ftp_regenerate_summary">
         <translation locale="en">Disconnects existing sessions when the server reloads.</translation>
-        <translation locale="zh-Hant">伺服器重新载入时会中断现有连线。</translation>
+        <translation locale="zh-Hant">服务器重新加载时会中断现有连接。</translation>
     </string>
     <string name="gboard_patches_lan_ftp_runtime_title">
         <translation locale="en">Runtime status</translation>
-        <translation locale="zh-Hant">执行状态</translation>
+        <translation locale="zh-Hant">运行状态</translation>
     </string>
     <string name="gboard_patches_lan_ftp_endpoint_title">
         <translation locale="en">Endpoint</translation>
-        <translation locale="zh-Hant">连线位址</translation>
+        <translation locale="zh-Hant">连接地址</translation>
     </string>
     <string name="gboard_patches_lan_ftp_clients_title">
         <translation locale="en">Connected clients</translation>
-        <translation locale="zh-Hant">已连线用户端</translation>
+        <translation locale="zh-Hant">已连接用户端</translation>
     </string>
     <string name="gboard_patches_lan_ftp_disconnect_client_title">
         <translation locale="en">Disconnect client</translation>
@@ -2592,7 +2592,7 @@
     </string>
     <string name="gboard_patches_lan_ftp_client_login_time_label">
         <translation locale="en">Login time</translation>
-        <translation locale="zh-Hant">登入时间</translation>
+        <translation locale="zh-Hant">登录时间</translation>
     </string>
     <string name="gboard_patches_lan_ftp_client_last_activity_label">
         <translation locale="en">Last activity</translation>
@@ -2616,15 +2616,15 @@
     </string>
     <string name="gboard_patches_lan_ftp_copy_connection_title">
         <translation locale="en">Copy connection details</translation>
-        <translation locale="zh-Hant">复制连线资料</translation>
+        <translation locale="zh-Hant">拷贝连接数据</translation>
     </string>
     <string name="gboard_patches_lan_ftp_error_title">
         <translation locale="en">FTP settings unavailable</translation>
-        <translation locale="zh-Hant">无法使用 FTP 设定</translation>
+        <translation locale="zh-Hant">无法使用 FTP 设置</translation>
     </string>
     <string name="gboard_patches_lan_ftp_error_summary">
         <translation locale="en">The server remains stopped because its settings could not be loaded safely.</translation>
-        <translation locale="zh-Hant">无法安全载入设定，因此伺服器维持停止。</translation>
+        <translation locale="zh-Hant">无法安全加载设置，因此服务器维持停止。</translation>
     </string>
     <string name="lan_ftp_tile_label">
         <translation locale="en">FTP Server</translation>
@@ -2636,35 +2636,35 @@
     </string>
     <string name="gboard_patches_backup_restore_summary">
         <translation locale="en">Export or restore all Patches settings</translation>
-        <translation locale="zh-Hant">汇出或还原全部 Patches 设定</translation>
+        <translation locale="zh-Hant">导出或还原全部 Patches 设置</translation>
     </string>
     <string name="gboard_patches_backup_section_patches">
         <translation locale="en">Patches settings</translation>
-        <translation locale="zh-Hant">Patches 设定</translation>
+        <translation locale="zh-Hant">Patches 设置</translation>
     </string>
     <string name="gboard_patches_backup_export_title">
         <translation locale="en">Export Patches settings</translation>
-        <translation locale="zh-Hant">汇出 Patches 设定</translation>
+        <translation locale="zh-Hant">导出 Patches 设置</translation>
     </string>
     <string name="gboard_patches_backup_restore_action_title">
         <translation locale="en">Restore Patches settings</translation>
-        <translation locale="zh-Hant">还原 Patches 设定</translation>
+        <translation locale="zh-Hant">还原 Patches 设置</translation>
     </string>
     <string name="gboard_patches_backup_export_done">
         <translation locale="en">Patches backup exported.</translation>
-        <translation locale="zh-Hant">已汇出 Patches 备份。</translation>
+        <translation locale="zh-Hant">已导出 Patches 备份。</translation>
     </string>
     <string name="gboard_patches_backup_export_failed">
         <translation locale="en">Unable to export Patches settings.</translation>
-        <translation locale="zh-Hant">无法汇出 Patches 设定。</translation>
+        <translation locale="zh-Hant">无法导出 Patches 设置。</translation>
     </string>
     <string name="gboard_patches_backup_restore_done">
         <translation locale="en">Patches settings restored. Restart Gboard to apply every change.</translation>
-        <translation locale="zh-Hant">已还原 Patches 设定。请重新启动 Gboard 以套用全部变更。</translation>
+        <translation locale="zh-Hant">已还原 Patches 设置。请重新启动 Gboard 以套用全部变更。</translation>
     </string>
     <string name="gboard_patches_backup_restore_done_mirror_pending">
         <translation locale="en">Patches settings restored locally. Restart Gboard to rebuild unavailable remote settings.</translation>
-        <translation locale="zh-Hant">已还原本机 Patches 设定。请重新启动 Gboard，以重建目前无法使用的远端设定。</translation>
+        <translation locale="zh-Hant">已还原本机 Patches 设置。请重新启动 Gboard，以重建目前无法使用的远程设置。</translation>
     </string>
     <string name="gboard_patches_backup_restore_failed">
         <translation locale="en">The selected backup is invalid or could not be processed.</translation>
@@ -2672,7 +2672,7 @@
     </string>
     <string name="gboard_patches_backup_section_flags">
         <translation locale="en">Gboard flag storage</translation>
-        <translation locale="zh-Hant">Gboard Flag 储存空间</translation>
+        <translation locale="zh-Hant">Gboard Flag 保存空间</translation>
     </string>
     <string name="gboard_patches_backup_flag_backend_title">
         <translation locale="en">Current flag backend</translation>
@@ -2696,11 +2696,11 @@
     </string>
     <string name="gboard_patches_backup_flag_backend_not_created">
         <translation locale="en">No persisted flag store exists yet; the backend cannot be determined from disk</translation>
-        <translation locale="zh-Hant">目前尚未建立持久化 flag store，无法只从磁碟判定 backend</translation>
+        <translation locale="zh-Hant">目前尚未创建持久化 flag store，无法只从磁盘判定 backend</translation>
     </string>
     <string name="gboard_patches_backup_flag_backend_unavailable">
         <translation locale="en">Gboard is not ready for a storage query</translation>
-        <translation locale="zh-Hant">Gboard 尚未准备好接受储存空间查询</translation>
+        <translation locale="zh-Hant">Gboard 尚未准备好接受保存空间查找</translation>
     </string>
     <string name="gboard_patches_backup_flag_backend_proto_last_modified">
         <translation locale="en">PB last modified: %1$s</translation>
@@ -2720,7 +2720,7 @@
     </string>
     <string name="gboard_patches_backup_restore_modules_title">
         <translation locale="en">Choose modules to restore</translation>
-        <translation locale="zh-Hant">选择要还原的模组</translation>
+        <translation locale="zh-Hant">选择要还原的模块</translation>
     </string>
     <string name="gboard_patches_backup_restore_modules_action">
         <translation locale="en">Review differences</translation>
@@ -2736,7 +2736,7 @@
     </string>
     <string name="gboard_patches_backup_restore_preview_summary">
         <translation locale="en">Added %1$d · Changed %2$d · Removed %3$d · Unchanged %4$d</translation>
-        <translation locale="zh-Hant">新增 %1$d · 变更 %2$d · 移除 %3$d · 不变 %4$d</translation>
+        <translation locale="zh-Hant">添加 %1$d · 变更 %2$d · 移除 %3$d · 不变 %4$d</translation>
     </string>
     <string name="gboard_patches_backup_restore_preview_module_summary">
         <translation locale="en">%1$d changes</translation>
@@ -2748,11 +2748,11 @@
     </string>
     <string name="gboard_patches_backup_restore_preview_action">
         <translation locale="en">Restore selected modules</translation>
-        <translation locale="zh-Hant">还原已选模组</translation>
+        <translation locale="zh-Hant">还原已选模块</translation>
     </string>
     <string name="gboard_patches_backup_restore_preview_added">
         <translation locale="en">Added</translation>
-        <translation locale="zh-Hant">新增</translation>
+        <translation locale="zh-Hant">添加</translation>
     </string>
     <string name="gboard_patches_backup_restore_preview_changed">
         <translation locale="en">Changed</translation>
@@ -2788,39 +2788,39 @@
     </string>
     <string name="gboard_patches_backup_restore_result_success">
         <translation locale="en">Restored %1$d modules and verified %2$d backup keys. Restart Gboard to apply every change.</translation>
-        <translation locale="zh-Hant">已还原 %1$d 个模组，并验证 %2$d 个备份 key。请重新启动 Gboard 以套用全部变更。</translation>
+        <translation locale="zh-Hant">已还原 %1$d 个模块，并验证 %2$d 个备份 key。请重新启动 Gboard 以套用全部变更。</translation>
     </string>
     <string name="gboard_patches_backup_restore_result_mirror_pending">
         <translation locale="en">Restored %1$d modules and verified %2$d backup keys. Some live mirrors are unavailable; restart Gboard to rebuild them.</translation>
-        <translation locale="zh-Hant">已还原 %1$d 个模组，并验证 %2$d 个备份 key。部分即时镜像目前不可用；请重新启动 Gboard 重建。</translation>
+        <translation locale="zh-Hant">已还原 %1$d 个模块，并验证 %2$d 个备份 key。部分实时镜像目前不可用；请重新启动 Gboard 重建。</translation>
     </string>
     <string name="gboard_patches_backup_restore_result_partial">
         <translation locale="en">Restored %1$d modules and %2$d keys; %3$d modules failed. Successful modules were kept.</translation>
-        <translation locale="zh-Hant">已还原 %1$d 个模组与 %2$d 个 key；%3$d 个模组失败。成功模组的变更已保留。</translation>
+        <translation locale="zh-Hant">已还原 %1$d 个模块与 %2$d 个 key；%3$d 个模块失败。成功模块的变更已保留。</translation>
     </string>
     <string name="gboard_patches_backup_restore_result_failed">
         <translation locale="en">No selected module was restored. Review each module below.</translation>
-        <translation locale="zh-Hant">没有任何已选模组完成还原，请查看下方各模组结果。</translation>
+        <translation locale="zh-Hant">没有任何已选模块完成还原，请查看下方各模块结果。</translation>
     </string>
     <string name="gboard_patches_backup_restore_result_no_keys">
         <translation locale="en">No stored keys in this module</translation>
-        <translation locale="zh-Hant">这个模组没有已储存的 key</translation>
+        <translation locale="zh-Hant">这个模块没有已保存的 key</translation>
     </string>
     <string name="gboard_patches_backup_status_success">
         <translation locale="en">Module restored and verified</translation>
-        <translation locale="zh-Hant">模组已还原并通过验证</translation>
+        <translation locale="zh-Hant">模块已还原并通过验证</translation>
     </string>
     <string name="gboard_patches_backup_status_partial">
         <translation locale="en">Module was partially restored</translation>
-        <translation locale="zh-Hant">模组仅部分还原</translation>
+        <translation locale="zh-Hant">模块仅部分还原</translation>
     </string>
     <string name="gboard_patches_backup_status_failed">
         <translation locale="en">Module restore failed</translation>
-        <translation locale="zh-Hant">模组还原失败</translation>
+        <translation locale="zh-Hant">模块还原失败</translation>
     </string>
     <string name="gboard_patches_backup_status_previous_values_restored">
         <translation locale="en">Restore failed; previous values were restored</translation>
-        <translation locale="zh-Hant">还原失败；已恢复先前设定</translation>
+        <translation locale="zh-Hant">还原失败；已恢复先前设置</translation>
     </string>
     <string name="gboard_patches_backup_key_restored">
         <translation locale="en">Matched backup value after write</translation>
@@ -2844,19 +2844,19 @@
     </string>
     <string name="gboard_flag_store_replacement_export_section">
         <translation locale="en">Raw flag-store export</translation>
-        <translation locale="zh-Hant">原始 flag store 汇出</translation>
+        <translation locale="zh-Hant">原始 flag store 导出</translation>
     </string>
     <string name="gboard_flag_store_replacement_export_file">
         <translation locale="en">Export %1$s</translation>
-        <translation locale="zh-Hant">汇出 %1$s</translation>
+        <translation locale="zh-Hant">导出 %1$s</translation>
     </string>
     <string name="gboard_flag_store_replacement_export_done">
         <translation locale="en">Raw flag-store file exported.</translation>
-        <translation locale="zh-Hant">已汇出原始 flag store 档案。</translation>
+        <translation locale="zh-Hant">已导出原始 flag store 文档。</translation>
     </string>
     <string name="gboard_flag_store_replacement_export_failed">
         <translation locale="en">Unable to export this flag-store file.</translation>
-        <translation locale="zh-Hant">无法汇出这个 flag store 档案。</translation>
+        <translation locale="zh-Hant">无法导出这个 flag store 文档。</translation>
     </string>
     <string name="gboard_flag_store_replacement_import_section">
         <translation locale="en">Choose restore file</translation>
@@ -2864,15 +2864,15 @@
     </string>
     <string name="gboard_flag_store_replacement_choose_title">
         <translation locale="en">Choose PB or XML file</translation>
-        <translation locale="zh-Hant">选择 PB 或 XML 档案</translation>
+        <translation locale="zh-Hant">选择 PB 或 XML 文档</translation>
     </string>
     <string name="gboard_flag_store_replacement_invalid_name">
         <translation locale="en">The selected file does not have a supported canonical Gboard flag-store name.</translation>
-        <translation locale="zh-Hant">所选档案不是支援的 Gboard flag store 标准档名。</translation>
+        <translation locale="zh-Hant">所选文档不是支持的 Gboard flag store 标准文件名。</translation>
     </string>
     <string name="gboard_flag_store_replacement_stage_failed">
         <translation locale="en">The replacement file was rejected or could not be prepared.</translation>
-        <translation locale="zh-Hant">覆盖档案遭拒绝或无法准备套用。</translation>
+        <translation locale="zh-Hant">覆盖文档遭拒绝或无法准备套用。</translation>
     </string>
     <string name="gboard_flag_store_replacement_apply_title">
         <translation locale="en">Apply and restart Gboard</translation>
@@ -2888,7 +2888,7 @@
     </string>
     <string name="gboard_flag_store_diff_summary">
         <translation locale="en">Current values: %1$d · Replacement values: %2$d · Changed: %3$d · Added: %4$d · Removed: %5$d</translation>
-        <translation locale="zh-Hant">目前值：%1$d · 覆盖档值：%2$d · 变更：%3$d · 新增：%4$d · 移除：%5$d</translation>
+        <translation locale="zh-Hant">目前值：%1$d · 覆盖档值：%2$d · 变更：%3$d · 添加：%4$d · 移除：%5$d</translation>
     </string>
     <string name="gboard_flag_store_diff_changed">
         <translation locale="en">Changed values</translation>
@@ -2896,7 +2896,7 @@
     </string>
     <string name="gboard_flag_store_diff_added">
         <translation locale="en">Added values</translation>
-        <translation locale="zh-Hant">新增的值</translation>
+        <translation locale="zh-Hant">添加的值</translation>
     </string>
     <string name="gboard_flag_store_diff_removed">
         <translation locale="en">Removed values</translation>
@@ -2908,7 +2908,7 @@
     </string>
     <string name="gboard_flag_store_diff_identical">
         <translation locale="en">The replacement contains the same typed values as the current file.</translation>
-        <translation locale="zh-Hant">覆盖档与目前档案包含相同的 typed value。</translation>
+        <translation locale="zh-Hant">覆盖档与目前文档包含相同的 typed value。</translation>
     </string>
     <string name="gboard_flag_store_diff_value_changed">
         <translation locale="en">%1$s → %2$s</translation>
@@ -2940,11 +2940,11 @@
     </string>
     <string name="gboard_patches_calculator_enable_title">
         <translation locale="en">Enable Simple Calculator</translation>
-        <translation locale="zh-Hant">启用简易计算机</translation>
+        <translation locale="zh-Hant">激活简易计算机</translation>
     </string>
     <string name="gboard_patches_calculator_enable_summary">
         <translation locale="en">Shows results for complete arithmetic expressions the next time the keyboard opens.</translation>
-        <translation locale="zh-Hant">下一次开启键盘时，为完整四则算式显示答案推荐。</translation>
+        <translation locale="zh-Hant">下一次打开键盘时，为完整四则算式显示答案推荐。</translation>
     </string>
     <string name="gboard_patches_calculator_section_feature">
         <translation locale="en">Feature</translation>
@@ -2960,23 +2960,23 @@
     </string>
     <string name="gboard_patches_calculator_usage_summary">
         <translation locale="en">Type a complete expression such as 2+3×4 in the current app. Tap the result above the keyboard to replace the expression with 14, or long-press the result to copy it.</translation>
-        <translation locale="zh-Hant">在目前 App 输入完整算式，例如 2+3×4。点选键盘上方的 14 会以答案取代算式；长按答案则可直接复制。</translation>
+        <translation locale="zh-Hant">在目前 App 输入完整算式，例如 2+3×4。点击键盘上方的 14 会以答案取代算式；长按答案则可直接拷贝。</translation>
     </string>
     <string name="gboard_patches_calculator_limits_title">
         <translation locale="en">Supported range and limits</translation>
-        <translation locale="zh-Hant">支援范围与限制</translation>
+        <translation locale="zh-Hant">支持范围与限制</translation>
     </string>
     <string name="gboard_patches_calculator_limits_summary">
         <translation locale="en">Expression length: Up to 128 characters; rejected before normalization.\nBinary operations: Up to 63.\nParentheses depth: Up to 16 levels.\nInternal precision: 16 significant digits, HALF_EVEN.\nDisplay precision: Up to 3 decimal places, HALF_UP.\nLarge numbers: Scientific notation from 10¹².\nOperators: + - * / − × ÷\nParentheses: Supports () and full-width （） from Traditional Chinese Gboard.</translation>
-        <translation locale="zh-Hant">算式长度：最多 128 字元，正规化前即拒绝\n二元运算：最多 63 次\n括号深度：最多 16 层\n内部精度：16 位有效数字，HALF_EVEN\n显示精度：最多小数 3 位，HALF_UP\n大数显示：达 10¹² 改用科学记号\n运算符号：+ - * / − × ÷\n括号：支援 () 与繁中 Gboard 实际输出的 （）</translation>
+        <translation locale="zh-Hant">算式长度：最多 128 字符，范式前即拒绝\n二元运算：最多 63 次\n括号深度：最多 16 层\n内部精度：16 位有效数字，HALF_EVEN\n显示精度：最多小数 3 位，HALF_UP\n大数显示：达 10¹² 改用科学记号\n运算符号：+ - * / − × ÷\n括号：支持 () 与繁中 Gboard 实际输出的 （）</translation>
     </string>
     <string name="gboard_patches_calculator_error_title">
         <translation locale="en">Calculator setting unavailable</translation>
-        <translation locale="zh-Hant">计算机设定无法使用</translation>
+        <translation locale="zh-Hant">计算机设置无法使用</translation>
     </string>
     <string name="gboard_patches_calculator_error_summary">
         <translation locale="en">The calculator settings screen failed to load. Reopen Gboard settings and try again.</translation>
-        <translation locale="zh-Hant">计算机设定画面载入失败。请重新开启 Gboard 设定再试一次。</translation>
+        <translation locale="zh-Hant">计算机设置界面加载失败。请重新打开 Gboard 设置再试一次。</translation>
     </string>
     <string name="gboard_patches_custom_theme_title">
         <translation locale="en">Custom themes</translation>
@@ -2984,7 +2984,7 @@
     </string>
     <string name="gboard_patches_custom_theme_summary">
         <translation locale="en">Import custom ZIP themes or choose beautiful themes from Rboard.</translation>
-        <translation locale="zh-Hant">汇入自订 ZIP 主题，或从 Rboard 挑选精美主题。</translation>
+        <translation locale="zh-Hant">导入自订 ZIP 主题，或从 Rboard 挑选精美主题。</translation>
     </string>
     <string name="gboard_patches_custom_theme_activity_title">
         <translation locale="en">Custom themes</translation>
@@ -2996,11 +2996,11 @@
     </string>
     <string name="gboard_patches_custom_theme_enabled_title">
         <translation locale="en">Enable custom themes</translation>
-        <translation locale="zh-Hant">启用自订主题</translation>
+        <translation locale="zh-Hant">激活自订主题</translation>
     </string>
     <string name="gboard_patches_custom_theme_enabled_summary">
         <translation locale="en">Enable the custom theme gallery and ZIP theme support.</translation>
-        <translation locale="zh-Hant">启用自订主题图库与 ZIP 主题支援。</translation>
+        <translation locale="zh-Hant">激活自订主题图库与 ZIP 主题支持。</translation>
     </string>
     <string name="gboard_patches_custom_theme_browse_title">
         <translation locale="en">Browse Rboard themes</translation>
@@ -3008,7 +3008,7 @@
     </string>
     <string name="gboard_patches_custom_theme_browse_summary">
         <translation locale="en">Themes come from Rboard’s official GitHub repository (PackRepoBeta). The Rboard project is archived; thanks to its author for eight years of work.</translation>
-        <translation locale="zh-Hant">主题来自 Rboard 官方 GitHub 仓库（PackRepoBeta）。Rboard 专案已封存，感谢作者八年的维护。</translation>
+        <translation locale="zh-Hant">主题来自 Rboard 官方 GitHub 仓库（PackRepoBeta）。Rboard 项目已封存，感谢作者八年的维护。</translation>
     </string>
     <string name="gboard_patches_custom_theme_clear_cache">
         <translation locale="en">Clear downloaded packs</translation>
@@ -3032,7 +3032,7 @@
     </string>
     <string name="gboard_patches_custom_theme_deleted">
         <translation locale="en">Deleted %1$d downloaded pack files.</translation>
-        <translation locale="zh-Hant">已删除 %1$d 个下载的主题包档案。</translation>
+        <translation locale="zh-Hant">已删除 %1$d 个下载的主题包文档。</translation>
     </string>
     <string name="gboard_patches_custom_theme_no_downloads">
         <translation locale="en">No downloaded packs.</translation>
@@ -3072,11 +3072,11 @@
     </string>
     <string name="gboard_patches_custom_theme_cache_cleared">
         <translation locale="en">Cleared %1$d cached files</translation>
-        <translation locale="zh-Hant">已清除 %1$d 个快取档案</translation>
+        <translation locale="zh-Hant">已清除 %1$d 个缓存文档</translation>
     </string>
     <string name="gboard_patches_custom_theme_catalog_failed">
         <translation locale="en">The Custom Theme catalog could not be loaded.</translation>
-        <translation locale="zh-Hant">无法载入自订主题目录。</translation>
+        <translation locale="zh-Hant">无法加载自订主题目录。</translation>
     </string>
     <string name="gboard_patches_custom_theme_pack_cached">
         <translation locale="en">%1$s · %2$d themes · downloaded</translation>
@@ -3084,7 +3084,7 @@
     </string>
     <string name="gboard_patches_custom_theme_pack_download">
         <translation locale="en">%1$s · %2$d themes · download on selection</translation>
-        <translation locale="zh-Hant">%1$s · %2$d 个主题 · 点选时下载</translation>
+        <translation locale="zh-Hant">%1$s · %2$d 个主题 · 点击时下载</translation>
     </string>
     <string name="gboard_patches_custom_theme_applying">
         <translation locale="en">Applying %1$s…</translation>
@@ -3108,27 +3108,27 @@
     </string>
     <string name="gboard_patches_custom_theme_source_photo">
         <translation locale="en">Create from photo</translation>
-        <translation locale="zh-Hant">从相片建立</translation>
+        <translation locale="zh-Hant">从相片创建</translation>
     </string>
     <string name="gboard_patches_custom_theme_source_zip">
         <translation locale="en">Import theme (.zip)</translation>
-        <translation locale="zh-Hant">汇入主题（.zip）</translation>
+        <translation locale="zh-Hant">导入主题（.zip）</translation>
     </string>
     <string name="gboard_patches_custom_theme_choose_import">
         <translation locale="en">Choose a theme to import</translation>
-        <translation locale="zh-Hant">选择要汇入的主题</translation>
+        <translation locale="zh-Hant">选择要导入的主题</translation>
     </string>
     <string name="gboard_patches_custom_theme_imported">
         <translation locale="en">Theme imported</translation>
-        <translation locale="zh-Hant">主题已汇入</translation>
+        <translation locale="zh-Hant">主题已导入</translation>
     </string>
     <string name="gboard_patches_custom_theme_import_failed">
         <translation locale="en">Theme import failed</translation>
-        <translation locale="zh-Hant">主题汇入失败</translation>
+        <translation locale="zh-Hant">主题导入失败</translation>
     </string>
     <string name="gboard_edit_ap_title">
         <translation locale="en">Toolbar editing buttons</translation>
-        <translation locale="zh-Hant">工具列编辑按钮</translation>
+        <translation locale="zh-Hant">工具栏编辑按钮</translation>
     </string>
     <string name="gboard_edit_ap_section_feature">
         <translation locale="en">Feature</translation>
@@ -3136,7 +3136,7 @@
     </string>
     <string name="gboard_edit_ap_summary">
         <translation locale="en">Add Select All, Copy, Cut and Paste to the menu.</translation>
-        <translation locale="zh-Hant">将全选、复制、剪下与贴上加入选单。</translation>
+        <translation locale="zh-Hant">将全选、拷贝、剪切与粘贴加入菜单。</translation>
     </string>
     <string name="gboard_edit_ap_restart">
         <translation locale="en">Changes take effect after you force stop and restart Gboard.</translation>
@@ -3148,18 +3148,18 @@
     </string>
     <string name="gboard_edit_ap_copy">
         <translation locale="en">Copy</translation>
-        <translation locale="zh-Hant">复制</translation>
+        <translation locale="zh-Hant">拷贝</translation>
     </string>
     <string name="gboard_edit_ap_cut">
         <translation locale="en">Cut</translation>
-        <translation locale="zh-Hant">剪下</translation>
+        <translation locale="zh-Hant">剪切</translation>
     </string>
     <string name="gboard_edit_ap_paste">
         <translation locale="en">Paste</translation>
-        <translation locale="zh-Hant">贴上</translation>
+        <translation locale="zh-Hant">粘贴</translation>
     </string>
     <string name="gboard_edit_ap_error">
         <translation locale="en">Editing buttons settings unavailable. Reopen settings and try again.</translation>
-        <translation locale="zh-Hant">编辑按钮设定无法载入，请重新开启设定再试一次。</translation>
+        <translation locale="zh-Hant">编辑按钮设置无法加载，请重新打开设置再试一次。</translation>
     </string>
 </settings-text>
