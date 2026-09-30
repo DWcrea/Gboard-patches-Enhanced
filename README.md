@@ -48,10 +48,23 @@
    3。 → 3.
    ```
 
+4. **快捷文本 / Text Expansion（测试版）**  
+   可以设置“快捷码 → 展开文本”，用于快速输入电话号码、邮箱、地址、URL 或常用句子。输入快捷码后按空格、回车或常用标点即可展开。
+
+   ```text
+   sjh=13800138000
+   yx=name@example.com
+   dz=辽宁省大连市……
+   ```
+
+   设置位置：`Gboard Patches → 键盘工具与快捷操作 → 快捷文本 / Text Expansion`。  
+   支持 JSON 导入/导出、最多 200 条规则、大小写不敏感匹配，并且会在密码输入框中自动停用。
+
 详细实现与调试历史可查看：
 
 - [V8 功能说明](docs/BACKSPACE_SWIPE_UP_CLEAR.md)
 - [V2–V7 调试历史](docs/backspace-swipe-history/)
+- [快捷文本说明](docs/TEXT_EXPANSION.md)
 - [自定义更新记录](CUSTOM_CHANGELOG.md)
 
 ---
@@ -60,7 +73,7 @@
 
 | 项目 | 当前值 | 说明 |
 | --- | --- | --- |
-| **Gboard Patches Enhanced** | `3.11.0-enhanced.1` | 当前增强版补丁版本 |
+| **Gboard Patches Enhanced** | `3.11.0-enhanced.2-dev.1` | 快捷文本功能测试版 |
 | **Gboard** | `18.0.3.954559732-release-arm64-v8a` | 当前明确支持的目标版本 |
 | **Gboard target profile** | `18.0.3` | 版本绑定配置中的目标版本 |
 | **架构 / ABI** | `arm64-v8a` | 当前目标 APK 架构 |
@@ -135,7 +148,7 @@ Import custom ZIP themes and beautiful themes from the official Rboard repositor
 <details>
   <summary><code>Long-Press Editing Shortcuts</code></summary>
 
-  Add Select all, Undo, Copy, Cut, Paste, and Redo long-press shortcuts to English QWERTY and Zhuyin. This enhanced fork also supports swiping up from Backspace to delete everything before the cursor while preserving text after it, including a numeric/phone keypad fallback.
+  Add Select all, Undo, Copy, Cut, Paste, and Redo long-press shortcuts to English QWERTY and Zhuyin. This enhanced fork also supports swiping up from Backspace to delete everything before the cursor while preserving text after it, including a numeric/phone keypad fallback. The same verified Gboard 18.0.3 input-event hook is also reused by the optional Text Expansion settings feature.
 </details>
 
 <details>

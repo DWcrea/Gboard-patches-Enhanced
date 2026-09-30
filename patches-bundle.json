@@ -1,7 +1,7 @@
 {
     "created_at": "2026-09-30T12:24:00+08:00",
-    "description": "### ✨ Enhanced Features\n\n* **Backspace swipe-up:** delete all text before the cursor while preserving text after it.\n* **Numeric keypad:** support the same Backspace swipe-up behavior on numeric/phone layouts.\n* **Chinese swipe-down digits:** normalize the immediately following full-width `：` / `。` to half-width `:` / `.`.\n\n### ✨ 增强功能\n\n* **删除键上滑：** 删除光标前的全部文本，同时保留光标后的内容。\n* **数字键盘：** 在数字/电话键盘布局中同样支持删除键上滑操作。\n* **中文下滑数字：** 下滑输入数字后，紧接着输入的全角 `：` / `。` 自动转换为半角 `:` / `.`。",
-    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.1/patches-3.11.0-enhanced.1.mpp",
+    "description": "### 🧪 Enhanced Features / 增强功能（测试版）\n\n* **Text Expansion / 快捷文本：** configure shortcuts such as `sjh=13800138000`; type the shortcut and press Space, Enter or common punctuation to expand it.\n* **JSON import/export：** back up or share Text Expansion mappings using `gboard-text-expansion.v1`.\n* **Password safety：** Text Expansion is automatically disabled in password fields.\n* **Backspace swipe-up：** delete all text before the cursor while preserving text after it.\n* **Numeric keypad：** support the same Backspace swipe-up behavior on numeric/phone layouts.\n* **中文下滑数字：** 下滑输入数字后，紧接着输入的全角 `：` / `。` 自动转换为半角 `:` / `.`.\n\n> This is a development prerelease intended for real-device testing of Text Expansion.",
+    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.1/patches-3.11.0-enhanced.2-dev.1.mpp",
     "signature_download_url": "",
-    "version": "3.11.0-enhanced.1"
+    "version": "3.11.0-enhanced.2-dev.1"
 }
