@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 
+import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,11 @@ public final class GboardTextExpansionRuntime {
             Collections.synchronizedMap(new WeakHashMap<>());
     private static final Map<Object, Boolean> CAPTURED_POINTERS =
             Collections.synchronizedMap(new WeakHashMap<>());
+
+    private static WeakReference<InputMethodService> candidateService =
+            new WeakReference<>(null);
+    private static WeakReference<GboardTextExpansionCandidateView.Handle> candidateHandle =
+            new WeakReference<>(null);
 
     private GboardTextExpansionRuntime() {
     }
@@ -66,6 +72,7 @@ public final class GboardTextExpansionRuntime {
                     GboardTextExpansionRuntimeSettings.snapshot();
             if (!settings.enabled || settings.entries.isEmpty() || isSensitiveEditor(service)) {
                 clearRawSession(service);
+                hideCandidate(service);
                 return;
             }
 
@@ -95,11 +102,13 @@ public final class GboardTextExpansionRuntime {
             }
             if (raw != null) {
                 appendRawInput(service, raw);
+                scheduleCandidateRefresh(service, softKeyView);
                 return;
             }
 
             if (isDeleteKeyView(softKeyView)) {
                 removeLastRawCharacter(service);
+                scheduleCandidateRefresh(service, softKeyView);
             }
         } catch (Throwable ignored) {
             // 原始按键观察失败时直接回退到普通 Gboard 行为，不能影响键盘主流程。
@@ -128,6 +137,7 @@ public final class GboardTextExpansionRuntime {
                 GboardTextExpansionRuntimeSettings.snapshot();
         if (!settings.enabled || settings.entries.isEmpty() || isSensitiveEditor(service)) {
             clearRawSession(service);
+            hideCandidate(service);
             return false;
         }
 
@@ -136,6 +146,7 @@ public final class GboardTextExpansionRuntime {
             InputConnection connection = service.getCurrentInputConnection();
             if (connection == null) {
                 clearRawSession(service);
+                hideCandidate(service);
                 return false;
             }
 
@@ -163,6 +174,7 @@ public final class GboardTextExpansionRuntime {
             }
 
             clearRawSession(service);
+            hideCandidate(service);
             return handled;
         }
 
@@ -357,6 +369,109 @@ public final class GboardTextExpansionRuntime {
     private static void clearRawSession(InputMethodService service) {
         synchronized (RAW_SESSIONS) {
             RAW_SESSIONS.remove(service);
+        }
+    }
+
+    private static void scheduleCandidateRefresh(
+            InputMethodService service,
+            View anchor) {
+        if (service == null || anchor == null) {
+            hideCandidate(service);
+            return;
+        }
+        try {
+            anchor.post(() -> refreshCandidate(service, anchor));
+        } catch (Throwable ignored) {
+            hideCandidate(service);
+        }
+    }
+
+    private static void refreshCandidate(
+            InputMethodService service,
+            View anchor) {
+        try {
+            if (service == null || anchor == null || !anchor.isAttachedToWindow()
+                    || isSensitiveEditor(service)) {
+                hideCandidate(service);
+                return;
+            }
+
+            GboardTextExpansionRuntimeSettings.Snapshot settings =
+                    GboardTextExpansionRuntimeSettings.snapshot();
+            if (!settings.enabled || settings.entries.isEmpty()) {
+                hideCandidate(service);
+                return;
+            }
+
+            GboardTextExpansionSettings.Entry entry =
+                    findMatchingEntryForRawToken(rawToken(service), settings.entries);
+            if (entry == null || entry.text == null || entry.text.isEmpty()) {
+                hideCandidate(service);
+                return;
+            }
+
+            GboardTextExpansionCandidateView.Placement placement =
+                    GboardTextExpansionCandidateView.resolvePlacement(anchor);
+            if (placement == null) {
+                hideCandidate(service);
+                return;
+            }
+
+            InputMethodService shownService = candidateService.get();
+            GboardTextExpansionCandidateView.Handle shownHandle = candidateHandle.get();
+            if (shownService == service && shownHandle != null
+                    && shownHandle.matches(placement, entry.text)) {
+                return;
+            }
+
+            hideCandidate(service);
+            GboardTextExpansionCandidateView.Handle handle =
+                    GboardTextExpansionCandidateView.show(
+                            placement,
+                            entry.text,
+                            () -> acceptCandidate(service, entry));
+            if (handle != null) {
+                candidateService = new WeakReference<>(service);
+                candidateHandle = new WeakReference<>(handle);
+            }
+        } catch (Throwable ignored) {
+            hideCandidate(service);
+        }
+    }
+
+    private static void acceptCandidate(
+            InputMethodService service,
+            GboardTextExpansionSettings.Entry entry) {
+        try {
+            if (service == null || entry == null || isSensitiveEditor(service)) {
+                hideCandidate(service);
+                return;
+            }
+            InputConnection connection = service.getCurrentInputConnection();
+            if (connection != null && replaceFromRawToken(connection, entry, "")) {
+                clearRawSession(service);
+            }
+        } catch (Throwable ignored) {
+            // Candidate acceptance is best-effort and must never affect stock typing.
+        } finally {
+            hideCandidate(service);
+        }
+    }
+
+    private static void hideCandidate(InputMethodService service) {
+        try {
+            InputMethodService shownService = candidateService.get();
+            if (service != null && shownService != null && shownService != service) {
+                return;
+            }
+            GboardTextExpansionCandidateView.Handle handle = candidateHandle.get();
+            candidateService.clear();
+            candidateHandle.clear();
+            if (handle != null) {
+                handle.close();
+            }
+        } catch (Throwable ignored) {
+            // Candidate preview is optional UI.
         }
     }
 
