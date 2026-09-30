@@ -35,18 +35,16 @@ public final class GboardTextExpansionSettingsFeature
 
     @Override
     public String getEntryTitle() {
-        return "快捷文本 / Text Expansion";
+        return "快捷文本";
     }
 
     @Override
     public String getEntrySummary() {
-        return "用短码快速输入电话、邮箱、地址或常用句子。";
+        return "用快捷码快速输入电话号码、邮箱、地址、网址或常用句子。";
     }
 
     @Override
     public boolean isAvailable(Context context) {
-        // V1 reuses the already verified Gboard 18.0.3 input-event hook that ships with
-        // Long-Press Editing Shortcuts. The two features keep separate settings/behavior.
         return GboardPatchesFeatureAvailability.hasFeature(
                 context,
                 GboardPatchesFeatureAvailability.FEATURE_LONG_PRESS_QUICK_ACTIONS);
@@ -69,13 +67,13 @@ public final class GboardTextExpansionSettingsFeature
 
             List<GboardPatchesSettingsContract.Row> behavior = new ArrayList<>();
             behavior.add(new GboardPatchesSettingsContract.ToggleRow(
-                    "启用快捷文本 / Enable",
+                    "启用快捷文本",
                     "输入快捷码后按空格、回车或常用标点即可展开。密码输入框会自动禁用。",
                     true,
                     enabled,
                     value -> GboardTextExpansionSettings.writeEnabled(context, value)));
             behavior.add(new GboardPatchesSettingsContract.ToggleRow(
-                    "保留触发符 / Keep delimiter",
+                    "保留触发符",
                     "开启后，sjh + 空格会展开为“手机号 + 空格”；关闭后只插入展开文本。",
                     enabled,
                     keepTrigger,
@@ -83,12 +81,12 @@ public final class GboardTextExpansionSettingsFeature
 
             List<GboardPatchesSettingsContract.Row> rules = new ArrayList<>();
             rules.add(new GboardPatchesSettingsContract.CommandRow(
-                    "编辑快捷文本 / Edit shortcuts",
+                    "编辑快捷文本",
                     "每行一条：快捷码=展开文本。例如：sjh=13800138000",
                     enabled,
                     new EditRulesAction(host, entries)));
             rules.add(new GboardPatchesSettingsContract.InfoRow(
-                    "当前规则 / Rules",
+                    "当前规则",
                     entries.size() + " / " + GboardTextExpansionSettings.MAX_ENTRIES,
                     true));
             int shown = Math.min(entries.size(), 20);
@@ -108,19 +106,19 @@ public final class GboardTextExpansionSettingsFeature
 
             List<GboardPatchesSettingsContract.Row> transfer = Arrays.asList(
                     new GboardPatchesSettingsContract.CommandRow(
-                            "导出 JSON / Export",
-                            "导出快捷文本规则与开关设置，方便备份或分享。",
+                            "导出 JSON",
+                            "导出快捷文本规则和开关设置，方便备份或分享。",
                             true,
                             () -> exportRules(host)),
                     new GboardPatchesSettingsContract.CommandRow(
-                            "导入 JSON / Import",
-                            "从 gboard-text-expansion.v1 JSON 文件恢复配置。",
+                            "导入 JSON",
+                            "从快捷文本 JSON 文件恢复配置。",
                             true,
                             () -> importRules(host)));
 
             List<GboardPatchesSettingsContract.Row> advanced = Collections.singletonList(
                     new GboardPatchesSettingsContract.DangerRow(
-                            "清空全部规则 / Clear all",
+                            "清空全部规则",
                             "删除所有快捷文本映射，不会影响其他 Gboard 设置。",
                             !entries.isEmpty(),
                             () -> {
@@ -135,15 +133,15 @@ public final class GboardTextExpansionSettingsFeature
                     getEntryTitle(),
                     "Gboard",
                     getEntryTitle(),
-                    "支持数字、字母、邮箱、电话号码、URL、地址与常用句子。\n"
-                            + "Supports letters, numbers and arbitrary replacement text.",
+                    "支持数字、字母、邮箱、电话号码、网址、地址和常用句子。\n"
+                            + "中文输入时会按实际输入的字母匹配，不受第一候选词影响。",
                     Collections.emptyList(),
                     Arrays.asList(
-                            new GboardPatchesSettingsContract.Section("行为 / Behavior", behavior),
-                            new GboardPatchesSettingsContract.Section("规则 / Rules", rules),
-                            new GboardPatchesSettingsContract.Section("导入导出 / Transfer", transfer),
+                            new GboardPatchesSettingsContract.Section("功能", behavior),
+                            new GboardPatchesSettingsContract.Section("快捷规则", rules),
+                            new GboardPatchesSettingsContract.Section("导入与导出", transfer),
                             new GboardPatchesSettingsContract.Section(
-                                    "高级 / Advanced",
+                                    "高级",
                                     null,
                                     GboardPatchesSettingsContract.SectionStyle.ADVANCED,
                                     advanced)),
@@ -194,8 +192,7 @@ public final class GboardTextExpansionSettingsFeature
         editor.setHint("sjh=13800138000\nyx=name@example.com\ndz=辽宁省大连市……");
 
         TextView help = new TextView(activity);
-        help.setText("格式：快捷码=展开文本，每行一条。展开文本可使用 \\n、\\t。\n"
-                + "Format: shortcut=expanded text, one rule per line.");
+        help.setText("格式：快捷码=展开文本，每行一条。展开文本可使用 \\n、\\t。");
         help.setPadding(dp(activity, 20), dp(activity, 10), dp(activity, 20), dp(activity, 8));
 
         LinearLayout container = new LinearLayout(activity);
@@ -209,10 +206,10 @@ public final class GboardTextExpansionSettingsFeature
                 ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f));
 
         AlertDialog dialog = new AlertDialog.Builder(activity)
-                .setTitle("编辑快捷文本 / Edit shortcuts")
+                .setTitle("编辑快捷文本")
                 .setView(container)
-                .setNegativeButton("取消 / Cancel", null)
-                .setPositiveButton("保存 / Save", null)
+                .setNegativeButton("取消", null)
+                .setPositiveButton("保存", null)
                 .create();
         dialog.setOnDismissListener(ignored -> {
             if (onDismiss != null) {
@@ -227,7 +224,7 @@ public final class GboardTextExpansionSettingsFeature
                                         editor.getText().toString());
                         if (!GboardTextExpansionSettings.writeEntries(
                                 activity, parsed)) {
-                            throw new IllegalStateException("保存失败 / Failed to save");
+                            throw new IllegalStateException("保存失败");
                         }
                         dialog.dismiss();
                         GboardPatchesSettingsContract.refresh(host);
@@ -251,10 +248,10 @@ public final class GboardTextExpansionSettingsFeature
                     EXPORT_MIME_TYPE,
                     json,
                     () -> GboardPatchesSettingsContract.showMessage(
-                            host, "快捷文本已导出 / Export complete"));
+                            host, "快捷文本已导出"));
         } catch (Throwable failure) {
             GboardPatchesSettingsContract.showMessage(
-                    host, "导出失败 / Export failed: " + failure.getMessage());
+                    host, "导出失败：" + failure.getMessage());
         }
     }
 
@@ -269,11 +266,11 @@ public final class GboardTextExpansionSettingsFeature
                     try {
                         GboardTextExpansionSettings.importJson(host.getContext(), text);
                         GboardPatchesSettingsContract.showMessage(
-                                host, "快捷文本已导入 / Import complete");
+                                host, "快捷文本已导入");
                         GboardPatchesSettingsContract.refresh(host);
                     } catch (Throwable failure) {
                         GboardPatchesSettingsContract.showMessage(
-                                host, "导入失败 / Import failed: " + failure.getMessage());
+                                host, "导入失败：" + failure.getMessage());
                     }
                 });
     }
@@ -295,7 +292,7 @@ public final class GboardTextExpansionSettingsFeature
                 getEntryTitle(),
                 "",
                 Collections.singletonList(new GboardPatchesSettingsContract.StatusBlock(
-                        "快捷文本暂不可用 / Unavailable",
+                        "快捷文本暂不可用",
                         "请重新打开 Gboard 设置后再试。",
                         GboardPatchesSettingsContract.StatusTone.WARNING)),
                 Collections.emptyList());

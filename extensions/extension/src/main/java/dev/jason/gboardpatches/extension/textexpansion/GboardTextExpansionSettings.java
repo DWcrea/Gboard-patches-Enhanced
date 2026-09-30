@@ -130,22 +130,22 @@ public final class GboardTextExpansionSettings {
             root.put("entries", entriesArray(readEntries(preferences)));
             return root.toString(2);
         } catch (JSONException exception) {
-            throw new IllegalStateException("Unable to export Text Expansion settings", exception);
+            throw new IllegalStateException("无法导出快捷文本设置", exception);
         }
     }
 
     public static void importJson(Context context, String json) {
         if (context == null) {
-            throw new IllegalArgumentException("Context is required");
+            throw new IllegalArgumentException("缺少上下文");
         }
         try {
             JSONObject root = new JSONObject(json == null ? "" : json);
             if (!FORMAT.equals(root.optString("format", ""))) {
-                throw new IllegalArgumentException("不支持的快捷文本文件格式 / Unsupported format");
+                throw new IllegalArgumentException("不支持的快捷文本文件格式");
             }
             JSONArray entriesJson = root.optJSONArray("entries");
             if (entriesJson == null) {
-                throw new IllegalArgumentException("缺少 entries / Missing entries");
+                throw new IllegalArgumentException("文件中缺少 entries");
             }
             List<Entry> entries = parseEntriesArray(entriesJson);
             SharedPreferences.Editor editor = preferences(context).edit()
@@ -157,10 +157,10 @@ public final class GboardTextExpansionSettings {
                 editor.putBoolean(PREF_KEY_KEEP_TRIGGER, root.getBoolean("keepTrigger"));
             }
             if (!editor.commit()) {
-                throw new IllegalStateException("保存失败 / Failed to save");
+                throw new IllegalStateException("保存失败");
             }
         } catch (JSONException exception) {
-            throw new IllegalArgumentException("JSON 格式无效 / Invalid JSON", exception);
+            throw new IllegalArgumentException("JSON 格式无效", exception);
         }
     }
 
@@ -179,8 +179,7 @@ public final class GboardTextExpansionSettings {
             int separator = line.indexOf('=');
             if (separator <= 0) {
                 throw new IllegalArgumentException(
-                        "第 " + (index + 1) + " 行缺少 '=' / Missing '=' on line "
-                                + (index + 1));
+                        "第 " + (index + 1) + " 行缺少 '='");
             }
             String shortcut = line.substring(0, separator).trim();
             String text = decodeEscapes(line.substring(separator + 1));
@@ -215,7 +214,7 @@ public final class GboardTextExpansionSettings {
                 byShortcut.put(normalized.shortcut, normalized);
                 if (byShortcut.size() > MAX_ENTRIES) {
                     throw new IllegalArgumentException(
-                            "快捷文本最多 " + MAX_ENTRIES + " 条 / Too many entries");
+                            "快捷文本最多 " + MAX_ENTRIES + " 条");
                 }
             }
         }
@@ -254,16 +253,16 @@ public final class GboardTextExpansionSettings {
     private static String sanitizeShortcut(String value) {
         String shortcut = value == null ? "" : value.trim();
         if (shortcut.isEmpty()) {
-            throw new IllegalArgumentException("快捷方式不能为空 / Shortcut cannot be empty");
+            throw new IllegalArgumentException("快捷方式不能为空");
         }
         if (shortcut.length() > MAX_SHORTCUT_LENGTH) {
             throw new IllegalArgumentException(
-                    "快捷方式最长 " + MAX_SHORTCUT_LENGTH + " 个字符 / Shortcut too long");
+                    "快捷方式最长 " + MAX_SHORTCUT_LENGTH + " 个字符");
         }
         if (shortcut.indexOf('\n') >= 0 || shortcut.indexOf('\r') >= 0
                 || shortcut.indexOf('=') >= 0) {
             throw new IllegalArgumentException(
-                    "快捷方式不能包含换行或 '=' / Shortcut cannot contain newline or '='");
+                    "快捷方式不能包含换行或 '='");
         }
         return shortcut;
     }
@@ -272,7 +271,7 @@ public final class GboardTextExpansionSettings {
         String text = value == null ? "" : value;
         if (text.length() > MAX_EXPANSION_LENGTH) {
             throw new IllegalArgumentException(
-                    "展开文本最长 " + MAX_EXPANSION_LENGTH + " 个字符 / Expansion too long");
+                    "展开文本最长 " + MAX_EXPANSION_LENGTH + " 个字符");
         }
         return text;
     }
