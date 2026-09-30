@@ -1,6 +1,6 @@
 # 快捷文本 / Text Expansion
 
-> 首次加入版本：`3.11.0-enhanced.2-dev.2`
+> 首次加入版本：`3.11.0-enhanced.2-dev.3`
 
 ## 用途
 
@@ -21,6 +21,8 @@ sjh␠  →  13800138000␠
 ```
 
 即使中文输入法当前第一候选词显示为“手机号”，也会按你实际输入的原始字母串 `sjh` 匹配快捷规则，因此只需按 **一次空格**，不会先上屏“手机号”，也不需要第二次空格。
+
+> dev.3 与 dev.2 的关键区别：dev.2 仍主要依赖后面的 input-event dispatcher 记录字母，但中文拼音/双拼并不会稳定把每个字母作为 ASCII 事件传到这里。dev.3 改为在更早的 pointer-owner / SoftKeyView 阶段读取 PRESS metadata，因此能在候选生成前可靠记录真实按键。
 
 如果关闭“保留触发符”，结果则为：
 
@@ -85,7 +87,7 @@ JSON 格式标识：
 
 为避免在敏感输入框里意外展开电话号码、邮箱等私人内容，本功能会自动跳过 Android 标记为密码的文本/数字输入框。
 
-运行时现在有两条匹配路径：普通英文输入优先检查 `InputConnection.getTextBeforeCursor()` 中已经可见的快捷码；中文输入则额外记录真实按下的字母/数字序列。触发空格或标点时，如果原始按键串命中规则，会先安全清理当前 composing text，再直接提交展开内容，从而绕过第一候选词。
+运行时现在有两条匹配路径：普通英文输入优先检查 `InputConnection.getTextBeforeCursor()` 中已经可见的快捷码；中文输入则在 Gboard pointer-owner / SoftKeyView 阶段提前记录真实按下的字母/数字序列。触发空格或标点时，如果原始按键串命中规则，会直接使用 `setComposingText()` 替换当前 composing span，再结束 composing，从而绕过第一候选词。
 
 ## 当前实现限制
 

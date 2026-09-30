@@ -1,7 +1,7 @@
 {
     "created_at": "2026-09-30T12:24:00+08:00",
-    "description": "### 🧪 Enhanced Features / 增强功能（测试版）\n\n* **快捷文本候选修复：** 输入 `sjh` 时，即使中文第一候选词是“手机号”，按一次空格也会直接展开为你配置的内容，不需要先上屏 `sjh` 再按第二次空格。\n* **Text Expansion / 快捷文本：** 支持电话号码、邮箱、网址、地址与常用句子，支持 JSON 导入/导出。\n* **密码安全：** 密码输入框中自动禁用快捷文本。\n* **删除键上滑：** 删除光标前的全部文本，同时保留光标后的内容。\n* **数字键盘：** 数字/电话键盘同样支持删除键上滑。\n* **中文下滑数字：** 下滑输入数字后，紧接着输入的全角 `：` / `。` 自动转换为半角 `:` / `.`.\n\n> 本版本为开发测试版，重点验证中文输入状态下的快捷文本展开行为。",
-    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.2/patches-3.11.0-enhanced.2-dev.2.mpp",
+    "description": "### 🧪 Enhanced Features / 增强功能（测试版）\n\n* **快捷文本一次空格展开：** 中文拼音/双拼下直接从 pointer-owner / SoftKeyView 阶段记录真实按键。即使第一候选词是“手机号”，输入 `sjh` 后第一次按空格也会直接展开为配置内容。\n* **中文 composing 直接替换：** 命中规则后直接替换当前组合文本，不再要求先让 `sjh` 上屏后再按第二次空格。\n* **全局简体中文界面：** Gboard Patches 设置页中文资源已统一为简体中文，并使用大陆常用 UI 术语。\n* **Text Expansion / 快捷文本：** 支持电话号码、邮箱、网址、地址与常用句子，支持 JSON 导入/导出。\n* **密码安全：** 密码输入框中自动禁用快捷文本。\n* **删除键上滑：** 删除光标前的全部文本，同时保留光标后的内容。\n* **数字键盘：** 数字/电话键盘同样支持删除键上滑。\n* **中文下滑数字：** 下滑输入数字后，紧接着输入的全角 `：` / `。` 自动转换为半角 `:` / `.`.\n\n> 本版本为开发测试版，重点验证中文输入状态下的一次空格快捷展开与简体中文设置界面。",
+    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.3/patches-3.11.0-enhanced.2-dev.3.mpp",
     "signature_download_url": "",
-    "version": "3.11.0-enhanced.2-dev.2"
+    "version": "3.11.0-enhanced.2-dev.3"
 }

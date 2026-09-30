@@ -60,6 +60,9 @@
    设置位置：`Gboard Patches → 键盘工具与快捷操作 → 快捷文本 / Text Expansion`。  
    支持 JSON 导入/导出、最多 200 条规则、大小写不敏感匹配，并且会在密码输入框中自动停用。
 
+5. **全局简体中文界面**  
+   Gboard Patches 设置页的中文资源已统一转换为简体中文，并针对“导入/导出、设置、识别、通过、工具栏、剪贴板”等常用界面术语做了大陆简体用语归一化。中文系统语言会直接使用这套简体中文界面。
+
 详细实现与调试历史可查看：
 
 - [V8 功能说明](docs/BACKSPACE_SWIPE_UP_CLEAR.md)
@@ -73,7 +76,7 @@
 
 | 项目 | 当前值 | 说明 |
 | --- | --- | --- |
-| **Gboard Patches Enhanced** | `3.11.0-enhanced.2-dev.2` | 快捷文本功能测试版 |
+| **Gboard Patches Enhanced** | `3.11.0-enhanced.2-dev.3` | 快捷文本功能测试版 |
 | **Gboard** | `18.0.3.954559732-release-arm64-v8a` | 当前明确支持的目标版本 |
 | **Gboard target profile** | `18.0.3` | 版本绑定配置中的目标版本 |
 | **架构 / ABI** | `arm64-v8a` | 当前目标 APK 架构 |
