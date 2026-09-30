@@ -66,17 +66,17 @@ class GboardThreeRuntimePatchesContractTest {
     @Test
     fun `public descriptions match the requested bilingual product copy`() {
         assertEquals(
-            "在主動建議列顯示關閉按鈕\n" +
+            "在主动建议列显示关闭按钮\n" +
                 "Show a dismiss button in the proactive suggestions bar.",
             gboardCloseProactiveSuggestionsPatch.description,
         )
         assertEquals(
-            "持續快速輸入時顯示動畫，並支援所有鍵盤\n" +
+            "持续快速输入时显示动画，并支持所有键盘\n" +
                 "Show the animation during sustained fast typing with support for all keyboards.",
             gboardFlowModeAnimationPatch.description,
         )
         assertEquals(
-            "啟用快速插入面板與工具列入口\n" +
+            "激活快速插入面板与工具栏入口\n" +
                 "Enable the Quick Insert panel and toolbar access point.",
             gboardQuickInsertPatch.description,
         )

@@ -92,7 +92,7 @@ class GboardSignatureBypassPatchContractTest {
         const val GBOARD_PACKAGE = "com.google.android.inputmethod.latin"
         const val TARGET_VERSION = "18.0.3.954559732-release-arm64-v8a"
         const val SIGNATURE_BYPASS_DESCRIPTION =
-            "攔截 Gboard 的簽章白名單檢查並強制通過\n" +
+            "拦截 Gboard 的签章白名单检查并强制通过\n" +
                 "Bypass Gboard signature whitelist checks and force them to pass."
         const val SIGNATURE_PATCH_PATH =
             "patches/src/main/kotlin/dev/jason/gboardpatches/patches/gboard/features/" +
