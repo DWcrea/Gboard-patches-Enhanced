@@ -17,7 +17,7 @@ class GboardEnglishQwertyPatchRegistrySourceTest {
         assertTrue(source.contains("name = \"English QWERTY Up-Flick Uppercase\""))
         assertTrue(
             source.contains(
-                "description = \"英文 QWERTY 鍵盤上滑大小寫\\n" +
+                "description = \"英文 QWERTY 键盘上滑大小写\\n" +
                     "Flick up on the English QWERTY keyboard to toggle uppercase and lowercase.\""
             )
         )
@@ -76,8 +76,8 @@ class GboardEnglishQwertyPatchRegistrySourceTest {
 
         val patchBlock = source.substring(patchStart, nextPatchStart)
         assertFalse(patchBlock.contains("booleanOption("))
-        assertFalse(patchBlock.contains("title = \"啟用英文鍵盤上滑大寫\""))
-        assertFalse(patchBlock.contains("\"啟用\" to true"))
+        assertFalse(patchBlock.contains("title = \"激活英文键盘上滑大写\""))
+        assertFalse(patchBlock.contains("\"激活\" to true"))
     }
 
     private fun readSource(): String =

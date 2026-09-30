@@ -22,7 +22,7 @@ class GboardFloatingWebSearchPatchContractTest {
         assertSame(gboardFloatingWebSearchPatch, patch)
         assertTrue(patch.use)
         assertEquals(
-            "直接從 Gboard 開啟懸浮網頁，快速搜尋需要的資訊。\n" +
+            "直接从 Gboard 打开悬浮网页，快速搜索需要的信息。\n" +
                 "Open a floating web page directly from Gboard to quickly search for the information you need.",
             patch.description,
         )
