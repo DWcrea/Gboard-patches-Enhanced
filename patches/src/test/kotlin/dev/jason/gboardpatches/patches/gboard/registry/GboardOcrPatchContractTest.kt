@@ -34,21 +34,21 @@ class GboardOcrPatchContractTest {
         assertTrue(!keyboardGroup.contains("GboardLatinGlobeKeyIgnoreIntervalSettingsFeature"))
         assertTrue(availability.contains("FEATURE_OCR_SCAN_TEXT"))
         assertTrue(availability.contains("dev.jason.gboardpatches.feature.ocr_scan_text"))
-        assertTrue(settingsText.contains("<translation locale=\"zh-Hant\">OCR / 掃描文字</translation>"))
+        assertTrue(settingsText.contains("<translation locale=\"zh-Hant\">OCR / 扫描文字</translation>"))
         assertTrue(settingsText.contains(
             "<translation locale=\"en\">Control the backend engine used for text " +
                 "recognition.</translation>",
         ))
-        assertTrue(settingsText.contains("<translation locale=\"zh-Hant\">控制文字辨識的後端引擎。</translation>"))
-        assertTrue(settingsText.contains("<translation locale=\"zh-Hant\">文字辨識後端引擎</translation>"))
+        assertTrue(settingsText.contains("<translation locale=\"zh-Hant\">控制文字识别的后端引擎。</translation>"))
+        assertTrue(settingsText.contains("<translation locale=\"zh-Hant\">文字识别后端引擎</translation>"))
         assertTrue(settingsText.contains("gboard_patches_ocr_header_summary"))
         assertTrue(settingsText.contains(
             "<translation locale=\"en\">Official models must be downloaded through Google " +
                 "Play services.</translation>",
         ))
         assertTrue(settingsText.contains(
-            "<translation locale=\"zh-Hant\">需要透過 Google Play services " +
-                "下載官方模型</translation>",
+            "<translation locale=\"zh-Hant\">需要通过 Google Play services " +
+                "下载官方模型</translation>",
         ))
         assertTrue(!settingsText.contains("gboard_patches_ocr_engine_summary"))
         assertTrue(
