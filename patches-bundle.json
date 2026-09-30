@@ -1,5 +1,5 @@
 {
-    "created_at": "2026-09-30T14:08:00",
+    "created_at": "2026-09-30T13:54:00",
     "description": "### 🧪 3.11.0-enhanced.2-dev.8\n\n* **回滚 dev.7：** 撤销对 `selectedCode=62` 的空格特判；Gboard 的内部 `selectedCode` 不能可靠等同于 Android KeyEvent keyCode，这个假设会导致触发状态不稳定。\n* **恢复 dev.6 稳定基线：** 快捷文本运行时和相关测试恢复到 dev.6。\n* **保留连续添加修复：** 每次打开编辑器都读取最新规则，后续新增条目不会被旧快照覆盖。\n* **保留设置即时生效：** 保存、导入或切换设置后立即清除运行时缓存。\n* **暂不实现第一候选注入：** 下一步改用物理空格键前置拦截方案验证，不再猜测候选事件的 selectedCode。",
     "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.8/patches-3.11.0-enhanced.2-dev.8.mpp",
     "signature_download_url": "",
