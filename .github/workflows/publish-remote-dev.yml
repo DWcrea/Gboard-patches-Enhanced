@@ -30,10 +30,30 @@ jobs:
           chmod +x ./gradlew
           ./gradlew :patches:buildAndroid generatePatchesList
 
+      - name: Inspect bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="$(sed -nE 's/^\s*version\s*=\s*([^#[:space:]]+).*$/\1/p' gradle.properties | head -n1)"
+          MPP="patches/build/libs/patches-$VERSION.mpp"
+          test -f "$MPP"
+          unzip -t "$MPP"
+          {
+            echo "version=$VERSION"
+            echo "size=$(stat -c%s "$MPP")"
+            echo "sha256=$(sha256sum "$MPP" | awk '{print $1}')"
+            echo
+            echo "=== META-INF/MANIFEST.MF ==="
+            unzip -p "$MPP" META-INF/MANIFEST.MF || true
+            echo
+            echo "=== archive entries ==="
+            unzip -l "$MPP" | head -n 120
+          } > /tmp/bundle-diagnostics.txt
+
       - name: Publish files to remote-dev
         shell: bash
         run: |
-          set -e
+          set -euo pipefail
           VERSION="$(sed -nE 's/^\s*version\s*=\s*([^#[:space:]]+).*$/\1/p' gradle.properties | head -n1)"
           cp "patches/build/libs/patches-$VERSION.mpp" /tmp/patches-latest.mpp
           git config user.name "github-actions[bot]"
@@ -42,6 +62,7 @@ jobs:
           git checkout remote-dev
           mkdir -p remote
           cp /tmp/patches-latest.mpp remote/patches-latest.mpp
+          cp /tmp/bundle-diagnostics.txt remote/bundle-diagnostics.txt
           CREATED_AT="$(date -u +'%Y-%m-%dT%H:%M:%S')"
           cat > remote/patches-bundle.json <<EOF
           {
@@ -52,6 +73,6 @@ jobs:
             "version": "$VERSION"
           }
           EOF
-          git add remote/patches-latest.mpp remote/patches-bundle.json
+          git add remote/patches-latest.mpp remote/patches-bundle.json remote/bundle-diagnostics.txt
           git commit -m "remote: publish $VERSION" || exit 0
           git push origin remote-dev
