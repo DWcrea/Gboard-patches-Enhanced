@@ -98,15 +98,23 @@ public final class GboardTextExpansionSettings {
     }
 
     public static boolean writeEnabled(Context context, boolean enabled) {
-        return context != null && preferences(context).edit()
+        boolean saved = context != null && preferences(context).edit()
                 .putBoolean(PREF_KEY_ENABLED, enabled)
                 .commit();
+        if (saved) {
+            GboardTextExpansionRuntimeSettings.invalidate();
+        }
+        return saved;
     }
 
     public static boolean writeKeepTrigger(Context context, boolean keepTrigger) {
-        return context != null && preferences(context).edit()
+        boolean saved = context != null && preferences(context).edit()
                 .putBoolean(PREF_KEY_KEEP_TRIGGER, keepTrigger)
                 .commit();
+        if (saved) {
+            GboardTextExpansionRuntimeSettings.invalidate();
+        }
+        return saved;
     }
 
     public static boolean writeEntries(Context context, List<Entry> entries) {
@@ -114,9 +122,13 @@ public final class GboardTextExpansionSettings {
             return false;
         }
         List<Entry> normalized = normalizeEntries(entries);
-        return preferences(context).edit()
+        boolean saved = preferences(context).edit()
                 .putString(PREF_KEY_ENTRIES_JSON, entriesArray(normalized).toString())
                 .commit();
+        if (saved) {
+            GboardTextExpansionRuntimeSettings.invalidate();
+        }
+        return saved;
     }
 
     public static String exportJson(Context context) {
@@ -159,6 +171,7 @@ public final class GboardTextExpansionSettings {
             if (!editor.commit()) {
                 throw new IllegalStateException("保存失败");
             }
+            GboardTextExpansionRuntimeSettings.invalidate();
         } catch (JSONException exception) {
             throw new IllegalArgumentException("JSON 格式无效", exception);
         }
