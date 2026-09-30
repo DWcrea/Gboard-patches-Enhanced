@@ -1,4 +1,4 @@
-name: Release from tag
+name: Release
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   release:
-    name: Release
+    name: Build and publish
     permissions:
       contents: write
       packages: read
@@ -37,18 +37,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.MORPHE_PACKAGES_TOKEN }}
         run: ./gradlew :patches:buildAndroid generatePatchesList
 
-      - name: Validate synced release metadata
+      - name: Resolve and validate release metadata
         id: metadata
         shell: pwsh
         env:
           REPO_SLUG: ${{ github.repository }}
+          EVENT_NAME: ${{ github.event_name }}
+          REF_NAME: ${{ github.ref_name }}
         run: |
-          $tag = $env:GITHUB_REF_NAME
-          if (-not $tag.StartsWith("v")) {
-              throw "Release tag must start with 'v'."
-          }
-
-          $expectedVersion = $tag.Substring(1)
           $gradleText = Get-Content -LiteralPath "gradle.properties" -Raw
           $match = [regex]::Match($gradleText, '(?m)^\s*version\s*=\s*([^\r\n#]+?)\s*$')
           if (-not $match.Success) {
@@ -56,8 +52,12 @@ jobs:
           }
 
           $actualVersion = $match.Groups[1].Value.Trim()
-          if ($actualVersion -ne $expectedVersion) {
-              throw "Tag version '$expectedVersion' does not match gradle.properties version '$actualVersion'."
+          $tag = "v$actualVersion"
+
+          if ($env:EVENT_NAME -eq "push") {
+              if ($env:REF_NAME -ne $tag) {
+                  throw "Pushed tag '$($env:REF_NAME)' does not match expected '$tag'."
+              }
           }
 
           $bundle = Get-Content -LiteralPath "patches-bundle.json" -Raw | ConvertFrom-Json
@@ -66,7 +66,6 @@ jobs:
           }
 
           $expectedDownloadUrl = "https://github.com/$($env:REPO_SLUG)/releases/download/$tag/patches-$actualVersion.mpp"
-
           if ([string]$bundle.download_url -ne $expectedDownloadUrl) {
               throw "patches-bundle.json download_url does not match expected public release URL."
           }
@@ -75,6 +74,7 @@ jobs:
           }
 
           "version=$actualVersion" >> $env:GITHUB_OUTPUT
+          "tag=$tag" >> $env:GITHUB_OUTPUT
 
       - name: Prepare release notes
         shell: pwsh
@@ -82,15 +82,16 @@ jobs:
           $bundle = Get-Content -LiteralPath "patches-bundle.json" -Raw | ConvertFrom-Json
           $notes = [string]$bundle.description
           if ([string]::IsNullOrWhiteSpace($notes)) {
-              $notes = "Public mirror release for $env:GITHUB_REF_NAME."
+              $notes = "Gboard Patches Enhanced ${{ steps.metadata.outputs.version }}"
           }
           Set-Content -LiteralPath "release-notes.md" -Value $notes -Encoding utf8
 
       - name: Publish GitHub release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}
+          tag_name: ${{ steps.metadata.outputs.tag }}
+          target_commitish: ${{ github.sha }}
           body_path: release-notes.md
-          prerelease: ${{ contains(github.ref_name, '-dev.') }}
+          prerelease: ${{ contains(steps.metadata.outputs.tag, '-dev.') }}
           files: |
             patches/build/libs/patches-${{ steps.metadata.outputs.version }}.mpp
