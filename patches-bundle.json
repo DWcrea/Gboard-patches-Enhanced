@@ -1,7 +1,7 @@
 {
-    "created_at": "2026-09-30T12:58:00",
-    "description": "### 🧪 3.11.0-enhanced.2-dev.5\n\n* **连续添加规则修复：** 每次打开快捷文本编辑器都重新读取最新已保存规则，不再使用旧页面快照覆盖后续新增条目。\n* **设置即时生效：** 保存、导入或切换快捷文本设置后立即清除运行时缓存。\n* **第一候选预览：** 输入完整快捷码时，在候选栏第一位置显示对应展开文本；点击即可直接上屏。\n* **空格展开保持：** 输入快捷码后第一次按空格仍直接展开，不需要先上屏快捷码。\n* **密码安全：** 密码输入框继续自动禁用快捷文本。",
-    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.5/patches-3.11.0-enhanced.2-dev.5.mpp",
+    "created_at": "2026-09-30T13:55:00",
+    "description": "### 🧪 3.11.0-enhanced.2-dev.6\n\n* **回滚 dev.5 候选覆盖实验：** 移除会干扰快捷文本首次空格展开的自定义候选层，恢复 dev.4 的输入运行时路径。\n* **保留连续添加修复：** 每次打开快捷文本编辑器都重新读取最新已保存规则，避免第二次及后续添加被旧快照覆盖。\n* **设置即时生效：** 保存、导入或切换快捷文本设置后立即清除运行时缓存。\n* **目标行为：** `sjh` 等快捷码输入后第一次按空格直接展开；密码输入框自动禁用快捷文本。\n* **第一候选文本功能暂缓：** 等基础展开稳定后再通过 Gboard 原生候选链路实现，不再使用覆盖候选栏的方式。",
+    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.6/patches-3.11.0-enhanced.2-dev.6.mpp",
     "signature_download_url": "",
-    "version": "3.11.0-enhanced.2-dev.5"
+    "version": "3.11.0-enhanced.2-dev.6"
 }
