@@ -1,6 +1,6 @@
 # 快捷文本 / Text Expansion
 
-> 首次加入版本：`3.11.0-enhanced.2-dev.3`
+> 首次加入版本：`3.11.0-enhanced.2-dev.4`
 
 ## 用途
 
@@ -98,3 +98,8 @@ JSON 格式标识：
 ## English
 
 Text Expansion provides user-defined `shortcut → replacement` mappings for mixed alphanumeric text such as phone numbers and email addresses. Expansion is triggered by Space, Enter or common punctuation, supports JSON import/export, and is disabled in password fields. This development version shares the already verified Gboard 18.0.3 input-event hook with Long-Press Editing Shortcuts.
+
+
+## dev.4：更早捕获真实键帽
+
+部分中文布局的内部 PRESS metadata 并不携带 `s/j/h` 等 ASCII 字母。dev.4 会在 pointer-owner 阶段进一步读取 SoftKeyView 的可见键帽或无障碍标签，并对同一次触摸进行去重。因此 `sjh + 第一次空格` 不再依赖候选上屏后的可见文本。
