@@ -152,8 +152,9 @@ val gboardEnglishQwertySlideUppercaseTogglePatch = gboardPublicResourcePatch(
 val gboardLongPressQuickActionsPatch = gboardPublicResourcePatch(
     featureId = "long_press_editing_shortcuts",
     name = "Long-Press Editing Shortcuts",
-    description = "在英文 QWERTY 與注音鍵盤加入編輯長按快捷鍵，並支援刪除鍵上滑一鍵清空\n" +
-        "Add long-press editing shortcuts and swipe up from Backspace to clear the current text field.",
+    description = "在英文 QWERTY 與注音鍵盤加入編輯長按快捷鍵，並支援刪除鍵上滑刪除光標前全部內容\n" +
+        "Add long-press editing shortcuts and swipe up from Backspace to delete all text " +
+        "before the cursor while preserving text after it.",
     default = true,
 ) {
     compatibleWith(COMPATIBILITY_GBOARD)
