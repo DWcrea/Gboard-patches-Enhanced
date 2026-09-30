@@ -3,7 +3,7 @@ package dev.jason.gboardpatches.patches.gboard.registry
 import dev.jason.gboardpatches.patches.gboard.features.longpressquickactions.gboardLongPressQuickActionsFeatureMarkerPatch
 import dev.jason.gboardpatches.patches.gboard.features.longpressquickactions.gboardLongPressQuickActionsInputEventPatch
 import dev.jason.gboardpatches.patches.gboard.features.longpressquickactions.gboardLongPressQuickActionsGesturePatch
-import dev.jason.gboardpatches.patches.gboard.features.longpressquickactions.gboardLongPressQuickActionsPointerOwnerPatch
+import dev.jason.gboardpatches.patches.gboard.features.longpressquickactions.gboardLongPressQuickActionsPointerOwnerPatch\nimport dev.jason.gboardpatches.patches.gboard.features.longpressquickactions.gboardLongPressQuickActionsMotionPatch\nimport dev.jason.gboardpatches.patches.gboard.features.zhuyinslide.gboardZhuyinSlidePointerAnchorPatch
 import dev.jason.gboardpatches.patches.gboard.features.longpressquickactions.gboardLongPressQuickActionsSoftKeyPatch
 import dev.jason.gboardpatches.patches.gboard.shared.gboardPatchesSettingsPatch
 import java.nio.charset.StandardCharsets
@@ -28,7 +28,9 @@ class GboardLongPressQuickActionsPatchContractTest {
                 gboardLongPressQuickActionsFeatureMarkerPatch,
                 gboardLongPressQuickActionsSoftKeyPatch,
                 gboardLongPressQuickActionsInputEventPatch,
+                gboardLongPressQuickActionsMotionPatch,
                 gboardLongPressQuickActionsPointerOwnerPatch,
+                gboardZhuyinSlidePointerAnchorPatch,
                 gboardLongPressQuickActionsGesturePatch,
             ),
             patch.dependencies.toList(),
@@ -70,8 +72,8 @@ class GboardLongPressQuickActionsPatchContractTest {
 
     private companion object {
         const val LONG_PRESS_DESCRIPTION =
-            "在英文 QWERTY 與注音鍵盤加入全選、復原、複製、剪下、貼上與重做長按快捷鍵\n" +
-                "Add Select all, Undo, Copy, Cut, Paste, and Redo long-press shortcuts " +
-                "to English QWERTY and Zhuyin."
+            "在英文 QWERTY 與注音鍵盤加入編輯長按快捷鍵，並支援刪除鍵上滑刪除光標前全部內容\n" +
+                "Add long-press editing shortcuts and swipe up from Backspace to delete all text " +
+                "before the cursor while preserving text after it."
     }
 }
