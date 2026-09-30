@@ -27,9 +27,10 @@ public final class GboardTextExpansionRuntimeTest {
     }
 
     @Test
-    public void replacingRawShortcutClearsChineseComposingCandidateBeforeExpansion() {
-        AtomicReference<String> text = new AtomicReference<>("手机号");
+    public void replacingRawShortcutReplacesChineseComposingTextBeforeFirstCandidateCommits() {
+        AtomicReference<String> text = new AtomicReference<>("前文");
         AtomicReference<Boolean> composing = new AtomicReference<>(Boolean.TRUE);
+        AtomicReference<String> composingText = new AtomicReference<>("手机号");
 
         InputConnection connection = (InputConnection) Proxy.newProxyInstance(
                 getClass().getClassLoader(),
@@ -40,10 +41,7 @@ public final class GboardTextExpansionRuntimeTest {
                                 Boolean.TRUE;
                         case "getTextBeforeCursor" -> text.get();
                         case "setComposingText" -> {
-                            if (composing.get().booleanValue()) {
-                                text.set("");
-                                composing.set(Boolean.FALSE);
-                            }
+                            composingText.set(String.valueOf(args[0]));
                             yield Boolean.TRUE;
                         }
                         case "deleteSurroundingText" -> {
@@ -65,7 +63,8 @@ public final class GboardTextExpansionRuntimeTest {
                 new GboardTextExpansionSettings.Entry("sjh", "13800138000");
         Assert.assertTrue(GboardTextExpansionRuntime.replaceFromRawToken(
                 connection, entry, " "));
-        Assert.assertEquals("13800138000 ", text.get());
+        Assert.assertEquals("前文", text.get());
+        Assert.assertEquals("13800138000 ", composingText.get());
     }
 
     private static Object defaultValue(Class<?> type) {

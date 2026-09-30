@@ -1,7 +1,11 @@
 package dev.jason.gboardpatches.extension.textexpansion;
 
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.inputmethodservice.InputMethodService;
+import android.os.SystemClock;
 import android.text.InputType;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 
@@ -9,6 +13,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+
+import dev.jason.gboardpatches.extension.longpressquickactions.GboardLongPressQuickActions1803ReflectionHandles;
+import dev.jason.gboardpatches.extension.longpressquickactions.GboardLongPressQuickActions1803Runtime;
 
 /**
  * 快捷文本运行时。
@@ -18,10 +25,67 @@ import java.util.WeakHashMap;
  * sjh 命中快捷文本，而不会被第一候选词影响。
  */
 public final class GboardTextExpansionRuntime {
+    private static final long RAW_TOKEN_TIMEOUT_MS = 15_000L;
+    private static final long DUPLICATE_KEY_WINDOW_MS = 35L;
+
     private static final Map<InputMethodService, RawShortcutSession> RAW_SESSIONS =
             Collections.synchronizedMap(new WeakHashMap<>());
 
     private GboardTextExpansionRuntime() {
+    }
+
+    /**
+     * 在 Gboard 的 pointer-owner 阶段记录真实按下的软键。
+     *
+     * 中文拼音/双拼的普通字母通常不会以可识别的字母事件到达后面的 input-event
+     * dispatcher，所以只在 maybeHandleInputEvent() 里记录按键是不够的。这里直接从
+     * SoftKeyView metadata 读取 PRESS payload，能在候选生成之前得到 s/j/h 这类原始键值。
+     */
+    public static void observeSoftKeyPress(Object pointerTracker, View softKeyView) {
+        if (softKeyView == null) {
+            return;
+        }
+        try {
+            InputMethodService service = findInputMethodService(softKeyView.getContext());
+            if (service == null) {
+                return;
+            }
+            GboardTextExpansionRuntimeSettings.Snapshot settings =
+                    GboardTextExpansionRuntimeSettings.snapshot();
+            if (!settings.enabled || settings.entries.isEmpty() || isSensitiveEditor(service)) {
+                clearRawSession(service);
+                return;
+            }
+
+            ClassLoader classLoader = softKeyView.getClass().getClassLoader();
+            if (classLoader == null && pointerTracker != null) {
+                classLoader = pointerTracker.getClass().getClassLoader();
+            }
+            if (classLoader == null) {
+                return;
+            }
+
+            GboardLongPressQuickActions1803ReflectionHandles handles =
+                    GboardLongPressQuickActions1803Runtime.reflectionHandles(classLoader);
+            Object metadata = handles.extractSoftKeyMetadata(softKeyView);
+            if (metadata == null) {
+                return;
+            }
+
+            String pressText = handles.extractPressText(metadata);
+            int pressCode = handles.extractPressCarrierCode(metadata);
+            String raw = rawInputText("PRESS", pressCode, pressText);
+            if (raw != null) {
+                appendRawInput(service, raw);
+                return;
+            }
+
+            if (isDeleteKeyView(softKeyView)) {
+                removeLastRawCharacter(service);
+            }
+        } catch (Throwable ignored) {
+            // 原始按键观察失败时直接回退到普通 Gboard 行为，不能影响键盘主流程。
+        }
     }
 
     public static boolean maybeHandleInputEvent(
@@ -132,57 +196,32 @@ public final class GboardTextExpansionRuntime {
         if (connection == null || entry == null) {
             return false;
         }
-        boolean batch = false;
         try {
-            batch = connection.beginBatchEdit();
-
-            CharSequence beforeClear = connection.getTextBeforeCursor(
+            // 英文键盘等场景里，快捷码已经作为普通文本提交到了编辑器。
+            // 这种情况继续走“删除可见快捷码 → 提交展开文本”的稳定路径。
+            CharSequence visible = connection.getTextBeforeCursor(
                     Math.max(256, entry.shortcut.length() + 16), 0);
-            boolean composingCallSucceeded = connection.setComposingText("", 1);
-            CharSequence afterClear = connection.getTextBeforeCursor(
-                    Math.max(256, entry.shortcut.length() + 16), 0);
-
-            boolean composingChanged = beforeClear != null
-                    && afterClear != null
-                    && !beforeClear.toString().equals(afterClear.toString());
-
-            boolean removedLiteralShortcut = false;
-            if (afterClear != null
-                    && endsWithIgnoreCase(afterClear.toString(), entry.shortcut)) {
-                removedLiteralShortcut =
-                        connection.deleteSurroundingText(entry.shortcut.length(), 0);
-                if (!removedLiteralShortcut) {
-                    return false;
-                }
+            if (visible != null && endsWithIgnoreCase(visible.toString(), entry.shortcut)) {
+                return replaceVisibleShortcut(connection, entry, trigger);
             }
 
-            // 如果既没有清除 composing，也没有删除可见的原始快捷码，就安全放弃，
-            // 避免误删光标前的普通文本。
-            if (!removedLiteralShortcut && !composingChanged) {
-                // 某些编辑器会正确接受 setComposingText("")，但 getTextBeforeCursor()
-                // 在调用前后都不暴露 composing span。此时只有调用失败才明确不可继续。
-                if (!composingCallSucceeded) {
-                    return false;
-                }
-                CharSequence visible = connection.getTextBeforeCursor(
-                        entry.shortcut.length(), 0);
-                if (visible != null && visible.length() > 0) {
-                    return false;
-                }
+            // 中文拼音/双拼场景里，sjh 仍处于 composing 状态，光标前看到的可能是
+            // “手机号”等第一候选词，也可能完全不暴露 composing span。
+            //
+            // setComposingText() 会直接替换当前 composing span，因此不需要先让候选词
+            // 上屏，也不需要第二次空格。随后 finishComposingText() 固化展开结果。
+            boolean replaced = connection.setComposingText(entry.text + trigger, 1);
+            if (!replaced) {
+                return false;
             }
-
-            connection.finishComposingText();
-            return connection.commitText(entry.text + trigger, 1);
+            try {
+                connection.finishComposingText();
+            } catch (Throwable ignored) {
+                // setComposingText 已成功时，结束 composing 失败也不应让空格继续落入 stock。
+            }
+            return true;
         } catch (Throwable ignored) {
             return false;
-        } finally {
-            if (batch) {
-                try {
-                    connection.endBatchEdit();
-                } catch (Throwable ignored) {
-                    // 尽力结束批量编辑，不影响键盘主流程。
-                }
-            }
         }
     }
 
@@ -221,22 +260,35 @@ public final class GboardTextExpansionRuntime {
             int selectedCode,
             String eventText) {
         String raw = rawInputText(actionTypeName, selectedCode, eventText);
-        if (raw == null) {
-            // 普通 PRESS 但不是可组成快捷码的字符（例如删除、候选提交等），
-            // 视为当前 raw token 结束，避免跨词误触发。
-            if ("PRESS".equals(actionTypeName)) {
-                clearRawSession(service);
-            }
+        if (raw != null) {
+            // 这是 pointer-owner 记录的兼容补充路径。不要因为中文输入事件本身不携带
+            // ASCII payload 就清空 raw token，否则刚记录的 s/j/h 会在候选生成时被抹掉。
+            appendRawInput(service, raw);
+        }
+    }
+
+    private static void appendRawInput(InputMethodService service, String raw) {
+        if (service == null || raw == null || raw.isEmpty()) {
             return;
         }
-
+        long now = SystemClock.elapsedRealtime();
         synchronized (RAW_SESSIONS) {
             RawShortcutSession session = RAW_SESSIONS.get(service);
-            if (session == null) {
+            if (session == null || now - session.lastUpdatedElapsedMs > RAW_TOKEN_TIMEOUT_MS) {
                 session = new RawShortcutSession();
                 RAW_SESSIONS.put(service, session);
             }
+
+            // 同一个实体按键有时会先从 pointer-owner，再从 input-event 各观察一次。
+            // 极短窗口内的相同字符视为同一次按键，避免 sjh 被记录成 ssjjhh。
+            if (raw.equals(session.lastAppended)
+                    && now - session.lastUpdatedElapsedMs <= DUPLICATE_KEY_WINDOW_MS) {
+                return;
+            }
+
             session.token.append(raw);
+            session.lastAppended = raw;
+            session.lastUpdatedElapsedMs = now;
             if (session.token.length() > GboardTextExpansionSettings.MAX_SHORTCUT_LENGTH) {
                 session.token.delete(
                         0,
@@ -245,10 +297,33 @@ public final class GboardTextExpansionRuntime {
         }
     }
 
+    private static void removeLastRawCharacter(InputMethodService service) {
+        if (service == null) {
+            return;
+        }
+        synchronized (RAW_SESSIONS) {
+            RawShortcutSession session = RAW_SESSIONS.get(service);
+            if (session == null || session.token.length() == 0) {
+                return;
+            }
+            session.token.deleteCharAt(session.token.length() - 1);
+            session.lastAppended = "";
+            session.lastUpdatedElapsedMs = SystemClock.elapsedRealtime();
+        }
+    }
+
     private static String rawToken(InputMethodService service) {
         synchronized (RAW_SESSIONS) {
             RawShortcutSession session = RAW_SESSIONS.get(service);
-            return session == null ? "" : session.token.toString();
+            if (session == null) {
+                return "";
+            }
+            long now = SystemClock.elapsedRealtime();
+            if (now - session.lastUpdatedElapsedMs > RAW_TOKEN_TIMEOUT_MS) {
+                RAW_SESSIONS.remove(service);
+                return "";
+            }
+            return session.token.toString();
         }
     }
 
@@ -319,6 +394,36 @@ public final class GboardTextExpansionRuntime {
         return source.regionMatches(true, offset, suffix, 0, suffix.length());
     }
 
+    private static boolean isDeleteKeyView(View view) {
+        if (view == null || view.getId() == View.NO_ID) {
+            return false;
+        }
+        try {
+            return "key_pos_del".equals(
+                    view.getResources().getResourceEntryName(view.getId()));
+        } catch (Throwable ignored) {
+            return false;
+        }
+    }
+
+    private static InputMethodService findInputMethodService(Context context) {
+        Context current = context;
+        for (int depth = 0; current != null && depth < 12; depth++) {
+            if (current instanceof InputMethodService service) {
+                return service;
+            }
+            if (!(current instanceof ContextWrapper wrapper)) {
+                break;
+            }
+            Context next = wrapper.getBaseContext();
+            if (next == current) {
+                break;
+            }
+            current = next;
+        }
+        return null;
+    }
+
     private static boolean isSensitiveEditor(InputMethodService service) {
         try {
             EditorInfo info = service.getCurrentInputEditorInfo();
@@ -342,5 +447,7 @@ public final class GboardTextExpansionRuntime {
 
     private static final class RawShortcutSession {
         final StringBuilder token = new StringBuilder();
+        String lastAppended = "";
+        long lastUpdatedElapsedMs = SystemClock.elapsedRealtime();
     }
 }

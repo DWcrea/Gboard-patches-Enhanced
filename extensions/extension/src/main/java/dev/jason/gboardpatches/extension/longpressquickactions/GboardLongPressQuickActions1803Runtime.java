@@ -716,6 +716,7 @@ public final class GboardLongPressQuickActions1803Runtime {
             View softKeyView) {
         try {
             GboardGlobeDragRuntime.onPointerOwner(pointerTracker, softKeyView);
+            GboardTextExpansionRuntime.observeSoftKeyPress(pointerTracker, softKeyView);
             if (pointerTracker == null || softKeyView == null
                     || !GboardLongPressQuickActionsRuntimeSettings.isEnabled()) {
                 return;
