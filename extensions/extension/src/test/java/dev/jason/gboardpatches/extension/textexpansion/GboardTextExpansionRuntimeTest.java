@@ -27,6 +27,22 @@ public final class GboardTextExpansionRuntimeTest {
     }
 
     @Test
+    public void rawShortcutMatchSupportsMultipleSavedRulesIndependently() {
+        GboardTextExpansionSettings.Entry phone =
+                new GboardTextExpansionSettings.Entry("sjh", "13800138000");
+        GboardTextExpansionSettings.Entry email =
+                new GboardTextExpansionSettings.Entry("yx", "name@example.com");
+        List<GboardTextExpansionSettings.Entry> entries = List.of(phone, email);
+
+        Assert.assertSame(phone,
+                GboardTextExpansionRuntime.findMatchingEntryForRawToken("sjh", entries));
+        Assert.assertSame(email,
+                GboardTextExpansionRuntime.findMatchingEntryForRawToken("yx", entries));
+        Assert.assertNull(
+                GboardTextExpansionRuntime.findMatchingEntryForRawToken("yxz", entries));
+    }
+
+    @Test
     public void replacingRawShortcutReplacesChineseComposingTextBeforeFirstCandidateCommits() {
         AtomicReference<String> text = new AtomicReference<>("前文");
         AtomicReference<Boolean> composing = new AtomicReference<>(Boolean.TRUE);
