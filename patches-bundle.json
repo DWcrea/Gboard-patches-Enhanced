@@ -1,6 +1,6 @@
 {
-    "created_at": "2026-09-30T12:24:00+08:00",
-    "description": "### 🧪 3.11.0-enhanced.2-dev.4\n\n* **快捷文本首次空格展开修复：** 中文拼音/双拼直接从 SoftKeyView 可见键帽/无障碍标签捕获真实 s/j/h 按键。\n* **候选词无关：** 第一候选无论是 `sjh` 还是“手机号”，目标都是第一次按空格直接展开配置内容。\n* **指针去重：** 同一次触摸只记录一次物理键，结束或取消后自动释放。\n* **全局简体中文：** Gboard Patches 设置页和公开 Patch 中文元数据已统一为简体中文。\n* **密码安全：** 密码输入框自动禁用快捷文本。",
+    "created_at": "2026-09-30T12:24:00",
+    "description": "### 🧪 3.11.0-enhanced.2-dev.4\n\n* **快捷文本首次空格展开修复：** 中文拼音/双拼直接从 SoftKeyView 可见键帽/无障碍标签捕获真实 s/j/h 按键。\n* **候选词无关：** 第一候选无论是 \`sjh\` 还是“手机号”，目标都是第一次按空格直接展开配置内容。\n* **指针去重：** 同一次触摸只记录一次物理键，结束或取消后自动释放。\n* **全局简体中文：** Gboard Patches 设置页和公开 Patch 中文元数据已统一为简体中文。\n* **密码安全：** 密码输入框自动禁用快捷文本。",
     "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.4/patches-3.11.0-enhanced.2-dev.4.mpp",
     "signature_download_url": "",
     "version": "3.11.0-enhanced.2-dev.4"
