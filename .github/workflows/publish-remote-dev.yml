@@ -1,0 +1,57 @@
+name: Publish remote dev bundle
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Build bundle
+        env:
+          GITHUB_ACTOR: ${{ github.repository_owner }}
+          GITHUB_TOKEN: ${{ secrets.MORPHE_PACKAGES_TOKEN }}
+        run: |
+          chmod +x ./gradlew
+          ./gradlew :patches:buildAndroid generatePatchesList
+
+      - name: Publish files to remote-dev
+        shell: bash
+        run: |
+          set -e
+          VERSION="$(sed -nE 's/^\s*version\s*=\s*([^#[:space:]]+).*$/\1/p' gradle.properties | head -n1)"
+          cp "patches/build/libs/patches-$VERSION.mpp" /tmp/patches-latest.mpp
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin remote-dev
+          git checkout remote-dev
+          mkdir -p remote
+          cp /tmp/patches-latest.mpp remote/patches-latest.mpp
+          CREATED_AT="$(date -u +'%Y-%m-%dT%H:%M:%S')"
+          cat > remote/patches-bundle.json <<EOF
+          {
+            "created_at": "$CREATED_AT",
+            "description": "Gboard Patches Enhanced remote dev $VERSION",
+            "download_url": "https://cdn.jsdelivr.net/gh/DWcrea/Gboard-patches-Enhanced@remote-dev/remote/patches-latest.mpp",
+            "signature_download_url": "",
+            "version": "$VERSION"
+          }
+          EOF
+          git add remote/patches-latest.mpp remote/patches-bundle.json
+          git commit -m "remote: publish $VERSION" || exit 0
+          git push origin remote-dev
