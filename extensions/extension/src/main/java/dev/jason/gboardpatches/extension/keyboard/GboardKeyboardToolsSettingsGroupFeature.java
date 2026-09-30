@@ -17,6 +17,7 @@ import dev.jason.gboardpatches.extension.settings.GboardFeatureGroup;
 import dev.jason.gboardpatches.extension.settings.GboardPatchesSettingsContract;
 import dev.jason.gboardpatches.extension.settings.GboardSettingsText;
 import dev.jason.gboardpatches.extension.toprowswipe.GboardTopRowSwipeSettingsFeature;
+import dev.jason.gboardpatches.extension.textexpansion.GboardTextExpansionSettingsFeature;
 import dev.jason.gboardpatches.extension.websearch.GboardFloatingWebSearchSettingsFeature;
 
 public final class GboardKeyboardToolsSettingsGroupFeature
@@ -40,6 +41,7 @@ public final class GboardKeyboardToolsSettingsGroupFeature
                         new GboardTopRowSwipeSettingsFeature(context),
                         new GboardManualIncognitoSettingsFeature(context),
                         new GboardLongPressQuickActionsSettingsFeature(context),
+                        new GboardTextExpansionSettingsFeature(context),
                         new GboardEditingAccessPointsSettingsFeature(context),
                         new GboardCursorTrackpadSettingsFeature(context),
                         new GboardOcrSettingsFeature(context),

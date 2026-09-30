@@ -22,6 +22,7 @@ import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import dev.jason.gboardpatches.extension.zhuyinslide.GboardZhuyinSlideRuntime;
+import dev.jason.gboardpatches.extension.textexpansion.GboardTextExpansionRuntime;
 
 public final class GboardLongPressQuickActions1803Runtime {
     private static final String TAG = "GboardPatches";
@@ -265,6 +266,10 @@ public final class GboardLongPressQuickActions1803Runtime {
                         || selectedCode == 0xFF0E) {
                     eventText = String.valueOf((char) selectedCode);
                 }
+            }
+            if (GboardTextExpansionRuntime.maybeHandleInputEvent(
+                    service, actionTypeName, selectedCode, eventText)) {
+                return true;
             }
             boolean enabled = GboardLongPressQuickActionsRuntimeSettings.isEnabled();
             if (enabled && maybeHandleHalfWidthPunctuationAfterSlideDigit(
