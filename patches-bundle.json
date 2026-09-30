@@ -1,7 +1,7 @@
 {
-    "created_at": "2026-09-30T13:55:00",
-    "description": "### 🧪 3.11.0-enhanced.2-dev.6\n\n* **回滚 dev.5 候选覆盖实验：** 移除会干扰快捷文本首次空格展开的自定义候选层，恢复 dev.4 的输入运行时路径。\n* **保留连续添加修复：** 每次打开快捷文本编辑器都重新读取最新已保存规则，避免第二次及后续添加被旧快照覆盖。\n* **设置即时生效：** 保存、导入或切换快捷文本设置后立即清除运行时缓存。\n* **目标行为：** `sjh` 等快捷码输入后第一次按空格直接展开；密码输入框自动禁用快捷文本。\n* **第一候选文本功能暂缓：** 等基础展开稳定后再通过 Gboard 原生候选链路实现，不再使用覆盖候选栏的方式。",
-    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.6/patches-3.11.0-enhanced.2-dev.6.mpp",
+    "created_at": "2026-09-30T14:02:00",
+    "description": "### 🧪 3.11.0-enhanced.2-dev.7\n\n* **中文候选空格修复：** 识别 Gboard 在中文候选确认路径中使用的 Android `KEYCODE_SPACE=62`，不再把 62 当成字符 `>`。\n* **解决 `sjh → 散户` 类场景：** 即使第一候选已经是有效中文词，第一次按空格也会进入快捷文本匹配。\n* **保留 dev.6 稳定基线：** 继续使用 dev.4 的运行时展开路径，不引入候选栏覆盖层。\n* **保留连续添加修复：** 多次打开编辑器都会读取最新规则，后续新增条目不会被旧快照覆盖。\n* **第一候选文本功能暂缓：** 等空格展开稳定后再研究 Gboard 原生候选注入。",
+    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.7/patches-3.11.0-enhanced.2-dev.7.mpp",
     "signature_download_url": "",
-    "version": "3.11.0-enhanced.2-dev.6"
+    "version": "3.11.0-enhanced.2-dev.7"
 }
