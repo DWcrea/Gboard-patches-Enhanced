@@ -43,6 +43,18 @@ public final class GboardTextExpansionRuntimeTest {
     }
 
     @Test
+    public void keycodeSpaceTriggersExpansionEvenWhenCandidatePayloadIsNotSpace() {
+        Assert.assertEquals(" ",
+                GboardTextExpansionRuntime.triggerText(62, "散户"));
+        Assert.assertEquals(" ",
+                GboardTextExpansionRuntime.triggerText(62, null));
+        Assert.assertEquals(" ",
+                GboardTextExpansionRuntime.triggerText(' ', null));
+        Assert.assertNull(
+                GboardTextExpansionRuntime.triggerText('h', "户"));
+    }
+
+    @Test
     public void replacingRawShortcutReplacesChineseComposingTextBeforeFirstCandidateCommits() {
         AtomicReference<String> text = new AtomicReference<>("前文");
         AtomicReference<Boolean> composing = new AtomicReference<>(Boolean.TRUE);
