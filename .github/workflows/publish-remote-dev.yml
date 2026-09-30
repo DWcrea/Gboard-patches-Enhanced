@@ -68,7 +68,7 @@ jobs:
           {
             "created_at": "$CREATED_AT",
             "description": "Gboard Patches Enhanced remote dev $VERSION",
-            "download_url": "https://cdn.jsdelivr.net/gh/DWcrea/Gboard-patches-Enhanced@remote-dev/remote/patches-latest.mpp",
+            "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v$VERSION/patches-$VERSION.mpp",
             "signature_download_url": "",
             "version": "$VERSION"
           }
