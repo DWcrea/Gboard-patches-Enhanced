@@ -103,7 +103,7 @@ class GboardWebClipboardPatchRegistrySourceTest {
         const val GBOARD_PACKAGE = "com.google.android.inputmethod.latin"
         const val TARGET_VERSION = "18.0.3.954559732-release-arm64-v8a"
         const val WEB_CLIPBOARD_DESCRIPTION =
-            "新增手機自架的 Web Clipboard，支援瀏覽器同步、配對碼與快速設定開關\n" +
+            "添加手机自架的 Web Clipboard，支持浏览器同步、配对码与快速设置开关\n" +
                 "Add the phone-hosted Web Clipboard with browser sync, pairing, and a " +
                 "Quick Settings Tile."
         const val BINDINGS_JSON_PATH =
