@@ -1,0 +1,139 @@
+version=3.11.0-enhanced.2-dev.4
+size=8149064
+sha256=654c2649abc543d81d66f35ae85d1078257a6d587d4d0ecfb0e5e6754376f86f
+
+=== META-INF/MANIFEST.MF ===
+Manifest-Version: 1.0
+Name: Gboard Patches
+Description: Morphe patches for Gboard.
+Version: 3.11.0-enhanced.2-dev.4
+Timestamp: 1790772690980
+Source: https://github.com/jasonwu1994/gboard-patches
+Author: Jason Wu
+Contact: https://github.com/jasonwu1994/gboard-patches/issues
+Website: https://github.com/jasonwu1994/gboard-patches
+License: GPLv3
+Patcher-Version: 1.8.0
+
+
+=== archive entries ===
+Archive:  patches/build/libs/patches-3.11.0-enhanced.2-dev.4.mpp
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  1980-02-01 00:00   META-INF/
+      380  1980-02-01 00:00   META-INF/MANIFEST.MF
+        0  1980-02-01 00:00   META-INF/maven/
+        0  1980-02-01 00:00   META-INF/maven/com.google.code.gson/
+        0  1980-02-01 00:00   META-INF/maven/com.google.code.gson/gson/
+       60  1980-02-01 00:00   META-INF/maven/com.google.code.gson/gson/pom.properties
+    22768  1980-02-01 00:00   META-INF/maven/com.google.code.gson/gson/pom.xml
+     8024  1980-02-01 00:00   META-INF/patches.kotlin_module
+        0  1980-02-01 00:00   META-INF/proguard/
+     3180  1980-02-01 00:00   META-INF/proguard/gson.pro
+        0  1980-02-01 00:00   META-INF/versions/
+        0  1980-02-01 00:00   META-INF/versions/9/
+  1004348  1970-01-01 00:00   classes.dex
+        0  1980-02-01 00:00   com/
+        0  1980-02-01 00:00   com/google/
+        0  1980-02-01 00:00   com/google/gson/
+      291  1980-02-01 00:00   com/google/gson/ExclusionStrategy.class
+     1964  1980-02-01 00:00   com/google/gson/FieldAttributes.class
+      711  1980-02-01 00:00   com/google/gson/FieldNamingPolicy$1.class
+      837  1980-02-01 00:00   com/google/gson/FieldNamingPolicy$2.class
+      914  1980-02-01 00:00   com/google/gson/FieldNamingPolicy$3.class
+      993  1980-02-01 00:00   com/google/gson/FieldNamingPolicy$4.class
+      993  1980-02-01 00:00   com/google/gson/FieldNamingPolicy$5.class
+      993  1980-02-01 00:00   com/google/gson/FieldNamingPolicy$6.class
+      993  1980-02-01 00:00   com/google/gson/FieldNamingPolicy$7.class
+     3351  1980-02-01 00:00   com/google/gson/FieldNamingPolicy.class
+      621  1980-02-01 00:00   com/google/gson/FieldNamingStrategy.class
+     1914  1980-02-01 00:00   com/google/gson/FormattingStyle.class
+     2301  1980-02-01 00:00   com/google/gson/Gson$FutureTypeAdapter.class
+    19237  1980-02-01 00:00   com/google/gson/Gson.class
+    20289  1980-02-01 00:00   com/google/gson/GsonBuilder.class
+      302  1980-02-01 00:00   com/google/gson/InstanceCreator.class
+     5987  1980-02-01 00:00   com/google/gson/JsonArray.class
+      413  1980-02-01 00:00   com/google/gson/JsonDeserializationContext.class
+      510  1980-02-01 00:00   com/google/gson/JsonDeserializer.class
+     4152  1980-02-01 00:00   com/google/gson/JsonElement.class
+      731  1980-02-01 00:00   com/google/gson/JsonIOException.class
+      925  1980-02-01 00:00   com/google/gson/JsonNull.class
+     4909  1980-02-01 00:00   com/google/gson/JsonObject.class
+      732  1980-02-01 00:00   com/google/gson/JsonParseException.class
+     3465  1980-02-01 00:00   com/google/gson/JsonParser.class
+     5893  1980-02-01 00:00   com/google/gson/JsonPrimitive.class
+      301  1980-02-01 00:00   com/google/gson/JsonSerializationContext.class
+      437  1980-02-01 00:00   com/google/gson/JsonSerializer.class
+     2586  1980-02-01 00:00   com/google/gson/JsonStreamParser.class
+      743  1980-02-01 00:00   com/google/gson/JsonSyntaxException.class
+     1135  1980-02-01 00:00   com/google/gson/LongSerializationPolicy$1.class
+     1267  1980-02-01 00:00   com/google/gson/LongSerializationPolicy$2.class
+     1684  1980-02-01 00:00   com/google/gson/LongSerializationPolicy.class
+     1274  1980-02-01 00:00   com/google/gson/ReflectionAccessFilter$1.class
+     1256  1980-02-01 00:00   com/google/gson/ReflectionAccessFilter$2.class
+     1262  1980-02-01 00:00   com/google/gson/ReflectionAccessFilter$3.class
+     1267  1980-02-01 00:00   com/google/gson/ReflectionAccessFilter$4.class
+     1411  1980-02-01 00:00   com/google/gson/ReflectionAccessFilter$FilterResult.class
+     1015  1980-02-01 00:00   com/google/gson/ReflectionAccessFilter.class
+     1096  1980-02-01 00:00   com/google/gson/Strictness.class
+      967  1980-02-01 00:00   com/google/gson/ToNumberPolicy$1.class
+      911  1980-02-01 00:00   com/google/gson/ToNumberPolicy$2.class
+     2226  1980-02-01 00:00   com/google/gson/ToNumberPolicy$3.class
+     1633  1980-02-01 00:00   com/google/gson/ToNumberPolicy$4.class
+     1705  1980-02-01 00:00   com/google/gson/ToNumberPolicy.class
+      256  1980-02-01 00:00   com/google/gson/ToNumberStrategy.class
+      213  1980-02-01 00:00   com/google/gson/TypeAdapter$1.class
+     2293  1980-02-01 00:00   com/google/gson/TypeAdapter$NullSafeTypeAdapter.class
+     3747  1980-02-01 00:00   com/google/gson/TypeAdapter.class
+      384  1980-02-01 00:00   com/google/gson/TypeAdapterFactory.class
+        0  1980-02-01 00:00   com/google/gson/annotations/
+      523  1980-02-01 00:00   com/google/gson/annotations/Expose.class
+      548  1980-02-01 00:00   com/google/gson/annotations/JsonAdapter.class
+      566  1980-02-01 00:00   com/google/gson/annotations/SerializedName.class
+      456  1980-02-01 00:00   com/google/gson/annotations/Since.class
+      456  1980-02-01 00:00   com/google/gson/annotations/Until.class
+      228  1980-02-01 00:00   com/google/gson/annotations/package-info.class
+        0  1980-02-01 00:00   com/google/gson/internal/
+     1411  1980-02-01 00:00   com/google/gson/internal/ConstructorConstructor$InstanceCreatorConstructor.class
+     1082  1980-02-01 00:00   com/google/gson/internal/ConstructorConstructor$ThrowingObjectConstructor.class
+    13399  1980-02-01 00:00   com/google/gson/internal/ConstructorConstructor.class
+     2336  1980-02-01 00:00   com/google/gson/internal/Excluder$1.class
+     6585  1980-02-01 00:00   com/google/gson/internal/Excluder.class
+      395  1980-02-01 00:00   com/google/gson/internal/GsonBuildConfig.class
+     1528  1980-02-01 00:00   com/google/gson/internal/GsonTypes$GenericArrayTypeImpl.class
+     3160  1980-02-01 00:00   com/google/gson/internal/GsonTypes$ParameterizedTypeImpl.class
+     2411  1980-02-01 00:00   com/google/gson/internal/GsonTypes$WildcardTypeImpl.class
+    12434  1980-02-01 00:00   com/google/gson/internal/GsonTypes.class
+     2016  1980-02-01 00:00   com/google/gson/internal/JavaVersion.class
+      484  1980-02-01 00:00   com/google/gson/internal/JsonReaderInternalAccess.class
+     2398  1980-02-01 00:00   com/google/gson/internal/LazilyParsedNumber.class
+      906  1980-02-01 00:00   com/google/gson/internal/LinkedTreeMap$1.class
+     1511  1980-02-01 00:00   com/google/gson/internal/LinkedTreeMap$EntrySet$1.class
+     2055  1980-02-01 00:00   com/google/gson/internal/LinkedTreeMap$EntrySet.class
+     1312  1980-02-01 00:00   com/google/gson/internal/LinkedTreeMap$KeySet$1.class
+     1678  1980-02-01 00:00   com/google/gson/internal/LinkedTreeMap$KeySet.class
+     2025  1980-02-01 00:00   com/google/gson/internal/LinkedTreeMap$LinkedTreeMapIterator.class
+     3593  1980-02-01 00:00   com/google/gson/internal/LinkedTreeMap$Node.class
+    11815  1980-02-01 00:00   com/google/gson/internal/LinkedTreeMap.class
+     3540  1980-02-01 00:00   com/google/gson/internal/NonNullElementWrapperList.class
+     1516  1980-02-01 00:00   com/google/gson/internal/NumberLimits.class
+      262  1980-02-01 00:00   com/google/gson/internal/ObjectConstructor.class
+     1579  1980-02-01 00:00   com/google/gson/internal/PreJava9DateFormatProvider.class
+     1584  1980-02-01 00:00   com/google/gson/internal/Primitives.class
+      282  1980-02-01 00:00   com/google/gson/internal/ReflectionAccessFilterHelper$1.class
+     1498  1980-02-01 00:00   com/google/gson/internal/ReflectionAccessFilterHelper$AccessChecker$1.class
+      955  1980-02-01 00:00   com/google/gson/internal/ReflectionAccessFilterHelper$AccessChecker$2.class
+     1643  1980-02-01 00:00   com/google/gson/internal/ReflectionAccessFilterHelper$AccessChecker.class
+     3007  1980-02-01 00:00   com/google/gson/internal/ReflectionAccessFilterHelper.class
+      219  1980-02-01 00:00   com/google/gson/internal/Streams$1.class
+     1478  1980-02-01 00:00   com/google/gson/internal/Streams$AppendableWriter$CurrentWrite.class
+     2486  1980-02-01 00:00   com/google/gson/internal/Streams$AppendableWriter.class
+     2402  1980-02-01 00:00   com/google/gson/internal/Streams.class
+      701  1980-02-01 00:00   com/google/gson/internal/TroubleshootingGuide.class
+     1187  1980-02-01 00:00   com/google/gson/internal/UnsafeAllocator$1.class
+     1230  1980-02-01 00:00   com/google/gson/internal/UnsafeAllocator$2.class
+     1109  1980-02-01 00:00   com/google/gson/internal/UnsafeAllocator$3.class
+     1210  1980-02-01 00:00   com/google/gson/internal/UnsafeAllocator$4.class
+     3202  1980-02-01 00:00   com/google/gson/internal/UnsafeAllocator.class
+        0  1980-02-01 00:00   com/google/gson/internal/bind/
+     2041  1980-02-01 00:00   com/google/gson/internal/bind/ArrayTypeAdapter$1.class
