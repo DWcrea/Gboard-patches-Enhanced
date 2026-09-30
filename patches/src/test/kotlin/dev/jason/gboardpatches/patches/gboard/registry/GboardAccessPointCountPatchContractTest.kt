@@ -19,7 +19,7 @@ class GboardAccessPointCountPatchContractTest {
         assertSame(gboardAccessPointCountPatch, patch)
         assertTrue(patch.default)
         assertEquals(
-            "自訂 Gboard 頂端工具列項目數量\n" +
+            "自订 Gboard 顶端工具栏项目数量\n" +
                 "Customize the Gboard top toolbar item count.",
             patch.description,
         )
