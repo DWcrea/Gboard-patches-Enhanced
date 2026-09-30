@@ -112,7 +112,7 @@ class GboardLatinGlobePatchContractTest {
         const val GBOARD_PACKAGE = "com.google.android.inputmethod.latin"
         const val TARGET_VERSION = "18.0.3.954559732-release-arm64-v8a"
         const val LATIN_GLOBE_DESCRIPTION =
-            "新增英文鍵盤地球鍵忽略時間覆寫，可獨立控制輸入後切語言延遲\n" +
+            "添加英文键盘地球键忽略时间覆写，可独立控制输入后切语言延迟\n" +
                 "Add an independent English globe key ignore interval override for " +
                 "post-typing language-switch delay."
         const val BINDINGS_PROFILE_PATH =

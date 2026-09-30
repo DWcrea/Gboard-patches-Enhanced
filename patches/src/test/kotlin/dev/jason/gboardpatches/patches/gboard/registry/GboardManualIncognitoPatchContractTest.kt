@@ -15,7 +15,7 @@ class GboardManualIncognitoPatchContractTest {
         val patch = gboardManualIncognitoModePatch
         assertEquals("Incognito Mode Toggle", patch.name)
         assertEquals(
-            "在 Access Point 工具列新增無痕模式切換按鈕，並可設定無痕模式下是否啟用剪貼簿與語音輸入\n" +
+            "在 Access Point 工具栏添加无痕模式切换按钮，并可设置无痕模式下是否激活剪贴板与语音输入\n" +
                 "Add an Incognito toggle to the Access Point toolbar and configure clipboard and voice typing availability while Incognito mode is active.",
             patch.description,
         )

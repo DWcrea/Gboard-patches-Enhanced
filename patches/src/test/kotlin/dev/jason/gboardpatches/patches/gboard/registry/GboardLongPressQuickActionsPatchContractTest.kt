@@ -74,7 +74,7 @@ class GboardLongPressQuickActionsPatchContractTest {
 
     private companion object {
         const val LONG_PRESS_DESCRIPTION =
-            "在英文 QWERTY 與注音鍵盤加入編輯長按快捷鍵，並支援刪除鍵上滑刪除光標前全部內容\n" +
+            "在英文 QWERTY 与注音键盘加入编辑长按快捷键，并支持删除键上滑删除光标前全部内容\n" +
                 "Add long-press editing shortcuts and swipe up from Backspace to delete all text " +
                 "before the cursor while preserving text after it."
     }
