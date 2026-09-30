@@ -53,6 +53,7 @@ jobs:
 
           $actualVersion = $match.Groups[1].Value.Trim()
           $tag = "v$actualVersion"
+          $isPrerelease = $actualVersion -match '-dev\.'
 
           if ($env:EVENT_NAME -eq "push") {
               if ($env:REF_NAME -ne $tag) {
@@ -62,7 +63,7 @@ jobs:
 
           $bundle = Get-Content -LiteralPath "patches-bundle.json" -Raw | ConvertFrom-Json
           if ([string]$bundle.version -ne $actualVersion) {
-              throw "patches-bundle.json version '$($bundle.version)' does not match '$actualVersion'."
+              throw "patches-bundle.json version '$($bundle.version)' does not match '$actualVersion'. Build releases from the matching channel branch: main for stable, dev for prerelease."
           }
 
           $expectedDownloadUrl = "https://github.com/$($env:REPO_SLUG)/releases/download/$tag/patches-$actualVersion.mpp"
@@ -73,8 +74,14 @@ jobs:
               throw "patches-bundle.json signature_download_url must be empty for the public repo."
           }
 
+          $createdAt = [string]$bundle.created_at
+          if ($createdAt -notmatch '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$') {
+              throw "patches-bundle.json created_at must use yyyy-MM-ddTHH:mm:ss with no timezone suffix."
+          }
+
           "version=$actualVersion" >> $env:GITHUB_OUTPUT
           "tag=$tag" >> $env:GITHUB_OUTPUT
+          "prerelease=$($isPrerelease.ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
 
       - name: Prepare release notes
         shell: pwsh
@@ -92,6 +99,6 @@ jobs:
           tag_name: ${{ steps.metadata.outputs.tag }}
           target_commitish: ${{ github.sha }}
           body_path: release-notes.md
-          prerelease: ${{ contains(steps.metadata.outputs.tag, '-dev.') }}
+          prerelease: ${{ steps.metadata.outputs.prerelease }}
           files: |
             patches/build/libs/patches-${{ steps.metadata.outputs.version }}.mpp
