@@ -27,7 +27,7 @@ import org.json.JSONObject;
 public final class GboardCustomThemePreviewRepository {
     public static final String VERSION = "v1";
     public static final String URL =
-            "https://github.com/jasonwu1994/Gboard-patches/releases/download/"
+            "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/"
                     + "custom-theme-previews-v1/custom-theme-previews-v1.zip";
     public static final String SHA256 =
             "368af5064b2e8ed62800417efd6fa015d12c74a94553002823eade85d8213ee9";

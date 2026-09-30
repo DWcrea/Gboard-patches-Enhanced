@@ -127,8 +127,12 @@ final class GboardZhuyinSlideRuntimeSupport {
         return softKeyView == null ? null : softKeyMetadataField.get(softKeyView);
     }
 
+    Object currentOwner(Object tracker) throws ReflectiveOperationException {
+        return tracker == null ? null : pointerCurrentOwnerField.get(tracker);
+    }
+
     boolean hasCurrentOwner(Object tracker) throws ReflectiveOperationException {
-        return tracker != null && pointerCurrentOwnerField.get(tracker) != null;
+        return currentOwner(tracker) != null;
     }
 
     Object pressAction(Object metadata) throws ReflectiveOperationException {

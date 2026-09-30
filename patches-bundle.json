@@ -1,7 +1,7 @@
 {
-    "created_at":  "2026-09-22T06:27:05",
-    "description":  "### ✨ New Features\n\n* **Gboard:** add the `Toolbar Editing Buttons` patch, which adds Select all, Copy, Cut, and Paste actions to the toolbar menu.\n* **Gboard:** add the `Custom Theme` patch, supporting custom ZIP theme imports and a selection of beautiful themes from Rboard's official repository.\n\n### 🐛 Bug Fixes\n\n* **Gboard:** fix an issue where `Custom Symbols` history entries were incorrectly saved to `Emoticon` history.\n\n### ✨ 新功能\n\n* **Gboard:** 新增 `Toolbar Editing Buttons` Patch，將「全選」、「複製」、「剪下」與「貼上」操作加入工具列選單。\n* **Gboard:** 新增 `Custom Theme` Patch，支援匯入自訂 ZIP 主題，也能從 Rboard 官方儲存庫匯入精美主題。\n\n### 🐛 修復\n\n* **Gboard:** 修復 `Custom Symbols` 歷史記錄誤寫入 `Emoticon` 歷史記錄的問題。",
-    "download_url":  "https://github.com/jasonwu1994/Gboard-patches/releases/download/v3.11.0/patches-3.11.0.mpp",
-    "signature_download_url":  "",
-    "version":  "3.11.0"
+    "created_at": "2026-09-30T12:24:00+08:00",
+    "description": "### ✨ Enhanced Features\n\n* **Backspace swipe-up:** delete all text before the cursor while preserving text after it.\n* **Numeric keypad:** support the same Backspace swipe-up behavior on numeric/phone layouts.\n* **Chinese swipe-down digits:** normalize the immediately following full-width `：` / `。` to half-width `:` / `.`.\n\n### ✨ 增强功能\n\n* **删除键上滑：** 删除光标前的全部文本，同时保留光标后的内容。\n* **数字键盘：** 在数字/电话键盘布局中同样支持删除键上滑操作。\n* **中文下滑数字：** 下滑输入数字后，紧接着输入的全角 `：` / `。` 自动转换为半角 `:` / `.`。",
+    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.1/patches-3.11.0-enhanced.1.mpp",
+    "signature_download_url": "",
+    "version": "3.11.0-enhanced.1"
 }

@@ -6,6 +6,8 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.view.View;
+
 import dev.jason.gboardpatches.extension.toprowswipe.GboardTopRowSwipeRuntime;
 
 public final class GboardZhuyinSlideRuntime {
@@ -72,6 +74,17 @@ public final class GboardZhuyinSlideRuntime {
         return metadata != null && Boolean.TRUE.equals(patchedMetadataMarkers.get(metadata));
     }
 
+    /**
+     * Marks metadata that was patched by another feature with a vertical slide action.
+     * This lets the shared pointer-anchor logic keep the original key as the gesture
+     * owner while the finger moves vertically, without enabling Zhuyin slide actions.
+     */
+    public static void markMetadataForVerticalGestureInterop(Object metadata) {
+        if (metadata != null) {
+            patchedMetadataMarkers.put(metadata, Boolean.TRUE);
+        }
+    }
+
     public static void inheritPatchedMetadata(Object source, Object target) {
         if (source == null || target == null || source == target || !isPatchedMetadata(source)) {
             return;
@@ -87,16 +100,41 @@ public final class GboardZhuyinSlideRuntime {
         PointerAnchor anchor = pointerAnchors.get(tracker);
         try {
             GboardZhuyinSlideRuntimeSupport handles = handlesFor(tracker, incomingSoftKeyView);
+
+            // Backspace must remain the owner for the whole drag. On 18.0.3, a normal/slow
+            // upward swipe can reach the neighbouring `l` SoftKeyView before Gboard has
+            // resolved SLIDE_UP. If we let B(...) retarget here, the English QWERTY flick
+            // patch then interprets the same physical motion as `l` -> `L`.
+            //
+            // Capture from the live owner as well as from the initial incoming view. This is
+            // important because this pointer-owner method is often first observed exactly when
+            // Gboard is about to switch from Backspace to the neighbour.
+            Object liveOwner = handles.currentOwner(tracker);
+            if (anchor == null && isDeleteKeyView(liveOwner)) {
+                anchor = new PointerAnchor(liveOwner, true);
+                pointerAnchors.put(tracker, anchor);
+            }
+
             if (anchor == null) {
                 if (handles.hasCurrentOwner(tracker) || incomingSoftKeyView == null) {
                     return false;
                 }
                 Object metadata = handles.currentMetadata(incomingSoftKeyView);
-                if (!isPatchedMetadata(metadata)) {
+                boolean backspace = isDeleteKeyView(incomingSoftKeyView);
+                if (!backspace && !isPatchedMetadata(metadata)) {
                     return false;
                 }
-                anchor = new PointerAnchor(incomingSoftKeyView);
+                anchor = new PointerAnchor(incomingSoftKeyView, backspace);
                 pointerAnchors.put(tracker, anchor);
+            }
+
+            if (anchor.backspace) {
+                // Never retarget an active Backspace pointer onto a letter key. Keeping the
+                // owner fixed lets Gboard's own gesture resolver continue seeing the original
+                // Backspace origin. The long-press quick-actions runtime consumes SLIDE_UP as
+                // clear-all; stock horizontal Backspace gesture-delete remains owned by the
+                // Backspace key rather than a neighbouring letter.
+                return incomingSoftKeyView != null && incomingSoftKeyView != anchor.softKeyView;
             }
 
             Object anchorMetadata = handles.currentMetadata(anchor.softKeyView);
@@ -109,6 +147,18 @@ public final class GboardZhuyinSlideRuntime {
         } catch (Throwable ignored) {
             return false;
         }
+    }
+
+    /** Returns the original Backspace view captured for the active pointer, if any. */
+    public static View backspaceAnchorView(Object tracker) {
+        if (tracker == null) {
+            return null;
+        }
+        PointerAnchor anchor = pointerAnchors.get(tracker);
+        if (anchor == null || !anchor.backspace || !(anchor.softKeyView instanceof View)) {
+            return null;
+        }
+        return (View) anchor.softKeyView;
     }
 
     public static void clearPointerState(Object tracker) {
@@ -143,11 +193,29 @@ public final class GboardZhuyinSlideRuntime {
         }
     }
 
+    private static boolean isDeleteKeyView(Object candidate) {
+        if (!(candidate instanceof View)) {
+            return false;
+        }
+        View view = (View) candidate;
+        if (view.getId() == View.NO_ID) {
+            return false;
+        }
+        try {
+            return "key_pos_del".equals(
+                    view.getResources().getResourceEntryName(view.getId()));
+        } catch (Throwable ignored) {
+            return false;
+        }
+    }
+
     private static final class PointerAnchor {
         final Object softKeyView;
+        final boolean backspace;
 
-        PointerAnchor(Object softKeyView) {
+        PointerAnchor(Object softKeyView, boolean backspace) {
             this.softKeyView = softKeyView;
+            this.backspace = backspace;
         }
     }
 

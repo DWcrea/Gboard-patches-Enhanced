@@ -1,6 +1,9 @@
 package dev.jason.gboardpatches.extension.longpressquickactions;
 
 public final class GboardLongPressQuickActions1803Policy {
+    // Private synthetic keycode consumed by the patch before stock Gboard sees it.
+    public static final int BACKSPACE_SWIPE_UP_CLEAR_ACTION_CODE = -0x6A53;
+
     private static final QuickAction SELECT_ALL = new QuickAction(
             -0x2766, 0x7f0804e3, GboardEditingShortcutPolicy.Shortcut.SELECT_ALL, true);
     private static final QuickAction UNDO = new QuickAction(
@@ -35,6 +38,12 @@ public final class GboardLongPressQuickActions1803Policy {
             return null;
         }
         return Integer.valueOf(action.contextMenuActionId);
+    }
+
+    public static boolean isBackspaceSwipeUpClearEvent(
+            String actionTypeName, int selectedCode) {
+        return "SLIDE_UP".equals(actionTypeName)
+                && selectedCode == BACKSPACE_SWIPE_UP_CLEAR_ACTION_CODE;
     }
 
     public static boolean isQuickActionEvent(int keyId, String pressText,

@@ -1691,8 +1691,8 @@
         <translation locale="zh-Hant">長按編輯快捷鍵</translation>
     </string>
     <string name="gboard_patches_long_press_quick_actions_summary">
-        <translation locale="en">Long-press designated letter keys to show Select all, Undo, Copy, Cut, Paste, and Redo actions.</translation>
-        <translation locale="zh-Hant">長按指定字母鍵，顯示全選、復原、複製、剪下、貼上與重做操作。</translation>
+        <translation locale="en">Long-press designated letter keys for editing actions. Swipe up from Backspace to clear all text.</translation>
+        <translation locale="zh-Hant">長按指定字母鍵執行編輯操作；從刪除鍵向上滑可一鍵清空文字。</translation>
     </string>
     <string name="gboard_patches_long_press_quick_actions_error_title">
         <translation locale="en">Long-Press Editing Shortcuts unavailable</translation>
@@ -1707,8 +1707,8 @@
         <translation locale="zh-Hant">啟用長按編輯快捷鍵</translation>
     </string>
     <string name="gboard_patches_long_press_quick_actions_enabled_summary">
-        <translation locale="en">Reopen the keyboard or switch layouts to fully apply changes.</translation>
-        <translation locale="zh-Hant">重新叫出鍵盤或切換鍵盤版面後會完整套用變更。</translation>
+        <translation locale="en">Reopen the keyboard or switch layouts to fully apply changes. Backspace swipe-up clears the current editor.</translation>
+        <translation locale="zh-Hant">重新叫出鍵盤或切換鍵盤版面後會完整套用變更；刪除鍵上滑會清空目前輸入框。</translation>
     </string>
     <string name="gboard_patches_long_press_quick_actions_globe_drag_title">
         <translation locale="en">Hold and drag from globe key</translation>

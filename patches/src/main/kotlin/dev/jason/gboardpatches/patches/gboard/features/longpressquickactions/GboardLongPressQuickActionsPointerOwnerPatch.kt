@@ -3,8 +3,10 @@ package dev.jason.gboardpatches.patches.gboard.features.longpressquickactions
 import dev.jason.gboardpatches.patches.gboard.shared.generated.GboardVersionBindings
 
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
+import app.morphe.patcher.extensions.InstructionExtensions.addInstructionsWithLabels
 import app.morphe.patcher.util.proxy.mutableTypes.MutableMethod
 import app.morphe.patcher.util.proxy.mutableTypes.MutableMethod.Companion.toMutable
+import app.morphe.patcher.util.smali.ExternalLabel
 import com.android.tools.smali.dexlib2.Opcode
 import com.android.tools.smali.dexlib2.iface.instruction.TwoRegisterInstruction
 import com.android.tools.smali.dexlib2.immutable.ImmutableMethod
@@ -15,6 +17,7 @@ import dev.jason.gboardpatches.patches.gboard.shared.GboardPointerOwnerFeatureSp
 import dev.jason.gboardpatches.patches.gboard.shared.GboardPointerOwnerTransformationContext
 import dev.jason.gboardpatches.patches.gboard.shared.GboardPointerOwnerTransformationAdapter
 import dev.jason.gboardpatches.patches.gboard.shared.isInvoke
+import dev.jason.gboardpatches.patches.gboard.shared.indexOfFirstMethodCall
 import dev.jason.gboardpatches.patches.gboard.shared.returnInstructionIndices
 import dev.jason.gboardpatches.patches.gboard.shared.gboardPointerOwnerFeaturePatch
 import dev.jason.gboardpatches.patches.gboard.shared.runtimeabi.RuntimeAbiCatalog
@@ -73,6 +76,52 @@ internal val gboardLongPressQuickActionsPointerOwnerPatch = gboardPointerOwnerFe
     description = "在 18.0.3 pointer owner 完成後補用 Gboard stock long-press scheduler。",
     spec = gboardLongPressQuickActionsPointerOwnerSpec,
 )
+
+internal fun MutableMethod.applyBackspaceSwipeUpClearDelegate() {
+    val finish = GboardVersionBindings.pointerFinish
+    val finishCallIndex = indexOfFirstMethodCall(
+        definingClass = finish.ownerDescriptor,
+        name = finish.name,
+        returnType = finish.returnType,
+        parameterTypes = finish.parameterTypes,
+    )
+    val preReset = GboardVersionBindings.pointerPreReset
+    val preResetCallIndex = indexOfFirstMethodCall(
+        definingClass = preReset.ownerDescriptor,
+        name = preReset.name,
+        returnType = preReset.returnType,
+        parameterTypes = preReset.parameterTypes,
+    )
+    check(finishCallIndex >= 0) {
+        "Unable to find ${finish.reference} inside pointer owner"
+    }
+    check(preResetCallIndex >= 0 && finishCallIndex < preResetCallIndex) {
+        "Target pointer owner must finish the prior session before resetting tracker state"
+    }
+
+    addInstructions(finishCallIndex, "nop")
+    val continuation = implementation!!.instructions[finishCallIndex]
+    val registers = GboardPointerOwnerRegisterContract.delegateRegisters(
+        implementation!!.registerCount,
+    )
+    val delegate = """
+        ${RuntimeCallEmitter.invoke(
+            RuntimeCallId.LONG_PRESS_QUICK_ACTIONS_RUNTIME_MAYBE_HANDLE_BACKSPACE_SWIPE_UP,
+            "${registers.receiver}, ${registers.softKey}, v0, v1",
+        )}
+
+        move-result v4
+
+        if-eqz v4, :jasondev_continue_backspace_swipe_up
+
+        return-void
+    """.trimIndent()
+    addInstructionsWithLabels(
+        finishCallIndex,
+        delegate,
+        ExternalLabel("jasondev_continue_backspace_swipe_up", continuation),
+    )
+}
 
 internal fun MutableMethod.applyLongPressQuickActionsPointerOwnerDelegate(): MutableMethod {
     val implementation = implementation ?: error("Long-press pointer owner has no implementation")

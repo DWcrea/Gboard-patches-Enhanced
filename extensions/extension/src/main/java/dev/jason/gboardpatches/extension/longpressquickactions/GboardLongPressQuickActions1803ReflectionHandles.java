@@ -51,6 +51,9 @@ public final class GboardLongPressQuickActions1803ReflectionHandles {
     private final Method copyActionMethod;
     private final Method buildActionMethod;
     private final Method scheduleLongPressMethod;
+    private final Field pointerCurrentOwnerField;
+    private final Method pointerCurrentActionMethod;
+    private final Method pointerResolveGestureActionMethod;
     private volatile Field longPressFutureField;
     private final Constructor<?> metadataBuilderConstructor;
     private final Method copyMetadataMethod;
@@ -63,6 +66,7 @@ public final class GboardLongPressQuickActions1803ReflectionHandles {
     private final Class<?> actionEntryClass;
     private final Object pressActionType;
     private final Object longPressActionType;
+    private final Object slideUpActionType;
 
     public GboardLongPressQuickActions1803ReflectionHandles(ClassLoader classLoader)
             throws Throwable {
@@ -110,6 +114,10 @@ public final class GboardLongPressQuickActions1803ReflectionHandles {
         copyActionMethod = actionBuilderClass.getDeclaredMethod("j", actionDefClass);
         buildActionMethod = actionBuilderClass.getDeclaredMethod("c");
         scheduleLongPressMethod = pointerTrackerClass.getDeclaredMethod("y");
+        pointerCurrentOwnerField = pointerTrackerClass.getDeclaredField("m");
+        pointerCurrentActionMethod = pointerTrackerClass.getDeclaredMethod("i");
+        pointerResolveGestureActionMethod = pointerTrackerClass.getDeclaredMethod(
+                "h", float.class, float.class, actionTypeClass);
 
         metadataBuilderConstructor = metadataBuilderClass.getDeclaredConstructor();
         copyMetadataMethod = metadataBuilderClass.getDeclaredMethod("j", actionSetClass);
@@ -142,6 +150,9 @@ public final class GboardLongPressQuickActions1803ReflectionHandles {
                 copyActionMethod,
                 buildActionMethod,
                 scheduleLongPressMethod,
+                pointerCurrentOwnerField,
+                pointerCurrentActionMethod,
+                pointerResolveGestureActionMethod,
                 metadataBuilderConstructor,
                 copyMetadataMethod,
                 putActionMethod,
@@ -152,6 +163,7 @@ public final class GboardLongPressQuickActions1803ReflectionHandles {
 
         pressActionType = enumValue(actionTypeClass, "PRESS");
         longPressActionType = enumValue(actionTypeClass, "LONG_PRESS");
+        slideUpActionType = enumValue(actionTypeClass, "SLIDE_UP");
     }
 
     public Object extractSoftKeyMetadata(Object softKeyView) throws IllegalAccessException {
@@ -184,6 +196,31 @@ public final class GboardLongPressQuickActions1803ReflectionHandles {
             result[index] = entries[index] == null ? 0 : entryKeycodeField.getInt(entries[index]);
         }
         return result;
+    }
+
+    public boolean hasSlideUpAction(Object metadata) throws Throwable {
+        return findExactAction(metadata, slideUpActionType) != null;
+    }
+
+    /**
+     * Installs our synthetic SLIDE_UP action even when the stock Backspace metadata already
+     * defines SLIDE_UP. Backspace on Gboard 18.0.3 may carry a stock vertical action; merely
+     * appending when absent leaves that stock action in control. MetadataBuilder.t(...) is the
+     * same action-map writer used throughout this port, so writing the same action type replaces
+     * the existing entry.
+     */
+    public Object replaceSlideUpAction(Object metadata, int keycode) throws Throwable {
+        if (metadata == null) {
+            return null;
+        }
+        Object slideUpAction = buildSingleEntryAction(slideUpActionType, keycode, null);
+        if (slideUpAction == null) {
+            return null;
+        }
+        Object metadataBuilder = metadataBuilderConstructor.newInstance();
+        copyMetadataMethod.invoke(metadataBuilder, metadata);
+        putActionMethod.invoke(metadataBuilder, slideUpAction);
+        return buildMetadataMethod.invoke(metadataBuilder);
     }
 
     public Object appendShiftChordActions(Object metadata, int downKeycode,
@@ -291,6 +328,23 @@ public final class GboardLongPressQuickActions1803ReflectionHandles {
         if (pointerTracker != null) {
             scheduleLongPressMethod.invoke(pointerTracker);
         }
+    }
+
+    public Object extractPointerCurrentOwner(Object pointerTracker)
+            throws IllegalAccessException {
+        return pointerTracker == null ? null : pointerCurrentOwnerField.get(pointerTracker);
+    }
+
+    public String resolvePointerGestureActionName(
+            Object pointerTracker, float x, float y) throws Throwable {
+        if (pointerTracker == null) {
+            return null;
+        }
+        Object currentAction = pointerCurrentActionMethod.invoke(pointerTracker);
+        Object resolvedAction = pointerResolveGestureActionMethod.invoke(
+                pointerTracker, Float.valueOf(x), Float.valueOf(y), currentAction);
+        return resolvedAction instanceof Enum<?>
+                ? ((Enum<?>) resolvedAction).name() : null;
     }
 
     public boolean cancelScheduledLongPress(Object pointerTracker)

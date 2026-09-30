@@ -1,3 +1,15 @@
+## Local V8 backspace/punctuation refinement
+
+- Backspace swipe-up now deletes only text before the cursor and preserves the suffix.
+- Added numeric/phone keypad Backspace recognition by PRESS carrier code plus a SLIDE_UP metadata fallback.
+- After a slide-down digit, the immediately following colon/period is committed as half-width `:` / `.`.
+
+## Local V7 backspace swipe-up fix
+
+- Reset stale swipe sessions on `pvi.F(... ACTION_DOWN ...)`.
+- Use the first Backspace MOVE event as the coordinate baseline instead of mixing key-local and event coordinates.
+- Prevent V6 horizontal-lock state from leaking into subsequent gestures.
+
 ## [3.11.0](https://github.com/jasonwu1994/Gboard-patches/compare/v3.10.0...v3.11.0) (2026-09-22)
 
 ### ✨ New Features

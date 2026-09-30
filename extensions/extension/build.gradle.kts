@@ -99,7 +99,7 @@ android {
         buildConfigField(
             "String",
             "PATCH_REPOSITORY_URL",
-            "\"https://github.com/jasonwu1994/Gboard-patches\""
+            "\"https://github.com/DWcrea/Gboard-patches-Enhanced\""
         )
         buildConfigField("String", "PATCH_VERSION", "\"${project.version}\"")
     }

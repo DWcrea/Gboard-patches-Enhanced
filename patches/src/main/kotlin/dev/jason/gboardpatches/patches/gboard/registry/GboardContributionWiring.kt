@@ -17,6 +17,7 @@ import dev.jason.gboardpatches.patches.gboard.features.flowmode.gboardFlowModeKe
 import dev.jason.gboardpatches.patches.gboard.features.longpressquickactions.gboardLongPressQuickActionsInputEventPatch
 import dev.jason.gboardpatches.patches.gboard.features.longpressquickactions.gboardLongPressQuickActionsGesturePatch
 import dev.jason.gboardpatches.patches.gboard.features.longpressquickactions.gboardLongPressQuickActionsPointerOwnerPatch
+import dev.jason.gboardpatches.patches.gboard.features.longpressquickactions.gboardLongPressQuickActionsMotionPatch
 import dev.jason.gboardpatches.patches.gboard.features.longpressquickactions.gboardLongPressQuickActionsSoftKeyPatch
 import dev.jason.gboardpatches.patches.gboard.features.ocr.gboardOcrFlagValuePatch
 import dev.jason.gboardpatches.patches.gboard.features.ocr.gboardOcrRuntimePatch
@@ -106,7 +107,11 @@ internal object GboardContributionWiring {
                 arrayOf(gboardLongPressQuickActionsInputEventPatch)
             },
             unit("long_press_editing_shortcuts.pointer") {
-                arrayOf(gboardLongPressQuickActionsPointerOwnerPatch)
+                arrayOf(
+                    gboardLongPressQuickActionsMotionPatch,
+                    gboardLongPressQuickActionsPointerOwnerPatch,
+                    gboardZhuyinSlidePointerAnchorPatch,
+                )
             },
             unit("long_press_editing_shortcuts.gesture") {
                 arrayOf(gboardLongPressQuickActionsGesturePatch)

@@ -152,9 +152,8 @@ val gboardEnglishQwertySlideUppercaseTogglePatch = gboardPublicResourcePatch(
 val gboardLongPressQuickActionsPatch = gboardPublicResourcePatch(
     featureId = "long_press_editing_shortcuts",
     name = "Long-Press Editing Shortcuts",
-    description = "在英文 QWERTY 與注音鍵盤加入全選、復原、複製、剪下、貼上與重做長按快捷鍵\n" +
-        "Add Select all, Undo, Copy, Cut, Paste, and Redo long-press shortcuts " +
-        "to English QWERTY and Zhuyin.",
+    description = "在英文 QWERTY 與注音鍵盤加入編輯長按快捷鍵，並支援刪除鍵上滑一鍵清空\n" +
+        "Add long-press editing shortcuts and swipe up from Backspace to clear the current text field.",
     default = true,
 ) {
     compatibleWith(COMPATIBILITY_GBOARD)

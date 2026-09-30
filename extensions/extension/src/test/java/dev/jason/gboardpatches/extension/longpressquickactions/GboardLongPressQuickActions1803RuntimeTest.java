@@ -1,5 +1,6 @@
 package dev.jason.gboardpatches.extension.longpressquickactions;
 
+import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.InputConnection;
 
 import org.junit.Assert;
@@ -145,6 +146,103 @@ public final class GboardLongPressQuickActions1803RuntimeTest {
         } finally {
             GboardLongPressQuickActionsRuntimeSettings.clearEnabledOverrideForTest();
         }
+    }
+
+    @Test
+    public void swipeDeleteRemovesOnlyTextBeforeCursor() {
+        AtomicInteger selectionStart = new AtomicInteger(-1);
+        AtomicInteger selectionEnd = new AtomicInteger(-1);
+        AtomicInteger emptyCommits = new AtomicInteger();
+        ExtractedText extractedText = new ExtractedText();
+        extractedText.text = "abcDEF";
+        extractedText.startOffset = 0;
+        extractedText.selectionStart = 3;
+        extractedText.selectionEnd = 3;
+
+        InputConnection connection = proxyConnection((proxy, method, args) -> {
+            if ("beginBatchEdit".equals(method.getName())
+                    || "endBatchEdit".equals(method.getName())) {
+                return Boolean.TRUE;
+            }
+            if ("getExtractedText".equals(method.getName())) {
+                return extractedText;
+            }
+            if ("setSelection".equals(method.getName())) {
+                selectionStart.set(((Integer) args[0]).intValue());
+                selectionEnd.set(((Integer) args[1]).intValue());
+                return Boolean.TRUE;
+            }
+            if ("commitText".equals(method.getName())) {
+                if (args[0] != null && args[0].toString().isEmpty()) {
+                    emptyCommits.incrementAndGet();
+                }
+                return Boolean.TRUE;
+            }
+            return defaultValue(method.getReturnType());
+        });
+
+        Assert.assertTrue(GboardLongPressQuickActions1803Runtime.deleteBeforeCursor(connection));
+        Assert.assertEquals(0, selectionStart.get());
+        Assert.assertEquals(3, selectionEnd.get());
+        Assert.assertEquals(1, emptyCommits.get());
+    }
+
+    @Test
+    public void swipeDeleteAtStartIsNoOpSuccess() {
+        AtomicInteger mutations = new AtomicInteger();
+        ExtractedText extractedText = new ExtractedText();
+        extractedText.text = "suffix";
+        extractedText.startOffset = 0;
+        extractedText.selectionStart = 0;
+        extractedText.selectionEnd = 0;
+
+        InputConnection connection = proxyConnection((proxy, method, args) -> {
+            if ("beginBatchEdit".equals(method.getName())
+                    || "endBatchEdit".equals(method.getName())) {
+                return Boolean.TRUE;
+            }
+            if ("getExtractedText".equals(method.getName())) {
+                return extractedText;
+            }
+            if ("setSelection".equals(method.getName())
+                    || "commitText".equals(method.getName())
+                    || "deleteSurroundingText".equals(method.getName())) {
+                mutations.incrementAndGet();
+                return Boolean.TRUE;
+            }
+            return defaultValue(method.getReturnType());
+        });
+
+        Assert.assertTrue(GboardLongPressQuickActions1803Runtime.deleteBeforeCursor(connection));
+        Assert.assertEquals(0, mutations.get());
+    }
+
+    @Test
+    public void slideDownDigitAndHalfWidthPunctuationHelpersMatchRequestedCases() {
+        Assert.assertTrue(GboardLongPressQuickActions1803Runtime
+                .isSlideDownDigitEvent("SLIDE_DOWN", 0, "7"));
+        Assert.assertTrue(GboardLongPressQuickActions1803Runtime
+                .isSlideDownDigitEvent("SLIDE_DOWN", (int) '3', null));
+        Assert.assertFalse(GboardLongPressQuickActions1803Runtime
+                .isSlideDownDigitEvent("PRESS", 0, "7"));
+        Assert.assertEquals(":", GboardLongPressQuickActions1803Runtime
+                .halfWidthPunctuationFor("："));
+        Assert.assertEquals(":", GboardLongPressQuickActions1803Runtime
+                .halfWidthPunctuationFor(":"));
+        Assert.assertEquals(".", GboardLongPressQuickActions1803Runtime
+                .halfWidthPunctuationFor("。"));
+        Assert.assertEquals(".", GboardLongPressQuickActions1803Runtime
+                .halfWidthPunctuationFor("．"));
+        Assert.assertEquals(".", GboardLongPressQuickActions1803Runtime
+                .halfWidthPunctuationFor("."));
+        Assert.assertNull(GboardLongPressQuickActions1803Runtime
+                .halfWidthPunctuationFor("，"));
+    }
+
+    @Test
+    public void recognizedSwipeDeleteConsumesMissingConnection() {
+        Assert.assertTrue(GboardLongPressQuickActions1803Runtime
+                .consumeRecognizedClearAll(() -> null));
     }
 
     private static boolean attemptContextMenuAction(InputConnection connection, int actionId)

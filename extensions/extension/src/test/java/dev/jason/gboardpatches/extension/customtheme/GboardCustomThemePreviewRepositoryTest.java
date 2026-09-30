@@ -45,7 +45,7 @@ public final class GboardCustomThemePreviewRepositoryTest {
     public void releaseCoordinatesArePinnedToPublicRepository() {
         Assert.assertEquals("v1", GboardCustomThemePreviewRepository.VERSION);
         Assert.assertEquals(
-                "https://github.com/jasonwu1994/Gboard-patches/releases/download/"
+                "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/"
                         + "custom-theme-previews-v1/custom-theme-previews-v1.zip",
                 GboardCustomThemePreviewRepository.URL);
         Assert.assertEquals(

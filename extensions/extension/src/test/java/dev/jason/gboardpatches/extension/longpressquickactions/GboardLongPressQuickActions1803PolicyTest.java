@@ -266,4 +266,16 @@ public final class GboardLongPressQuickActions1803PolicyTest {
         }
         throw invocation;
     }
+    @Test
+    public void backspaceSwipeUpClearRequiresExactSyntheticSlideEvent() {
+        Assert.assertTrue(GboardLongPressQuickActions1803Policy.isBackspaceSwipeUpClearEvent(
+                "SLIDE_UP",
+                GboardLongPressQuickActions1803Policy.BACKSPACE_SWIPE_UP_CLEAR_ACTION_CODE));
+        Assert.assertFalse(GboardLongPressQuickActions1803Policy.isBackspaceSwipeUpClearEvent(
+                "PRESS",
+                GboardLongPressQuickActions1803Policy.BACKSPACE_SWIPE_UP_CLEAR_ACTION_CODE));
+        Assert.assertFalse(GboardLongPressQuickActions1803Policy.isBackspaceSwipeUpClearEvent(
+                "SLIDE_UP", 0));
+    }
+
 }
