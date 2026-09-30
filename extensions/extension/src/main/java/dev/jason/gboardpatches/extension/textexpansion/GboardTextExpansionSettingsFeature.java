@@ -134,7 +134,7 @@ public final class GboardTextExpansionSettingsFeature
                     "Gboard",
                     getEntryTitle(),
                     "支持数字、字母、邮箱、电话号码、网址、地址和常用句子。\n"
-                            + "中文输入时会按实际输入的字母匹配，不受第一候选词影响。",
+                            + "中文输入时会按实际输入的字母匹配；完整命中快捷码后，展开文本会显示在第一候选位置。",
                     Collections.emptyList(),
                     Arrays.asList(
                             new GboardPatchesSettingsContract.Section("功能", behavior),
