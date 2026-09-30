@@ -75,7 +75,7 @@ public final class GboardSettingsText {
             return template;
         }
         Locale formatLocale = LANGUAGE_TRADITIONAL_CHINESE.equals(languageTag)
-                ? Locale.TRADITIONAL_CHINESE
+                ? Locale.SIMPLIFIED_CHINESE
                 : Locale.US;
         return String.format(formatLocale, template, args);
     }
@@ -92,7 +92,7 @@ public final class GboardSettingsText {
                 // Static feature initialization can request stable text without a usable context.
             }
         }
-        return isTraditionalChinese(locale)
+        return isChinese(locale)
                 ? LANGUAGE_TRADITIONAL_CHINESE
                 : LANGUAGE_ENGLISH;
     }
@@ -129,25 +129,15 @@ public final class GboardSettingsText {
         }
         if (languageTag != null && !languageTag.isBlank()) {
             Locale locale = Locale.forLanguageTag(languageTag);
-            if (isTraditionalChinese(locale)) {
+            if (isChinese(locale)) {
                 return LANGUAGE_TRADITIONAL_CHINESE;
             }
         }
         return LANGUAGE_ENGLISH;
     }
 
-    private static boolean isTraditionalChinese(Locale locale) {
-        if (locale == null || !"zh".equalsIgnoreCase(locale.getLanguage())) {
-            return false;
-        }
-        String script = locale.getScript();
-        if ("Hant".equalsIgnoreCase(script)) {
-            return true;
-        }
-        String country = locale.getCountry();
-        return "TW".equalsIgnoreCase(country)
-                || "HK".equalsIgnoreCase(country)
-                || "MO".equalsIgnoreCase(country);
+    private static boolean isChinese(Locale locale) {
+        return locale != null && "zh".equalsIgnoreCase(locale.getLanguage());
     }
 
     private static Context requireContext(Context context) {

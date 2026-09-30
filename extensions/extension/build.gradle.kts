@@ -258,7 +258,7 @@ val generateSettingsText = tasks.register("generateSettingsText") {
         require(entries.isNotEmpty()) { "Settings text authority must not be empty" }
 
         val resRoot = generatedSettingsTextResDir.get().asFile
-        mapOf("en" to "values", "zh-Hant" to "values-b+zh+Hant").forEach { (locale, qualifier) ->
+        mapOf("en" to "values", "zh-Hant" to "values-b+zh+Hans").forEach { (locale, qualifier) ->
             val output = resRoot.resolve("$qualifier/gboard_settings_strings.xml")
             output.parentFile.mkdirs()
             output.writeText(buildString {

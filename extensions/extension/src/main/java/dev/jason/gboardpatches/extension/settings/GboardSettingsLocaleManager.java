@@ -44,7 +44,7 @@ public final class GboardSettingsLocaleManager {
             return normalizedPreference;
         }
         Locale locale = deviceLocale != null ? deviceLocale : Locale.getDefault();
-        if (locale != null && isTraditionalChinese(locale)) {
+        if (locale != null && isChinese(locale)) {
             return LANGUAGE_TRADITIONAL_CHINESE;
         }
         if (locale != null && "en".equalsIgnoreCase(locale.getLanguage())) {
@@ -92,23 +92,13 @@ public final class GboardSettingsLocaleManager {
 
     private static Locale toLocale(String languageTag) {
         if (LANGUAGE_TRADITIONAL_CHINESE.equals(languageTag)) {
-            return Locale.forLanguageTag(LANGUAGE_TRADITIONAL_CHINESE);
+            return Locale.SIMPLIFIED_CHINESE;
         }
         return Locale.ENGLISH;
     }
 
-    private static boolean isTraditionalChinese(Locale locale) {
-        if (locale == null || !"zh".equalsIgnoreCase(locale.getLanguage())) {
-            return false;
-        }
-        String script = locale.getScript();
-        if ("Hant".equalsIgnoreCase(script)) {
-            return true;
-        }
-        String country = locale.getCountry();
-        return "TW".equalsIgnoreCase(country)
-                || "HK".equalsIgnoreCase(country)
-                || "MO".equalsIgnoreCase(country);
+    private static boolean isChinese(Locale locale) {
+        return locale != null && "zh".equalsIgnoreCase(locale.getLanguage());
     }
 
     private static String normalizePreferenceValue(String value) {

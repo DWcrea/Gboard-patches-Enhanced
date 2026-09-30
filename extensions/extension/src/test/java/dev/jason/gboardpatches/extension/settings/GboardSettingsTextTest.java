@@ -42,9 +42,9 @@ public final class GboardSettingsTextTest {
                 .putString(GboardPatchesSettings.PREF_KEY_SETTINGS_UI_LANGUAGE,
                         GboardSettingsLocaleManager.LANGUAGE_TRADITIONAL_CHINESE)
                 .commit();
-        Assert.assertEquals("選擇主題來源", GboardSettingsText.get(context,
+        Assert.assertEquals("选择主题来源", GboardSettingsText.get(context,
                 R.string.gboard_patches_custom_theme_source_chooser_title));
-        Assert.assertEquals("選擇要匯入的主題", GboardSettingsText.get(context,
+        Assert.assertEquals("选择要汇入的主题", GboardSettingsText.get(context,
                 R.string.gboard_patches_custom_theme_choose_import));
     }
 
@@ -56,7 +56,7 @@ public final class GboardSettingsTextTest {
                         R.string.gboard_patches_header_title,
                         "en"));
         Assert.assertEquals(
-                "Patch 設定",
+                "Patch 设定",
                 GboardSettingsText.resolveStableTextForTesting(
                         R.string.gboard_patches_header_title,
                         "zh-Hant"));
@@ -65,11 +65,11 @@ public final class GboardSettingsTextTest {
     @Test
     public void localeNormalizationAndFormattingStayBehindTheSeam() {
         Assert.assertEquals(
-                "跟隨系統（繁體中文）",
+                "跟随系统（简体中文）",
                 GboardSettingsText.resolveStableTextForTesting(
                         R.string.gboard_patches_language_system_value,
-                        "zh-TW",
-                        "繁體中文"));
+                        "zh-CN",
+                        "简体中文"));
         Assert.assertEquals(
                 "System default (English)",
                 GboardSettingsText.resolveStableTextForTesting(
@@ -108,7 +108,7 @@ public final class GboardSettingsTextTest {
                         "en",
                         2));
         Assert.assertEquals(
-                "2 分鐘",
+                "2 分钟",
                 GboardSettingsText.resolveStableQuantityForTesting(
                         R.plurals.gboard_patches_minutes,
                         "zh-Hant",
@@ -116,7 +116,7 @@ public final class GboardSettingsTextTest {
     }
 
     @Test
-    public void everyGeneratedSettingsStringHasEnglishAndTraditionalChineseCoverage()
+    public void everyGeneratedSettingsStringHasEnglishAndSimplifiedChineseCoverage()
             throws Exception {
         for (Field field : R.string.class.getDeclaredFields()) {
             if (!Modifier.isStatic(field.getModifiers()) || field.getType() != int.class) {
