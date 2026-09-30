@@ -6,6 +6,8 @@ import android.inputmethodservice.InputMethodService;
 import android.os.SystemClock;
 import android.text.InputType;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 
@@ -30,6 +32,8 @@ public final class GboardTextExpansionRuntime {
 
     private static final Map<InputMethodService, RawShortcutSession> RAW_SESSIONS =
             Collections.synchronizedMap(new WeakHashMap<>());
+    private static final Map<Object, Boolean> CAPTURED_POINTERS =
+            Collections.synchronizedMap(new WeakHashMap<>());
 
     private GboardTextExpansionRuntime() {
     }
@@ -44,6 +48,14 @@ public final class GboardTextExpansionRuntime {
     public static void observeSoftKeyPress(Object pointerTracker, View softKeyView) {
         if (softKeyView == null) {
             return;
+        }
+        if (pointerTracker != null) {
+            synchronized (CAPTURED_POINTERS) {
+                if (Boolean.TRUE.equals(CAPTURED_POINTERS.get(pointerTracker))) {
+                    return;
+                }
+                CAPTURED_POINTERS.put(pointerTracker, Boolean.TRUE);
+            }
         }
         try {
             InputMethodService service = findInputMethodService(softKeyView.getContext());
@@ -75,6 +87,12 @@ public final class GboardTextExpansionRuntime {
             String pressText = handles.extractPressText(metadata);
             int pressCode = handles.extractPressCarrierCode(metadata);
             String raw = rawInputText("PRESS", pressCode, pressText);
+
+            // 部分中文拼音/双拼布局的 PRESS metadata 不直接暴露 ASCII 字母。
+            // 这时从真实键帽/无障碍标签回退读取 s、j、h 等物理键字符。
+            if (raw == null) {
+                raw = visibleAsciiKeyLabel(softKeyView);
+            }
             if (raw != null) {
                 appendRawInput(service, raw);
                 return;
@@ -85,6 +103,15 @@ public final class GboardTextExpansionRuntime {
             }
         } catch (Throwable ignored) {
             // 原始按键观察失败时直接回退到普通 Gboard 行为，不能影响键盘主流程。
+        }
+    }
+
+    public static void onPointerFinished(Object pointerTracker) {
+        if (pointerTracker == null) {
+            return;
+        }
+        synchronized (CAPTURED_POINTERS) {
+            CAPTURED_POINTERS.remove(pointerTracker);
         }
     }
 
@@ -392,6 +419,46 @@ public final class GboardTextExpansionRuntime {
         }
         int offset = source.length() - suffix.length();
         return source.regionMatches(true, offset, suffix, 0, suffix.length());
+    }
+
+    private static String visibleAsciiKeyLabel(View view) {
+        if (view == null) {
+            return null;
+        }
+        try {
+            String description = singleShortcutChar(view.getContentDescription());
+            if (description != null) {
+                return description;
+            }
+        } catch (Throwable ignored) {
+            // 继续检查键帽文本。
+        }
+        if (view instanceof TextView textView) {
+            String direct = singleShortcutChar(textView.getText());
+            if (direct != null) {
+                return direct;
+            }
+        }
+        if (view instanceof ViewGroup group) {
+            for (int index = 0; index < group.getChildCount(); index++) {
+                String nested = visibleAsciiKeyLabel(group.getChildAt(index));
+                if (nested != null) {
+                    return nested;
+                }
+            }
+        }
+        return null;
+    }
+
+    private static String singleShortcutChar(CharSequence value) {
+        if (value == null) {
+            return null;
+        }
+        String text = value.toString().trim();
+        if (text.length() != 1) {
+            return null;
+        }
+        return isShortcutInputChar(text.charAt(0)) ? text : null;
     }
 
     private static boolean isDeleteKeyView(View view) {
