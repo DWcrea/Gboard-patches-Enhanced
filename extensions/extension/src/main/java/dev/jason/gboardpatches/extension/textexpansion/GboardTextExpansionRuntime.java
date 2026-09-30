@@ -29,6 +29,9 @@ import dev.jason.gboardpatches.extension.longpressquickactions.GboardLongPressQu
 public final class GboardTextExpansionRuntime {
     private static final long RAW_TOKEN_TIMEOUT_MS = 15_000L;
     private static final long DUPLICATE_KEY_WINDOW_MS = 35L;
+    // Gboard's SoftKey metadata uses Android key codes for some keys. Space is 62
+    // (KeyEvent.KEYCODE_SPACE), not the Unicode code point 32.
+    private static final int KEYCODE_SPACE = 62;
 
     private static final Map<InputMethodService, RawShortcutSession> RAW_SESSIONS =
             Collections.synchronizedMap(new WeakHashMap<>());
@@ -391,11 +394,21 @@ public final class GboardTextExpansionRuntime {
                 || value == '_';
     }
 
-    private static String triggerText(int selectedCode, String eventText) {
+    static String triggerText(int selectedCode, String eventText) {
         if (eventText != null && eventText.length() == 1
                 && isDelimiter(eventText.charAt(0))) {
             return eventText;
         }
+
+        // In Chinese composing/candidate-confirmation paths, Gboard can keep the visible
+        // candidate text in the payload while the selected entry still carries Android's
+        // KEYCODE_SPACE (62). Treat that carrier code as a real space trigger before
+        // interpreting selectedCode as a Unicode character. Without this, 62 becomes '>'
+        // and a shortcut such as "sjh" can lose to the first Chinese candidate (e.g. "散户").
+        if (selectedCode == KEYCODE_SPACE) {
+            return " ";
+        }
+
         if (selectedCode >= 0 && selectedCode <= Character.MAX_VALUE) {
             char value = (char) selectedCode;
             if (isDelimiter(value)) {
