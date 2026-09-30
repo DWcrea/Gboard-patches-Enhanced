@@ -1,5 +1,6 @@
 package dev.jason.gboardpatches.extension.longpressquickactions;
 
+import dev.jason.gboardpatches.extension.textexpansion.GboardTextExpansionRuntime;
 import android.inputmethodservice.InputMethodService;
 import android.os.SystemClock;
 import android.util.Log;
@@ -316,6 +317,7 @@ public final class GboardGlobeDragRuntime {
     }
 
     public static void onPointerFinish(Object tracker) {
+        GboardTextExpansionRuntime.onPointerFinished(tracker);
         if (tracker == null) {
             return;
         }
@@ -345,6 +347,7 @@ public final class GboardGlobeDragRuntime {
     }
 
     public static void onPointerCancel(Object tracker) {
+        GboardTextExpansionRuntime.onPointerFinished(tracker);
         if (tracker == null) {
             return;
         }
