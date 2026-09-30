@@ -84,7 +84,7 @@ public final class GboardTextExpansionSettingsFeature
                     "编辑快捷文本",
                     "每行一条：快捷码=展开文本。例如：sjh=13800138000",
                     enabled,
-                    new EditRulesAction(host, entries)));
+                    new EditRulesAction(host)));
             rules.add(new GboardPatchesSettingsContract.InfoRow(
                     "当前规则",
                     entries.size() + " / " + GboardTextExpansionSettings.MAX_ENTRIES,
@@ -155,12 +155,9 @@ public final class GboardTextExpansionSettingsFeature
 
     private static final class EditRulesAction implements Runnable {
         private final GboardPatchesSettingsContract.FeatureHost host;
-        private final List<GboardTextExpansionSettings.Entry> entries;
 
-        EditRulesAction(GboardPatchesSettingsContract.FeatureHost host,
-                List<GboardTextExpansionSettings.Entry> entries) {
+        EditRulesAction(GboardPatchesSettingsContract.FeatureHost host) {
             this.host = host;
-            this.entries = entries;
         }
 
         @Override
@@ -169,8 +166,17 @@ public final class GboardTextExpansionSettingsFeature
                     || activity.isFinishing()) {
                 return;
             }
+
+            // Always reopen the editor from the latest persisted rules instead of the
+            // screen snapshot captured when the row was first rendered. This prevents a
+            // fast second edit from reopening stale content and overwriting the previous save.
+            SharedPreferences preferences = GboardTextExpansionSettings.preferences(activity);
+            GboardTextExpansionSettings.ensureDefaults(preferences);
+            List<GboardTextExpansionSettings.Entry> currentEntries =
+                    GboardTextExpansionSettings.readEntries(preferences);
+
             GboardPatchesSettingsContract.showManagedDialog(host, onDismiss ->
-                    showEditorDialog(activity, host, entries, onDismiss));
+                    showEditorDialog(activity, host, currentEntries, onDismiss));
         }
     }
 
