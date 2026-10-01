@@ -1,5 +1,6 @@
 package dev.jason.gboardpatches.extension.textexpansion;
 
+import android.view.KeyEvent;
 import android.view.inputmethod.InputConnection;
 
 import org.junit.Assert;
@@ -40,6 +41,36 @@ public final class GboardTextExpansionRuntimeTest {
                 GboardTextExpansionRuntime.findMatchingEntryForRawToken("yx", entries));
         Assert.assertNull(
                 GboardTextExpansionRuntime.findMatchingEntryForRawToken("yxz", entries));
+    }
+
+    @Test
+    public void keyCodesAreNotMisreadAsUnicodeCharacters() {
+        Assert.assertEquals("s",
+                GboardTextExpansionRuntime.rawInputText(
+                        "PRESS", KeyEvent.KEYCODE_S, "s"));
+        Assert.assertEquals("s",
+                GboardTextExpansionRuntime.rawInputText(
+                        "PRESS", KeyEvent.KEYCODE_S, null));
+
+        // Regression from the device diagnostic log: Backspace(67) used to become 'C'.
+        Assert.assertNull(
+                GboardTextExpansionRuntime.rawInputText(
+                        "PRESS", KeyEvent.KEYCODE_DEL, null));
+        Assert.assertNull(
+                GboardTextExpansionRuntime.rawInputText(
+                        "PRESS", KeyEvent.KEYCODE_ENTER, null));
+
+        // Regression from the device diagnostic log: KEYCODE_D=32 was cast to Unicode space.
+        Assert.assertNull(
+                GboardTextExpansionRuntime.triggerText(KeyEvent.KEYCODE_D, "d"));
+        Assert.assertNull(
+                GboardTextExpansionRuntime.triggerText(KeyEvent.KEYCODE_A, "a"));
+        Assert.assertEquals(" ",
+                GboardTextExpansionRuntime.triggerText(KeyEvent.KEYCODE_SPACE, " "));
+        Assert.assertEquals(" ",
+                GboardTextExpansionRuntime.triggerText(KeyEvent.KEYCODE_SPACE, null));
+        Assert.assertEquals("\n",
+                GboardTextExpansionRuntime.triggerText(KeyEvent.KEYCODE_ENTER, null));
     }
 
     @Test
