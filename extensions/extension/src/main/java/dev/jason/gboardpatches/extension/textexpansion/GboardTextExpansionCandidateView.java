@@ -15,30 +15,37 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * dev.21 first-candidate preview.
+ * dev.22 native first-candidate preview.
  *
- * dev.20 proved that the native first-candidate TextView can be found and rewritten, but device
- * testing showed that Gboard immediately rebound the same TextView afterwards, producing only a
- * brief flash. dev.21 keeps the same native-view strategy and adds a small TextWatcher that
- * reapplies the expansion whenever Gboard rewrites that slot while the shortcut remains active.
+ * Device diagnostics from dev.21 showed an exact native target, but no TextWatcher rebound events
+ * even though the replacement text only flashed briefly. That means Gboard is replacing/recycling
+ * the candidate View object rather than simply calling setText() on the same TextView.
  *
- * The candidate's own visual style is never replaced. A transparent click hitbox is still used so
- * accepting the expansion does not overwrite Gboard's original click listener. Space/Enter/
- * punctuation expansion remains independent and unchanged.
+ * This implementation keeps the dev.21 same-view TextWatcher and adds short-lived recapture probes
+ * after an exact shortcut match. If Gboard swaps the first candidate View, the new native slot is
+ * detected and rebound before/around the following frame. No custom visual candidate is drawn.
+ * Space/Enter/punctuation expansion remains fully independent and unchanged.
  */
 final class GboardTextExpansionCandidateView {
     private static final String HITBOX_TAG =
-            "gboard-patches-text-expansion-native-candidate-hitbox-v2";
+            "gboard-patches-text-expansion-native-candidate-hitbox-v3";
     private static final Object LOCK = new Object();
+    private static final long[] RECAPTURE_DELAYS_MS = {
+            24L, 48L, 80L, 128L, 192L, 288L, 416L, 600L, 850L, 1200L, 1800L
+    };
 
     private static WeakReference<FrameLayout> activeHost = new WeakReference<>(null);
     private static WeakReference<TextView> activeTextView = new WeakReference<>(null);
     private static WeakReference<View> activeHitbox = new WeakReference<>(null);
     private static CharSequence originalText = "";
     private static String activeDisplay = "";
+    private static Runnable activeAcceptAction;
     private static TextWatcher activeWatcher;
     private static boolean internalTextChange;
+    private static long generation;
     private static int reboundCount;
+    private static int recaptureCount;
+    private static int probeNoneCount;
 
     private GboardTextExpansionCandidateView() {
     }
@@ -54,7 +61,6 @@ final class GboardTextExpansionCandidateView {
             return;
         }
         try {
-            // Let Gboard finish the immediate candidate/layout pass first.
             anchor.post(() -> showNow(anchor, display, acceptAction));
         } catch (Throwable ignored) {
             // Candidate preview is optional and must never affect typing.
@@ -64,6 +70,7 @@ final class GboardTextExpansionCandidateView {
     static void hide() {
         View callbackView;
         synchronized (LOCK) {
+            generation++;
             callbackView = activeHitbox.get();
             if (callbackView == null) {
                 callbackView = activeTextView.get();
@@ -92,58 +99,218 @@ final class GboardTextExpansionCandidateView {
                 return;
             }
 
+            long currentGeneration;
             synchronized (LOCK) {
-                TextView current = activeTextView.get();
-                View hitbox = activeHitbox.get();
-                if (current == placement.textView
-                        && current.isAttachedToWindow()
-                        && activeDisplay.equals(display)) {
-                    ensureDisplay(current, display, "refresh");
-                    bindClick(hitbox, acceptAction);
-                    return;
-                }
+                generation++;
+                currentGeneration = generation;
+                activeDisplay = display;
+                activeAcceptAction = acceptAction;
+                reboundCount = 0;
+                recaptureCount = 0;
+                probeNoneCount = 0;
             }
 
+            installPlacement(placement, display, acceptAction, false);
+            scheduleRecaptureProbes(placement.host, currentGeneration);
+        } catch (Throwable throwable) {
+            diag("NATIVE_CANDIDATE exception=" + throwable.getClass().getSimpleName());
             hideNow();
+        }
+    }
 
-            TextView candidate = placement.textView;
-            CharSequence previous = candidate.getText();
+    private static void scheduleRecaptureProbes(FrameLayout host, long expectedGeneration) {
+        try {
+            host.postOnAnimation(() -> probeForReplacement(host, expectedGeneration, "frame"));
+            for (long delay : RECAPTURE_DELAYS_MS) {
+                host.postDelayed(
+                        () -> probeForReplacement(host, expectedGeneration, "delay"), delay);
+            }
+        } catch (Throwable ignored) {
+            // Optional UI only.
+        }
+    }
 
-            View hitbox = new View(placement.host.getContext());
-            hitbox.setTag(HITBOX_TAG);
-            hitbox.setBackgroundColor(Color.TRANSPARENT);
-            hitbox.setClickable(true);
-            hitbox.setFocusable(true);
-            hitbox.setContentDescription("快捷文本：" + display);
-            bindClick(hitbox, acceptAction);
+    private static void probeForReplacement(
+            FrameLayout host, long expectedGeneration, String reason) {
+        String display;
+        Runnable acceptAction;
+        TextView previous;
+        synchronized (LOCK) {
+            if (generation != expectedGeneration
+                    || activeHost.get() != host
+                    || activeDisplay.isEmpty()) {
+                return;
+            }
+            display = activeDisplay;
+            acceptAction = activeAcceptAction;
+            previous = activeTextView.get();
+        }
+        if (!host.isAttachedToWindow()) {
+            return;
+        }
 
+        NativePlacement placement;
+        try {
+            placement = resolveNativePlacement(host);
+        } catch (Throwable throwable) {
+            diag("NATIVE_CANDIDATE probe exception="
+                    + throwable.getClass().getSimpleName());
+            return;
+        }
+
+        if (placement == null) {
+            synchronized (LOCK) {
+                if (generation == expectedGeneration && probeNoneCount < 3) {
+                    probeNoneCount++;
+                    diag("NATIVE_CANDIDATE probe=none count=" + probeNoneCount);
+                }
+            }
+            return;
+        }
+
+        if (placement.textView != previous
+                || previous == null
+                || !previous.isAttachedToWindow()
+                || previous.getVisibility() != View.VISIBLE) {
+            synchronized (LOCK) {
+                if (generation != expectedGeneration) {
+                    return;
+                }
+                recaptureCount++;
+                if (recaptureCount <= 5) {
+                    diag("NATIVE_CANDIDATE recapture=" + recaptureCount
+                            + " reason=" + reason
+                            + " old=" + viewIdentity(previous)
+                            + " new=" + viewIdentity(placement.textView));
+                }
+            }
+            installPlacement(placement, display, acceptAction, true);
+            return;
+        }
+
+        ensureDisplay(previous, display, "probe");
+        updateHitboxBounds(placement);
+    }
+
+    private static void installPlacement(
+            NativePlacement placement,
+            String display,
+            Runnable acceptAction,
+            boolean recapture) {
+        TextView oldTextView;
+        View oldHitbox;
+        TextWatcher oldWatcher;
+        CharSequence oldOriginal;
+        String oldDisplay;
+        synchronized (LOCK) {
+            oldTextView = activeTextView.get();
+            oldHitbox = activeHitbox.get();
+            oldWatcher = activeWatcher;
+            oldOriginal = originalText;
+            oldDisplay = activeDisplay;
+        }
+
+        if (oldTextView == placement.textView && oldTextView != null) {
+            synchronized (LOCK) {
+                activeHost = new WeakReference<>(placement.host);
+                activeDisplay = display;
+                activeAcceptAction = acceptAction;
+            }
+            bindClick(oldHitbox, acceptAction);
+            ensureDisplay(oldTextView, display, recapture ? "recapture-same" : "refresh");
+            updateHitboxBounds(placement);
+            return;
+        }
+
+        if (oldTextView != null && oldWatcher != null) {
+            try {
+                oldTextView.removeTextChangedListener(oldWatcher);
+            } catch (Throwable ignored) {
+                // Optional UI only.
+            }
+        }
+        removeView(oldHitbox);
+
+        // If the old native View still exists somewhere in the hierarchy, restore its previous
+        // text before abandoning it. A detached/recycled View is left alone.
+        try {
+            if (oldTextView != null
+                    && oldTextView.isAttachedToWindow()
+                    && oldDisplay != null
+                    && oldDisplay.contentEquals(oldTextView.getText())) {
+                setTextInternally(oldTextView, oldOriginal);
+            }
+        } catch (Throwable ignored) {
+            // Optional UI only.
+        }
+
+        TextView candidate = placement.textView;
+        CharSequence previousText = candidate.getText();
+        View hitbox = createHitbox(placement, display, acceptAction);
+        TextWatcher watcher = createStickyWatcher(candidate);
+
+        synchronized (LOCK) {
+            activeHost = new WeakReference<>(placement.host);
+            activeTextView = new WeakReference<>(candidate);
+            activeHitbox = new WeakReference<>(hitbox);
+            originalText = previousText;
+            activeDisplay = display;
+            activeAcceptAction = acceptAction;
+            activeWatcher = watcher;
+        }
+
+        try {
+            candidate.addTextChangedListener(watcher);
+        } catch (Throwable ignored) {
+            // The recapture probes remain available even if TextWatcher cannot be attached.
+        }
+        ensureDisplay(candidate, display, recapture ? "recapture" : "initial");
+
+        if (!recapture) {
+            diag("NATIVE_CANDIDATE target=" + viewName(candidate)
+                    + " identity=" + viewIdentity(candidate)
+                    + " textLen=" + display.length()
+                    + " bounds=" + placement.width + "x" + placement.height);
+        }
+    }
+
+    private static View createHitbox(
+            NativePlacement placement, String display, Runnable acceptAction) {
+        View hitbox = new View(placement.host.getContext());
+        hitbox.setTag(HITBOX_TAG);
+        hitbox.setBackgroundColor(Color.TRANSPARENT);
+        hitbox.setClickable(true);
+        hitbox.setFocusable(true);
+        hitbox.setContentDescription("快捷文本：" + display);
+        bindClick(hitbox, acceptAction);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                Math.max(1, placement.width),
+                Math.max(1, placement.height));
+        params.leftMargin = placement.left;
+        params.topMargin = placement.top;
+        placement.host.addView(hitbox, params);
+        hitbox.bringToFront();
+        return hitbox;
+    }
+
+    private static void updateHitboxBounds(NativePlacement placement) {
+        View hitbox;
+        synchronized (LOCK) {
+            hitbox = activeHitbox.get();
+        }
+        if (hitbox == null || hitbox.getParent() != placement.host) {
+            return;
+        }
+        try {
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                     Math.max(1, placement.width),
                     Math.max(1, placement.height));
             params.leftMargin = placement.left;
             params.topMargin = placement.top;
-            placement.host.addView(hitbox, params);
+            hitbox.setLayoutParams(params);
             hitbox.bringToFront();
-
-            TextWatcher watcher = createStickyWatcher(candidate);
-            synchronized (LOCK) {
-                activeHost = new WeakReference<>(placement.host);
-                activeTextView = new WeakReference<>(candidate);
-                activeHitbox = new WeakReference<>(hitbox);
-                originalText = previous;
-                activeDisplay = display;
-                activeWatcher = watcher;
-                reboundCount = 0;
-            }
-            candidate.addTextChangedListener(watcher);
-            ensureDisplay(candidate, display, "initial");
-
-            diag("NATIVE_CANDIDATE target=" + viewName(candidate)
-                    + " textLen=" + display.length()
-                    + " bounds=" + placement.width + "x" + placement.height);
-        } catch (Throwable throwable) {
-            diag("NATIVE_CANDIDATE exception=" + throwable.getClass().getSimpleName());
-            hideNow();
+        } catch (Throwable ignored) {
+            // Optional UI only.
         }
     }
 
@@ -169,9 +336,6 @@ final class GboardTextExpansionCandidateView {
                 if (desired == null || desired.isEmpty() || desired.contentEquals(editable)) {
                     return;
                 }
-
-                // Gboard has rebound the native slot after our initial write. Reapply on the next
-                // main-loop turn to avoid mutating text recursively inside Gboard's own binding.
                 try {
                     candidate.post(() -> {
                         String currentDesired;
@@ -207,13 +371,19 @@ final class GboardTextExpansionCandidateView {
             return;
         }
         try {
-            synchronized (LOCK) {
-                internalTextChange = true;
-            }
-            candidate.setText(display);
+            setTextInternally(candidate, display);
         } catch (Throwable throwable) {
             diag("NATIVE_CANDIDATE setText=" + reason + " exception="
                     + throwable.getClass().getSimpleName());
+        }
+    }
+
+    private static void setTextInternally(TextView view, CharSequence text) {
+        synchronized (LOCK) {
+            internalTextChange = true;
+        }
+        try {
+            view.setText(text);
         } finally {
             synchronized (LOCK) {
                 internalTextChange = false;
@@ -240,6 +410,7 @@ final class GboardTextExpansionCandidateView {
         String displayed;
         TextWatcher watcher;
         synchronized (LOCK) {
+            generation++;
             host = activeHost.get();
             textView = activeTextView.get();
             hitbox = activeHitbox.get();
@@ -252,8 +423,11 @@ final class GboardTextExpansionCandidateView {
             activeHitbox.clear();
             originalText = "";
             activeDisplay = "";
+            activeAcceptAction = null;
             activeWatcher = null;
             reboundCount = 0;
+            recaptureCount = 0;
+            probeNoneCount = 0;
         }
 
         if (textView != null && watcher != null) {
@@ -270,22 +444,14 @@ final class GboardTextExpansionCandidateView {
         }
 
         try {
-            // Restore only if our expansion is still visible. If Gboard has already rebound a
-            // newer candidate, never overwrite it with stale text.
             if (textView != null
                     && textView.isAttachedToWindow()
+                    && displayed != null
                     && displayed.contentEquals(textView.getText())) {
-                synchronized (LOCK) {
-                    internalTextChange = true;
-                }
-                textView.setText(restoreText);
+                setTextInternally(textView, restoreText);
             }
         } catch (Throwable ignored) {
             // Restoring preview state must never affect normal typing.
-        } finally {
-            synchronized (LOCK) {
-                internalTextChange = false;
-            }
         }
     }
 
@@ -439,7 +605,7 @@ final class GboardTextExpansionCandidateView {
             int minimumTop = hostScreenTop + host.getHeight() / 3;
             if (location[1] >= minimumTop
                     && location[1] + current.getHeight()
-                    >= hostBottom - dp(host, 48)) {
+                    >= hostBottom - dp(host.getContext(), 48)) {
                 bestScreenTop = Math.min(bestScreenTop, location[1]);
             }
         }
@@ -512,6 +678,11 @@ final class GboardTextExpansionCandidateView {
         return view.getClass().getName();
     }
 
+    private static String viewIdentity(View view) {
+        return view == null ? "null"
+                : viewName(view) + "@" + Integer.toHexString(System.identityHashCode(view));
+    }
+
     private static int clamp(int value, int min, int max) {
         return Math.max(min, Math.min(max, value));
     }
@@ -519,6 +690,12 @@ final class GboardTextExpansionCandidateView {
     private static int dp(View view, int value) {
         float density = view != null
                 ? view.getResources().getDisplayMetrics().density : 1f;
+        return Math.max(1, Math.round(value * density));
+    }
+
+    private static int dp(android.content.Context context, int value) {
+        float density = context != null
+                ? context.getResources().getDisplayMetrics().density : 1f;
         return Math.max(1, Math.round(value * density));
     }
 
