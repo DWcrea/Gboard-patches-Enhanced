@@ -1,6 +1,8 @@
 package dev.jason.gboardpatches.extension.textexpansion;
 
 import android.graphics.Color;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -13,20 +15,20 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * dev.20 first-candidate preview.
+ * dev.21 first-candidate preview.
  *
- * Instead of drawing a styled floating TextView over Gboard, this implementation temporarily
- * reuses the text of Gboard's own first visible candidate slot. A transparent click hitbox is
- * placed over the native slot so tapping still accepts the Text Expansion entry without
- * replacing Gboard's original click listener. When the shortcut stops matching, the original
- * text is restored only if Gboard has not already rebound that view itself.
+ * dev.20 proved that the native first-candidate TextView can be found and rewritten, but device
+ * testing showed that Gboard immediately rebound the same TextView afterwards, producing only a
+ * brief flash. dev.21 keeps the same native-view strategy and adds a small TextWatcher that
+ * reapplies the expansion whenever Gboard rewrites that slot while the shortcut remains active.
  *
- * If a safe native candidate target cannot be resolved, no preview is shown. Space/Enter/
- * punctuation expansion remains fully independent and continues to work as before.
+ * The candidate's own visual style is never replaced. A transparent click hitbox is still used so
+ * accepting the expansion does not overwrite Gboard's original click listener. Space/Enter/
+ * punctuation expansion remains independent and unchanged.
  */
 final class GboardTextExpansionCandidateView {
     private static final String HITBOX_TAG =
-            "gboard-patches-text-expansion-native-candidate-hitbox-v1";
+            "gboard-patches-text-expansion-native-candidate-hitbox-v2";
     private static final Object LOCK = new Object();
 
     private static WeakReference<FrameLayout> activeHost = new WeakReference<>(null);
@@ -34,6 +36,9 @@ final class GboardTextExpansionCandidateView {
     private static WeakReference<View> activeHitbox = new WeakReference<>(null);
     private static CharSequence originalText = "";
     private static String activeDisplay = "";
+    private static TextWatcher activeWatcher;
+    private static boolean internalTextChange;
+    private static int reboundCount;
 
     private GboardTextExpansionCandidateView() {
     }
@@ -49,7 +54,7 @@ final class GboardTextExpansionCandidateView {
             return;
         }
         try {
-            // Wait until Gboard has completed the current candidate/layout pass.
+            // Let Gboard finish the immediate candidate/layout pass first.
             anchor.post(() -> showNow(anchor, display, acceptAction));
         } catch (Throwable ignored) {
             // Candidate preview is optional and must never affect typing.
@@ -93,9 +98,7 @@ final class GboardTextExpansionCandidateView {
                 if (current == placement.textView
                         && current.isAttachedToWindow()
                         && activeDisplay.equals(display)) {
-                    if (!display.contentEquals(current.getText())) {
-                        current.setText(display);
-                    }
+                    ensureDisplay(current, display, "refresh");
                     bindClick(hitbox, acceptAction);
                     return;
                 }
@@ -105,7 +108,6 @@ final class GboardTextExpansionCandidateView {
 
             TextView candidate = placement.textView;
             CharSequence previous = candidate.getText();
-            candidate.setText(display);
 
             View hitbox = new View(placement.host.getContext());
             hitbox.setTag(HITBOX_TAG);
@@ -123,19 +125,99 @@ final class GboardTextExpansionCandidateView {
             placement.host.addView(hitbox, params);
             hitbox.bringToFront();
 
+            TextWatcher watcher = createStickyWatcher(candidate);
             synchronized (LOCK) {
                 activeHost = new WeakReference<>(placement.host);
                 activeTextView = new WeakReference<>(candidate);
                 activeHitbox = new WeakReference<>(hitbox);
                 originalText = previous;
                 activeDisplay = display;
+                activeWatcher = watcher;
+                reboundCount = 0;
             }
+            candidate.addTextChangedListener(watcher);
+            ensureDisplay(candidate, display, "initial");
+
             diag("NATIVE_CANDIDATE target=" + viewName(candidate)
                     + " textLen=" + display.length()
                     + " bounds=" + placement.width + "x" + placement.height);
         } catch (Throwable throwable) {
             diag("NATIVE_CANDIDATE exception=" + throwable.getClass().getSimpleName());
             hideNow();
+        }
+    }
+
+    private static TextWatcher createStickyWatcher(TextView candidate) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String desired;
+                synchronized (LOCK) {
+                    if (internalTextChange || activeTextView.get() != candidate) {
+                        return;
+                    }
+                    desired = activeDisplay;
+                }
+                if (desired == null || desired.isEmpty() || desired.contentEquals(editable)) {
+                    return;
+                }
+
+                // Gboard has rebound the native slot after our initial write. Reapply on the next
+                // main-loop turn to avoid mutating text recursively inside Gboard's own binding.
+                try {
+                    candidate.post(() -> {
+                        String currentDesired;
+                        synchronized (LOCK) {
+                            if (activeTextView.get() != candidate) {
+                                return;
+                            }
+                            currentDesired = activeDisplay;
+                        }
+                        if (currentDesired == null || currentDesired.isEmpty()) {
+                            return;
+                        }
+                        if (!currentDesired.contentEquals(candidate.getText())) {
+                            synchronized (LOCK) {
+                                reboundCount++;
+                                if (reboundCount <= 3) {
+                                    diag("NATIVE_CANDIDATE rebound=" + reboundCount);
+                                }
+                            }
+                            ensureDisplay(candidate, currentDesired, "rebound");
+                        }
+                    });
+                } catch (Throwable ignored) {
+                    // Optional UI only.
+                }
+            }
+        };
+    }
+
+    private static void ensureDisplay(TextView candidate, String display, String reason) {
+        if (candidate == null || display == null || display.isEmpty()
+                || display.contentEquals(candidate.getText())) {
+            return;
+        }
+        try {
+            synchronized (LOCK) {
+                internalTextChange = true;
+            }
+            candidate.setText(display);
+        } catch (Throwable throwable) {
+            diag("NATIVE_CANDIDATE setText=" + reason + " exception="
+                    + throwable.getClass().getSimpleName());
+        } finally {
+            synchronized (LOCK) {
+                internalTextChange = false;
+            }
         }
     }
 
@@ -156,18 +238,30 @@ final class GboardTextExpansionCandidateView {
         View hitbox;
         CharSequence restoreText;
         String displayed;
+        TextWatcher watcher;
         synchronized (LOCK) {
             host = activeHost.get();
             textView = activeTextView.get();
             hitbox = activeHitbox.get();
             restoreText = originalText;
             displayed = activeDisplay;
+            watcher = activeWatcher;
 
             activeHost.clear();
             activeTextView.clear();
             activeHitbox.clear();
             originalText = "";
             activeDisplay = "";
+            activeWatcher = null;
+            reboundCount = 0;
+        }
+
+        if (textView != null && watcher != null) {
+            try {
+                textView.removeTextChangedListener(watcher);
+            } catch (Throwable ignored) {
+                // Optional UI only.
+            }
         }
 
         removeView(hitbox);
@@ -176,14 +270,22 @@ final class GboardTextExpansionCandidateView {
         }
 
         try {
-            // Do not overwrite a newer candidate that Gboard may already have rebound.
+            // Restore only if our expansion is still visible. If Gboard has already rebound a
+            // newer candidate, never overwrite it with stale text.
             if (textView != null
                     && textView.isAttachedToWindow()
                     && displayed.contentEquals(textView.getText())) {
+                synchronized (LOCK) {
+                    internalTextChange = true;
+                }
                 textView.setText(restoreText);
             }
         } catch (Throwable ignored) {
             // Restoring preview state must never affect normal typing.
+        } finally {
+            synchronized (LOCK) {
+                internalTextChange = false;
+            }
         }
     }
 
@@ -204,9 +306,6 @@ final class GboardTextExpansionCandidateView {
             keyboardTop = hostTop;
         }
 
-        // Gboard 18.0.3 keeps the suggestion strip in the top band of the keyboard panel.
-        // Search slightly above and below the detected panel top because different layouts
-        // include the strip in different containers.
         int bandTop = Math.max(hostTop, keyboardTop - dp(host, 64));
         int bandBottom = Math.min(hostBottom, keyboardTop + dp(host, 88));
 
@@ -216,8 +315,6 @@ final class GboardTextExpansionCandidateView {
             return null;
         }
 
-        // Prefer the top-most candidate row, then the left-most text in that row. This matches
-        // the first visual candidate slot used by the existing dev.18 overlay placement.
         candidates.sort(Comparator
                 .comparingInt(GboardTextExpansionCandidateView::screenTop)
                 .thenComparingInt(GboardTextExpansionCandidateView::screenLeft));
@@ -253,7 +350,8 @@ final class GboardTextExpansionCandidateView {
                 || !current.isAttachedToWindow()) {
             return;
         }
-        if (current instanceof TextView textView && isCandidateTextView(host, textView, bandTop, bandBottom)) {
+        if (current instanceof TextView textView
+                && isCandidateTextView(host, textView, bandTop, bandBottom)) {
             out.add(textView);
         }
         if (current instanceof ViewGroup group) {
@@ -283,7 +381,8 @@ final class GboardTextExpansionCandidateView {
         if (centerY < bandTop || centerY > bandBottom) {
             return false;
         }
-        if (view.getHeight() > dp(host, 72) || view.getWidth() > Math.round(host.getWidth() * 0.75f)) {
+        if (view.getHeight() > dp(host, 72)
+                || view.getWidth() > Math.round(host.getWidth() * 0.75f)) {
             return false;
         }
         float scaledDensity = host.getResources().getDisplayMetrics().scaledDensity;
