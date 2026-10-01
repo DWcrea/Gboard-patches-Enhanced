@@ -1,5 +1,5 @@
 {
-    "created_at": "2026-10-01T05:03:00",
+    "created_at": "2026-10-01T05:25:00",
     "description": "### 🧪 3.11.0-enhanced.2-dev.10\n\n* **诊断构建，不改触发策略：** 功能逻辑恢复到 dev.8 基线，只加入快捷文本触发链日志。\n* **记录 SoftKey：** 记录真实按键 view、PRESS code、pressText、raw 字符和 raw token。\n* **记录 input event：** 记录 action、selectedCode、eventText 类型、trigger、raw token 和是否命中规则。\n* **记录替换结果：** 区分 composing 替换、可见文本替换、删除失败和 commit 失败。\n* **隐私保护：** 不记录展开文本内容，较长候选文本只记录长度。\n* **用途：** 用实际设备日志定位“不稳定触发”到底发生在按键捕获、空格事件识别、规则匹配还是 InputConnection 替换阶段。",
     "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.10/patches-3.11.0-enhanced.2-dev.10.mpp",
     "signature_download_url": "",
