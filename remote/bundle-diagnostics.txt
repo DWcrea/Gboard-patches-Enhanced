@@ -1,13 +1,13 @@
 version=3.11.0-enhanced.2-dev.11
 size=8153712
-sha256=7af3f4ab16d6ce3075a4e1155a59be7b30bc2321a00a2864dd787c43d0364753
+sha256=d97e8185cd33f95b4199f213243e2b6ddf9da3751aef221e7a0c2be363a3c753
 
 === META-INF/MANIFEST.MF ===
 Manifest-Version: 1.0
 Name: Gboard Patches
 Description: Morphe patches for Gboard.
 Version: 3.11.0-enhanced.2-dev.11
-Timestamp: 1790834545761
+Timestamp: 1790834574093
 Source: https://github.com/jasonwu1994/gboard-patches
 Author: Jason Wu
 Contact: https://github.com/jasonwu1994/gboard-patches/issues
