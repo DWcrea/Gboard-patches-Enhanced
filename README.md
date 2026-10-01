@@ -173,12 +173,23 @@ Gboard Patches
 
 ### Project-built / Runtime features
 
+<details>
+  <summary><code>Long-Press Editing Shortcuts</code></summary>
+
+  Add Select all, Undo, Copy, Cut, Paste, and Redo long-press shortcuts. This enhanced fork also supports Backspace swipe gestures and the shared input-event path used by Text Expansion.
+</details>
+
+<details>
+  <summary><code>Latin Globe Key Ignore Interval</code></summary>
+
+  Add an independent English globe key ignore interval override for post-typing language-switch delay.
+</details>
+
 - Clipboard Enhancements
 - Web Clipboard
 - Floating Web Search
 - Custom Theme
 - FTP Server
-- Long-Press Editing Shortcuts
 - Toolbar Editing Buttons
 - Swipeable Custom Top Row
 - Incognito Mode Toggle
@@ -186,22 +197,31 @@ Gboard Patches
 - Simple Calculator
 - G Logo on Spacebar
 - Rounded Keyboard Panel
-- Latin Globe Key Ignore Interval
 - Emojis, stickers & GIFs Tab Order
 - Backup & Restore
 - Text Expansion / 快捷文本
 
 ### Gboard feature unlocks
 
+<details>
+  <summary><code>Enable OCR / Scan Text</code></summary>
+
+  Enable the OCR / Scan Text feature with Latin, Chinese, Japanese, Korean, and Devanagari recognition backends.
+</details>
+
+<details>
+  <summary><code>Use Bluetooth Microphone</code></summary>
+
+Enables the <code>Voice typing &gt; Use Bluetooth microphone</code> setting and its related rollout gate.
+</details>
+
 - AI Writing Tools
 - Advanced Voice Typing
-- OCR / Scan Text
 - English QWERTY Up-Flick Uppercase
 - Inline Autofill Suggestions
 - Grammar Checker
 - Smart Compose / Inline Suggestions
 - Key Shape Selection
-- Bluetooth Microphone
 - Emoji Size
 - Cursor Trackpad Mode
 - Split Keyboard
