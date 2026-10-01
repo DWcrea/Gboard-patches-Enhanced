@@ -1,7 +1,7 @@
 {
-    "created_at": "2026-10-01T11:30:00",
-    "description": "### 🧪 3.11.0-enhanced.2-dev.18\n\n* **第一候选预览：** 快捷码精确命中时，把展开文本覆盖显示在候选栏第一位；点击即可直接展开。\n* **空格展开保持 dev.17：** 第一候选只是独立 UI 层，原有 raw token、keyCode 修复和第一次空格展开逻辑不改。\n* **只在精确命中时显示：** 部分输入不会创建候选预览；继续输入导致不再精确匹配时立即隐藏。\n* **点击不附加触发符：** 点击第一候选直接提交展开文本；按空格仍按“保留触发符”设置执行。\n* **失败安全：** 候选预览无法定位或绘制时自动回退到 stock Gboard，不影响输入和空格展开。\n* **保留诊断：** 新增 `CANDIDATE` 诊断记录，方便确认第一候选显示和点击提交状态。\n",
-    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.18/patches-3.11.0-enhanced.2-dev.18.mpp",
+    "created_at": "2026-10-01T12:10:00",
+    "description": "## Gboard Patches Enhanced 3.11.0-enhanced.2\n\n这是基于 Gboard 18.0.3 的第二个增强稳定版，重点完成了快捷文本、删除键手势与中文输入体验的稳定化。\n\n### 主要更新\n\n* **快捷文本正式稳定：** 支持 `快捷码 → 展开文本`，可用于手机号、邮箱、地址、URL 和常用句子。\n* **第一候选显示展开文本：** 快捷码精确命中时，展开文本显示在候选栏第一位置；可直接点击上屏，也可继续按空格展开。\n* **中文输入稳定匹配：** 使用真实 raw token 匹配，不受第一中文候选词影响。\n* **修复 keyCode / Unicode 混淆：** Backspace、字母键、Space、Enter 等按键不再污染快捷码缓冲，解决此前偶发无法展开的问题。\n* **批量导入/导出：** 保留 `gboard-text-expansion.v1` JSON 导入导出，最多 200 条规则。\n* **删除键上滑增强：** 普通键盘和数字/电话键盘均支持上滑删除光标前全部内容，并保留光标后的文本。\n* **中文标点优化：** 中文下滑输入数字后，紧随的全角冒号/句号自动转换为半角形式。\n* **诊断工具保留但默认关闭：** 需要排障时可在快捷文本设置中手动开启，不影响日常使用。\n\n### Compatibility\n\nTarget: `Gboard 18.0.3.954559732-release-arm64-v8a`\n\nThis stable release keeps the upstream patch collection while adding verified Text Expansion, Backspace swipe gestures, numeric keypad compatibility and Chinese input improvements.\n",
+    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2/patches-3.11.0-enhanced.2.mpp",
     "signature_download_url": "",
-    "version": "3.11.0-enhanced.2-dev.18"
+    "version": "3.11.0-enhanced.2"
 }
