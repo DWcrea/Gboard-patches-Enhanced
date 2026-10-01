@@ -24,8 +24,8 @@ import dev.jason.gboardpatches.extension.longpressquickactions.GboardLongPressQu
 /**
  * 快捷文本运行时。
  *
- * dev.18 以已经实机稳定的 dev.17 keyCode 修复为基线，仅增加“精确命中时显示第一候选”
- * 的可选 UI 行为。raw token、触发符识别和空格展开路径保持 dev.17 逻辑不变。
+ * dev.19 以已经实机稳定的 dev.18 为基线，仅在最终展示/提交展开文本前解析日期时间变量。
+ * raw token、keyCode、触发符识别、候选点击和空格展开路径均保持原有逻辑。
  */
 public final class GboardTextExpansionRuntime {
     private static final String TAG = "GboardPatches";
@@ -256,7 +256,8 @@ public final class GboardTextExpansionRuntime {
                 return result;
             }
 
-            boolean replaced = connection.setComposingText(entry.text + trigger, 1);
+            String resolvedText = GboardTextExpansionTemplateResolver.resolve(entry.text);
+            boolean replaced = connection.setComposingText(resolvedText + trigger, 1);
             diag("REPLACE mode=composing shortcutLen=" + entry.shortcut.length()
                     + " setComposing=" + replaced);
             if (!replaced) {
@@ -291,7 +292,8 @@ public final class GboardTextExpansionRuntime {
                 diag("VISIBLE result=delete-failed shortcutLen=" + entry.shortcut.length());
                 return false;
             }
-            boolean committed = connection.commitText(entry.text + trigger, 1);
+            String resolvedText = GboardTextExpansionTemplateResolver.resolve(entry.text);
+            boolean committed = connection.commitText(resolvedText + trigger, 1);
             diag("VISIBLE result=commit-" + committed + " shortcutLen=" + entry.shortcut.length());
             return committed;
         } catch (Throwable throwable) {
@@ -418,9 +420,10 @@ public final class GboardTextExpansionRuntime {
             }
             diag("CANDIDATE exact token=" + token + " shortcutLen=" + entry.shortcut.length());
             String expectedShortcut = entry.shortcut;
+            String resolvedText = GboardTextExpansionTemplateResolver.resolve(entry.text);
             GboardTextExpansionCandidateView.show(
                     anchor,
-                    entry.text,
+                    resolvedText,
                     () -> acceptFirstCandidate(service, expectedShortcut));
         } catch (Throwable throwable) {
             diag("CANDIDATE refresh exception=" + throwable.getClass().getSimpleName());
