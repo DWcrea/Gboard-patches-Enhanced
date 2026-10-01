@@ -23,8 +23,8 @@ import dev.jason.gboardpatches.extension.longpressquickactions.GboardLongPressQu
 /**
  * 快捷文本运行时。
  *
- * dev.10 维持 dev.8 的实际触发逻辑，只增加诊断日志。这样可以直接观察真实设备上的
- * SoftKey 捕获、raw token、input-event 和替换结果，而不再根据现象猜测 Gboard 内部事件。
+ * dev.16 在保留现有触发逻辑和 logcat 诊断的同时，把同一份诊断信息写入应用内环形缓冲区，
+ * 这样在限制系统日志读取的设备上也能直接从 Gboard 设置里查看和复制。
  */
 public final class GboardTextExpansionRuntime {
     private static final String TAG = "GboardPatches";
@@ -535,6 +535,7 @@ public final class GboardTextExpansionRuntime {
     }
 
     private static void diag(String message) {
+        GboardTextExpansionDiagnostics.record(message);
         try {
             Log.i(TAG, DIAG_PREFIX + message);
         } catch (Throwable ignored) {
