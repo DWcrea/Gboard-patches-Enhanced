@@ -1,69 +1,90 @@
 # Custom Change Log
 
-## Enhanced fork - 2026-09-30
+## 3.11.0-enhanced.2 — Stable
 
-### Added
-
-- Backspace swipe-up gesture to delete all text before the cursor while preserving text after it.
-- Backspace swipe-up support fallback for numeric / phone keypad layouts.
-- Chinese swipe-down digit punctuation normalization: `： -> :`, `。 -> .`, and `． -> .` for the immediately following punctuation.
-
-### Gesture debugging history
-
-- Early versions attempted to use key metadata / `SLIDE_UP` dispatch directly.
-- Diagnostic logging showed pointer retargeting and coordinate-space mismatch.
-- Stable behavior was reached by fixing the gesture baseline and resetting gesture-session state correctly.
-
-
-## 3.11.0-enhanced.2-dev.1
+Released after the `3.11.0-enhanced.2-dev.1` → `dev.18` development cycle and on-device verification.
 
 ### Text Expansion / 快捷文本
 
-- Added configurable shortcut expansion for phone numbers, email addresses, URLs, addresses and common phrases.
-- Trigger expansion with space, Enter or common punctuation.
-- Added a bilingual settings screen under Keyboard Tools & Shortcuts.
-- Added JSON import/export using the portable `gboard-text-expansion.v1` format.
-- Added a simple multi-line editor using `shortcut=expanded text` syntax.
-- Supports up to 200 mappings, case-insensitive matching and optional delimiter retention.
+- Added configurable `shortcut → replacement` mappings for phone numbers, email addresses, URLs, addresses and common phrases.
+- Added multi-line rule editing with `shortcut=expanded text` syntax.
+- Added portable JSON import/export using the `gboard-text-expansion.v1` format.
+- Supports up to 200 mappings, case-insensitive shortcut matching and optional trigger retention.
 - Automatically disables expansion in password fields.
-- Reuses the already verified Gboard 18.0.3 input-event hook used by Long-Press Editing Shortcuts, avoiding a second competing patch on the same obfuscated dispatcher.
+- Chinese input uses an independent raw-key buffer so matching is not controlled by the current Chinese candidate.
+- Exact shortcut matches are displayed in the first candidate position; tapping the candidate inserts the expansion directly.
+- Space / Enter / common punctuation expansion remains independent from the candidate preview, so the stable trigger path still works if the preview cannot be shown.
+- Fixed stale settings snapshots when repeatedly adding or editing rules.
+- Settings cache is invalidated immediately after save/import/toggle changes.
 
+### Text Expansion stability fixes
 
-## 3.11.0-enhanced.2-dev.2
+- Added early SoftKeyView / pointer-owner capture for Chinese Pinyin and Shuangpin layouts where ordinary letters do not reliably reach the later dispatcher as ASCII text.
+- Added duplicate physical-key suppression to prevent tokens such as `ssjjhh`.
+- Fixed Backspace editing of the raw shortcut buffer.
+- Diagnosed and fixed the keyCode / Unicode confusion that caused intermittent failures:
+  - Backspace keyCode `67` could be interpreted as `C`.
+  - `KEYCODE_D = 32` could be interpreted as a space character.
+  - other Android key codes could be interpreted as control/whitespace characters.
+- `eventText` is now authoritative when present; text-less events are mapped only through explicit Android `KeyEvent` constants.
+- Space, Enter and Tab are handled as explicit trigger keys instead of generic integer-to-character casts.
+- Added regression coverage for real device values including Backspace `67`, D `32`, A `29`, Space `62` and Enter `66`.
 
-### 快捷文本候选修复
+### First candidate preview
 
-- 修复中文输入时快捷码被第一候选词覆盖的问题。
-- 新增原始按键缓冲：例如输入 `sjh` 时，即使第一候选词是“手机号”，按一次空格也会直接展开为配置的文本。
-- 不再要求先让 `sjh` 上屏后再按第二次空格。
-- 对 composing text 使用安全清理后再提交替换内容，避免候选词抢先上屏。
-- 新增运行时测试覆盖中文第一候选干扰场景。
-- 快捷文本设置界面与新增用户可见文案统一使用简体中文。
+- Added a first-candidate visual preview shown only after an exact shortcut match.
+- Clicking the preview submits the expansion immediately without adding a trigger character.
+- Continuing to type hides the preview when the token no longer exactly matches.
+- Preview placement/rendering failure falls back to stock Gboard and does not alter the stable Space expansion path.
 
+### Diagnostics
 
-## 3.11.0-enhanced.2-dev.3
+- Added an in-process Text Expansion diagnostic ring buffer for devices where normal `adb logcat` is unavailable or vendor-filtered.
+- Diagnostics can record SoftKey capture, raw token updates, input events, rule matching, replacement results and candidate preview state.
+- Logs do not include expansion text content.
+- Stable builds keep diagnostics available for troubleshooting but disabled by default.
 
-### 修复：中文候选状态下一次空格直接展开
+### Backspace swipe gesture
 
-- 重新定位了 dev.2 没有真正解决问题的原因：中文拼音/双拼的字母按键并不会稳定以 ASCII 字母事件进入后面的 input-event dispatcher，因此只在那里缓存 `sjh` 实际上仍然拿不到完整原始按键串。
-- 改为在更早的 Gboard pointer-owner / SoftKeyView 阶段读取每个真实按键的 PRESS metadata，在候选生成之前记录 `s → j → h`。
-- 空格到达 input-event dispatcher 时，优先按原始按键缓存匹配快捷规则。
-- 中文 composing 状态下不再先清空候选再等待第二次触发，而是直接用 `setComposingText()` 替换当前组合文本并结束 composing。
-- 目标行为：即使第一候选词是“手机号”，输入 `sjh` 后第一次按空格就直接得到配置的手机号。
-- 删除键会同步回退原始快捷码缓存；极短时间内的重复内部事件会去重，避免出现 `ssjjhh`。
+- Swipe up on Backspace to delete all text before the cursor while preserving text after the cursor.
+- Added numeric / phone keypad fallback for layouts that do not follow the normal alphabetic pointer path.
+- Added undo/recovery handling around large swipe-delete operations.
+- Stabilized gesture behavior after diagnosing pointer retargeting, coordinate-space mismatch and gesture-session lifetime issues.
 
-### 简体中文
+### Chinese input improvements
 
-- Gboard Patches 整体设置界面的中文资源统一改为简体中文。
-- 中文系统语言现在直接使用简体中文资源。
-- 对台湾地区常用 UI 用语进一步归一化为大陆简体用语，例如“汇入/汇出 → 导入/导出”“设定 → 设置”“辨识 → 识别”“透过 → 通过”“工具列 → 工具栏”“剪贴簿 → 剪贴板”。
-- Morphe 公共 Patch 元数据暂时保留上游原始双语文案，以维持现有发布契约和自动化测试；Gboard 内部设置界面已经全面简体化。
+- After entering a digit through Chinese slide-down input, the immediately following full-width punctuation is normalized:
+  - `： → :`
+  - `。 → .`
+  - `． → .`
+- Gboard Patches settings UI uses Simplified Chinese terminology throughout the enhanced fork.
 
+### Documentation and release channels
 
-## 3.11.0-enhanced.2-dev.4
+- Updated README with stable version, target Gboard version, Morphe build stack, installation, Text Expansion bulk import and acknowledgements.
+- Added a dedicated stable Text Expansion guide.
+- Documented `main` as the stable channel and `dev` as the prerelease channel.
 
-### 快捷文本候选修复
-- 中文拼音/双拼按键捕获新增 SoftKeyView 可见键帽和无障碍标签 fallback。
-- 同一次 pointer 手势只记录一次物理键，并在 finish/cancel 后释放。
-- 解决部分布局 PRESS metadata 不包含 ASCII 字母，导致 `sjh` 只能在第一次空格上屏后、第二次空格才展开的问题。
-- 目标行为保持为：无论第一候选词是 `sjh` 还是“手机号”，第一次按空格都直接展开。
+---
+
+## 3.11.0-enhanced.1
+
+Initial public stable release of this enhanced fork.
+
+Key enhancements included the Backspace swipe-up workflow, numeric keypad compatibility work and Chinese input refinements on top of the upstream Gboard patch collection.
+
+---
+
+## Development history
+
+The `3.11.0-enhanced.2` feature line was iterated through prereleases up to `3.11.0-enhanced.2-dev.18`.
+
+Important milestones included:
+
+- `dev.1–dev.4`: initial Text Expansion, raw-key capture and Chinese composing replacement.
+- `dev.5–dev.8`: candidate experiments and rollback while preserving stable settings fixes.
+- later diagnostic builds: in-app diagnostics used to compare successful and failed real-device trigger paths.
+- `dev.17`: root-cause keyCode / Unicode fix; on-device trigger behavior became stable.
+- `dev.18`: first-candidate preview added on top of the verified `dev.17` trigger baseline and confirmed working on-device.
+
+For exact implementation history, see Git commits, prerelease tags and `docs/TEXT_EXPANSION.md`.

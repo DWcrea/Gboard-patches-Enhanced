@@ -5,11 +5,13 @@ import android.content.ContextWrapper;
 import android.inputmethodservice.InputMethodService;
 import android.os.SystemClock;
 import android.text.InputType;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
+import android.widget.TextView;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,11 +24,12 @@ import dev.jason.gboardpatches.extension.longpressquickactions.GboardLongPressQu
 /**
  * 快捷文本运行时。
  *
- * 除了读取 InputConnection 中可见的文本，还会独立记录实际按下的字母/数字。
- * 这样即使中文输入法已经把 sjh 转换成候选“手机号”，按空格时仍能按照原始按键
- * sjh 命中快捷文本，而不会被第一候选词影响。
+ * dev.18 以已经实机稳定的 dev.17 keyCode 修复为基线，仅增加“精确命中时显示第一候选”
+ * 的可选 UI 行为。raw token、触发符识别和空格展开路径保持 dev.17 逻辑不变。
  */
 public final class GboardTextExpansionRuntime {
+    private static final String TAG = "GboardPatches";
+    private static final String DIAG_PREFIX = "[text-expansion-diag] ";
     private static final long RAW_TOKEN_TIMEOUT_MS = 15_000L;
     private static final long DUPLICATE_KEY_WINDOW_MS = 35L;
 
@@ -38,13 +41,6 @@ public final class GboardTextExpansionRuntime {
     private GboardTextExpansionRuntime() {
     }
 
-    /**
-     * 在 Gboard 的 pointer-owner 阶段记录真实按下的软键。
-     *
-     * 中文拼音/双拼的普通字母通常不会以可识别的字母事件到达后面的 input-event
-     * dispatcher，所以只在 maybeHandleInputEvent() 里记录按键是不够的。这里直接从
-     * SoftKeyView metadata 读取 PRESS payload，能在候选生成之前得到 s/j/h 这类原始键值。
-     */
     public static void observeSoftKeyPress(Object pointerTracker, View softKeyView) {
         if (softKeyView == null) {
             return;
@@ -52,6 +48,7 @@ public final class GboardTextExpansionRuntime {
         if (pointerTracker != null) {
             synchronized (CAPTURED_POINTERS) {
                 if (Boolean.TRUE.equals(CAPTURED_POINTERS.get(pointerTracker))) {
+                    diag("SOFTKEY skip=duplicate-pointer view=" + viewName(softKeyView));
                     return;
                 }
                 CAPTURED_POINTERS.put(pointerTracker, Boolean.TRUE);
@@ -60,12 +57,15 @@ public final class GboardTextExpansionRuntime {
         try {
             InputMethodService service = findInputMethodService(softKeyView.getContext());
             if (service == null) {
+                diag("SOFTKEY skip=no-service view=" + viewName(softKeyView));
                 return;
             }
             GboardTextExpansionRuntimeSettings.Snapshot settings =
                     GboardTextExpansionRuntimeSettings.snapshot();
             if (!settings.enabled || settings.entries.isEmpty() || isSensitiveEditor(service)) {
-                clearRawSession(service);
+                diag("SOFTKEY skip=disabled-or-sensitive entries=" + settings.entries.size());
+                clearRawSession(service, "disabled-or-sensitive");
+                GboardTextExpansionCandidateView.hide();
                 return;
             }
 
@@ -74,6 +74,7 @@ public final class GboardTextExpansionRuntime {
                 classLoader = pointerTracker.getClass().getClassLoader();
             }
             if (classLoader == null) {
+                diag("SOFTKEY skip=no-classloader view=" + viewName(softKeyView));
                 return;
             }
 
@@ -81,28 +82,39 @@ public final class GboardTextExpansionRuntime {
                     GboardLongPressQuickActions1803Runtime.reflectionHandles(classLoader);
             Object metadata = handles.extractSoftKeyMetadata(softKeyView);
             if (metadata == null) {
+                diag("SOFTKEY skip=no-metadata view=" + viewName(softKeyView));
                 return;
             }
 
             String pressText = handles.extractPressText(metadata);
             int pressCode = handles.extractPressCarrierCode(metadata);
             String raw = rawInputText("PRESS", pressCode, pressText);
+            String source = "metadata";
 
-            // 部分中文拼音/双拼布局的 PRESS metadata 不直接暴露 ASCII 字母。
-            // 这时从真实键帽/无障碍标签回退读取 s、j、h 等物理键字符。
             if (raw == null) {
                 raw = visibleAsciiKeyLabel(softKeyView);
+                source = "label";
             }
+
+            diag("SOFTKEY view=" + viewName(softKeyView)
+                    + " code=" + pressCode
+                    + " pressText=" + describeText(pressText)
+                    + " raw=" + describeText(raw)
+                    + " source=" + source
+                    + " tokenBefore=" + rawToken(service));
+
             if (raw != null) {
-                appendRawInput(service, raw);
+                appendRawInput(service, raw, "softkey-" + source);
+                refreshFirstCandidate(service, softKeyView, settings.entries);
                 return;
             }
 
             if (isDeleteKeyView(softKeyView)) {
                 removeLastRawCharacter(service);
+                refreshFirstCandidate(service, softKeyView, settings.entries);
             }
-        } catch (Throwable ignored) {
-            // 原始按键观察失败时直接回退到普通 Gboard 行为，不能影响键盘主流程。
+        } catch (Throwable throwable) {
+            diag("SOFTKEY exception=" + throwable.getClass().getSimpleName());
         }
     }
 
@@ -127,46 +139,61 @@ public final class GboardTextExpansionRuntime {
         GboardTextExpansionRuntimeSettings.Snapshot settings =
                 GboardTextExpansionRuntimeSettings.snapshot();
         if (!settings.enabled || settings.entries.isEmpty() || isSensitiveEditor(service)) {
-            clearRawSession(service);
+            diag("EVENT skip=disabled-or-sensitive action=" + actionTypeName);
+            clearRawSession(service, "disabled-or-sensitive-event");
+            GboardTextExpansionCandidateView.hide();
             return false;
         }
 
+        String tokenBefore = rawToken(service);
         String trigger = triggerText(selectedCode, eventText);
+        diag("EVENT action=" + safe(actionTypeName)
+                + " code=" + selectedCode
+                + " text=" + describeText(eventText)
+                + " trigger=" + describeText(trigger)
+                + " token=" + tokenBefore);
+
         if (trigger != null && "PRESS".equals(actionTypeName)) {
             InputConnection connection = service.getCurrentInputConnection();
             if (connection == null) {
-                clearRawSession(service);
+                diag("TRIGGER result=no-connection token=" + tokenBefore);
+                clearRawSession(service, "no-connection");
+                GboardTextExpansionCandidateView.hide();
                 return false;
             }
 
-            // 优先使用我们自己记录的“原始按键串”。这是修复中文候选干扰的关键：
-            // sjh 即使当前第一候选已经显示为“手机号”，仍然按 sjh 匹配。
-            String rawToken = rawToken(service);
             GboardTextExpansionSettings.Entry rawEntry =
-                    findMatchingEntryForRawToken(rawToken, settings.entries);
+                    findMatchingEntryForRawToken(tokenBefore, settings.entries);
+            diag("TRIGGER rawMatch=" + (rawEntry != null)
+                    + " token=" + tokenBefore
+                    + " trigger=" + describeText(trigger));
+
             boolean handled = rawEntry != null
                     && replaceFromRawToken(
                             connection,
                             rawEntry,
                             settings.keepTrigger ? trigger : "");
+            diag("TRIGGER rawHandled=" + handled + " token=" + tokenBefore);
 
-            // 英文键盘或某些编辑器里，快捷码可能已经直接出现在光标前。
-            // 保留原来的可见文本匹配作为兼容 fallback。
             if (!handled) {
                 GboardTextExpansionSettings.Entry visibleEntry =
                         findMatchingEntry(connection, settings.entries);
+                diag("TRIGGER visibleMatch=" + (visibleEntry != null));
                 handled = visibleEntry != null
                         && replaceVisibleShortcut(
                                 connection,
                                 visibleEntry,
                                 settings.keepTrigger ? trigger : "");
+                diag("TRIGGER visibleHandled=" + handled);
             }
 
-            clearRawSession(service);
+            clearRawSession(service, "trigger-finished");
+            GboardTextExpansionCandidateView.hide();
             return handled;
         }
 
         updateRawSession(service, actionTypeName, selectedCode, eventText);
+        refreshFirstCandidate(service, resolveInputAnchor(service), settings.entries);
         return false;
     }
 
@@ -212,10 +239,6 @@ public final class GboardTextExpansionRuntime {
         return null;
     }
 
-    /**
-     * 中文输入场景：当前编辑器里可能显示的是候选“手机号”，而用户实际按键是 sjh。
-     * 先清空 composing span，再提交快捷文本，从而绕开第一候选词。
-     */
     static boolean replaceFromRawToken(
             InputConnection connection,
             GboardTextExpansionSettings.Entry entry,
@@ -224,30 +247,29 @@ public final class GboardTextExpansionRuntime {
             return false;
         }
         try {
-            // 英文键盘等场景里，快捷码已经作为普通文本提交到了编辑器。
-            // 这种情况继续走“删除可见快捷码 → 提交展开文本”的稳定路径。
             CharSequence visible = connection.getTextBeforeCursor(
                     Math.max(256, entry.shortcut.length() + 16), 0);
             if (visible != null && endsWithIgnoreCase(visible.toString(), entry.shortcut)) {
-                return replaceVisibleShortcut(connection, entry, trigger);
+                boolean result = replaceVisibleShortcut(connection, entry, trigger);
+                diag("REPLACE mode=visible shortcutLen=" + entry.shortcut.length()
+                        + " result=" + result);
+                return result;
             }
 
-            // 中文拼音/双拼场景里，sjh 仍处于 composing 状态，光标前看到的可能是
-            // “手机号”等第一候选词，也可能完全不暴露 composing span。
-            //
-            // setComposingText() 会直接替换当前 composing span，因此不需要先让候选词
-            // 上屏，也不需要第二次空格。随后 finishComposingText() 固化展开结果。
             boolean replaced = connection.setComposingText(entry.text + trigger, 1);
+            diag("REPLACE mode=composing shortcutLen=" + entry.shortcut.length()
+                    + " setComposing=" + replaced);
             if (!replaced) {
                 return false;
             }
             try {
                 connection.finishComposingText();
             } catch (Throwable ignored) {
-                // setComposingText 已成功时，结束 composing 失败也不应让空格继续落入 stock。
+                diag("REPLACE finishComposing=exception");
             }
             return true;
-        } catch (Throwable ignored) {
+        } catch (Throwable throwable) {
+            diag("REPLACE exception=" + throwable.getClass().getSimpleName());
             return false;
         }
     }
@@ -262,20 +284,25 @@ public final class GboardTextExpansionRuntime {
             connection.finishComposingText();
             CharSequence before = connection.getTextBeforeCursor(entry.shortcut.length(), 0);
             if (before == null || !endsWithIgnoreCase(before.toString(), entry.shortcut)) {
+                diag("VISIBLE result=suffix-miss shortcutLen=" + entry.shortcut.length());
                 return false;
             }
             if (!connection.deleteSurroundingText(entry.shortcut.length(), 0)) {
+                diag("VISIBLE result=delete-failed shortcutLen=" + entry.shortcut.length());
                 return false;
             }
-            return connection.commitText(entry.text + trigger, 1);
-        } catch (Throwable ignored) {
+            boolean committed = connection.commitText(entry.text + trigger, 1);
+            diag("VISIBLE result=commit-" + committed + " shortcutLen=" + entry.shortcut.length());
+            return committed;
+        } catch (Throwable throwable) {
+            diag("VISIBLE exception=" + throwable.getClass().getSimpleName());
             return false;
         } finally {
             if (batch) {
                 try {
                     connection.endBatchEdit();
                 } catch (Throwable ignored) {
-                    // 尽力结束批量编辑，不影响键盘主流程。
+                    diag("VISIBLE endBatch=exception");
                 }
             }
         }
@@ -286,15 +313,19 @@ public final class GboardTextExpansionRuntime {
             String actionTypeName,
             int selectedCode,
             String eventText) {
+        if ("PRESS".equals(actionTypeName) && selectedCode == KeyEvent.KEYCODE_DEL) {
+            // selectedCode is an Android keyCode on this path. Backspace must edit the raw
+            // shortcut buffer, never be interpreted as Unicode 67 ('C').
+            removeLastRawCharacter(service);
+            return;
+        }
         String raw = rawInputText(actionTypeName, selectedCode, eventText);
         if (raw != null) {
-            // 这是 pointer-owner 记录的兼容补充路径。不要因为中文输入事件本身不携带
-            // ASCII payload 就清空 raw token，否则刚记录的 s/j/h 会在候选生成时被抹掉。
-            appendRawInput(service, raw);
+            appendRawInput(service, raw, "input-event");
         }
     }
 
-    private static void appendRawInput(InputMethodService service, String raw) {
+    private static void appendRawInput(InputMethodService service, String raw, String source) {
         if (service == null || raw == null || raw.isEmpty()) {
             return;
         }
@@ -304,12 +335,14 @@ public final class GboardTextExpansionRuntime {
             if (session == null || now - session.lastUpdatedElapsedMs > RAW_TOKEN_TIMEOUT_MS) {
                 session = new RawShortcutSession();
                 RAW_SESSIONS.put(service, session);
+                diag("TOKEN new-session source=" + source);
             }
 
-            // 同一个实体按键有时会先从 pointer-owner，再从 input-event 各观察一次。
-            // 极短窗口内的相同字符视为同一次按键，避免 sjh 被记录成 ssjjhh。
             if (raw.equals(session.lastAppended)
                     && now - session.lastUpdatedElapsedMs <= DUPLICATE_KEY_WINDOW_MS) {
+                diag("TOKEN duplicate-suppressed raw=" + raw
+                        + " source=" + source
+                        + " token=" + session.token);
                 return;
             }
 
@@ -321,6 +354,7 @@ public final class GboardTextExpansionRuntime {
                         0,
                         session.token.length() - GboardTextExpansionSettings.MAX_SHORTCUT_LENGTH);
             }
+            diag("TOKEN append=" + raw + " source=" + source + " token=" + session.token);
         }
     }
 
@@ -331,11 +365,13 @@ public final class GboardTextExpansionRuntime {
         synchronized (RAW_SESSIONS) {
             RawShortcutSession session = RAW_SESSIONS.get(service);
             if (session == null || session.token.length() == 0) {
+                diag("TOKEN delete ignored=empty");
                 return;
             }
             session.token.deleteCharAt(session.token.length() - 1);
             session.lastAppended = "";
             session.lastUpdatedElapsedMs = SystemClock.elapsedRealtime();
+            diag("TOKEN delete token=" + session.token);
         }
     }
 
@@ -348,19 +384,96 @@ public final class GboardTextExpansionRuntime {
             long now = SystemClock.elapsedRealtime();
             if (now - session.lastUpdatedElapsedMs > RAW_TOKEN_TIMEOUT_MS) {
                 RAW_SESSIONS.remove(service);
+                diag("TOKEN expired");
                 return "";
             }
             return session.token.toString();
         }
     }
 
-    private static void clearRawSession(InputMethodService service) {
+    private static void clearRawSession(InputMethodService service, String reason) {
         synchronized (RAW_SESSIONS) {
-            RAW_SESSIONS.remove(service);
+            RawShortcutSession previous = RAW_SESSIONS.remove(service);
+            if (previous != null) {
+                diag("TOKEN clear reason=" + reason + " old=" + previous.token);
+            }
         }
     }
 
-    private static String rawInputText(
+    private static void refreshFirstCandidate(
+            InputMethodService service,
+            View anchor,
+            List<GboardTextExpansionSettings.Entry> entries) {
+        try {
+            if (service == null || anchor == null || isSensitiveEditor(service)) {
+                GboardTextExpansionCandidateView.hide();
+                return;
+            }
+            String token = rawToken(service);
+            GboardTextExpansionSettings.Entry entry =
+                    findMatchingEntryForRawToken(token, entries);
+            if (entry == null || entry.text == null || entry.text.isEmpty()) {
+                GboardTextExpansionCandidateView.hide();
+                return;
+            }
+            diag("CANDIDATE exact token=" + token + " shortcutLen=" + entry.shortcut.length());
+            String expectedShortcut = entry.shortcut;
+            GboardTextExpansionCandidateView.show(
+                    anchor,
+                    entry.text,
+                    () -> acceptFirstCandidate(service, expectedShortcut));
+        } catch (Throwable throwable) {
+            diag("CANDIDATE refresh exception=" + throwable.getClass().getSimpleName());
+        }
+    }
+
+    private static void acceptFirstCandidate(
+            InputMethodService service,
+            String expectedShortcut) {
+        try {
+            if (service == null || expectedShortcut == null || isSensitiveEditor(service)) {
+                GboardTextExpansionCandidateView.hide();
+                return;
+            }
+            GboardTextExpansionRuntimeSettings.Snapshot settings =
+                    GboardTextExpansionRuntimeSettings.snapshot();
+            String token = rawToken(service);
+            GboardTextExpansionSettings.Entry current =
+                    findMatchingEntryForRawToken(token, settings.entries);
+            if (current == null || !expectedShortcut.equalsIgnoreCase(current.shortcut)) {
+                diag("CANDIDATE accept stale token=" + token);
+                GboardTextExpansionCandidateView.hide();
+                return;
+            }
+            InputConnection connection = service.getCurrentInputConnection();
+            boolean handled = connection != null
+                    && replaceFromRawToken(connection, current, "");
+            diag("CANDIDATE accept handled=" + handled + " token=" + token);
+            if (handled) {
+                clearRawSession(service, "candidate-accepted");
+            }
+            GboardTextExpansionCandidateView.hide();
+        } catch (Throwable throwable) {
+            diag("CANDIDATE accept exception=" + throwable.getClass().getSimpleName());
+            GboardTextExpansionCandidateView.hide();
+        }
+    }
+
+    private static View resolveInputAnchor(InputMethodService service) {
+        if (service == null) {
+            return null;
+        }
+        try {
+            if (service.getWindow() == null || service.getWindow().getWindow() == null) {
+                return null;
+            }
+            return service.getWindow().getWindow().getDecorView();
+        } catch (Throwable ignored) {
+            return null;
+        }
+    }
+
+    static String rawInputText(
             String actionTypeName,
             int selectedCode,
             String eventText) {
@@ -369,17 +482,27 @@ public final class GboardTextExpansionRuntime {
                 || "SLIDE_UP".equals(actionTypeName))) {
             return null;
         }
-        if (eventText != null && eventText.length() == 1) {
-            char value = eventText.charAt(0);
-            if (isShortcutInputChar(value)) {
-                return String.valueOf(value);
+
+        // When Gboard gives us text, it is the authoritative character. Never fall through
+        // to selectedCode for a non-shortcut text event: selectedCode is a KeyEvent keyCode,
+        // not a Unicode code point.
+        if (eventText != null) {
+            if (eventText.length() == 1) {
+                char value = eventText.charAt(0);
+                if (isShortcutInputChar(value)) {
+                    return String.valueOf(value);
+                }
             }
+            return null;
         }
-        if (selectedCode >= 0 && selectedCode <= Character.MAX_VALUE) {
-            char value = (char) selectedCode;
-            if (isShortcutInputChar(value)) {
-                return String.valueOf(value);
-            }
+
+        // Text-less key events are mapped explicitly from Android key codes. This preserves
+        // ASCII shortcut capture without turning Backspace(67) into 'C' or Enter(66) into 'B'.
+        if (selectedCode >= KeyEvent.KEYCODE_A && selectedCode <= KeyEvent.KEYCODE_Z) {
+            return String.valueOf((char) ('a' + selectedCode - KeyEvent.KEYCODE_A));
+        }
+        if (selectedCode >= KeyEvent.KEYCODE_0 && selectedCode <= KeyEvent.KEYCODE_9) {
+            return String.valueOf((char) ('0' + selectedCode - KeyEvent.KEYCODE_0));
         }
         return null;
     }
@@ -391,16 +514,26 @@ public final class GboardTextExpansionRuntime {
                 || value == '_';
     }
 
-    private static String triggerText(int selectedCode, String eventText) {
-        if (eventText != null && eventText.length() == 1
-                && isDelimiter(eventText.charAt(0))) {
-            return eventText;
-        }
-        if (selectedCode >= 0 && selectedCode <= Character.MAX_VALUE) {
-            char value = (char) selectedCode;
-            if (isDelimiter(value)) {
-                return String.valueOf(value);
+    static String triggerText(int selectedCode, String eventText) {
+        // If an explicit event character exists, trust it. This is crucial for ordinary
+        // letters such as D (KEYCODE_D=32): casting selectedCode 32 to char would falsely
+        // turn the letter into a space delimiter.
+        if (eventText != null) {
+            if (eventText.length() == 1 && isDelimiter(eventText.charAt(0))) {
+                return eventText;
             }
+            return null;
+        }
+
+        // Only well-defined text-less Android key codes are accepted as delimiter fallbacks.
+        if (selectedCode == KeyEvent.KEYCODE_SPACE) {
+            return " ";
+        }
+        if (selectedCode == KeyEvent.KEYCODE_ENTER) {
+            return "\n";
+        }
+        if (selectedCode == KeyEvent.KEYCODE_TAB) {
+            return "\t";
         }
         return null;
     }
@@ -466,10 +599,54 @@ public final class GboardTextExpansionRuntime {
             return false;
         }
         try {
-            return "key_pos_del".equals(
-                    view.getResources().getResourceEntryName(view.getId()));
+            return "key_pos_del".equals(view.getResources().getResourceEntryName(view.getId()));
         } catch (Throwable ignored) {
             return false;
+        }
+    }
+
+    private static String viewName(View view) {
+        if (view == null) {
+            return "null";
+        }
+        try {
+            if (view.getId() != View.NO_ID) {
+                return view.getResources().getResourceEntryName(view.getId());
+            }
+        } catch (Throwable ignored) {
+            // fall through
+        }
+        return view.getClass().getSimpleName();
+    }
+
+    private static String describeText(String value) {
+        if (value == null) {
+            return "<null>";
+        }
+        if (value.isEmpty()) {
+            return "<empty>";
+        }
+        if (value.length() == 1) {
+            char ch = value.charAt(0);
+            if (ch == ' ') return "<space>";
+            if (ch == '\n') return "<newline>";
+            if (ch == '\t') return "<tab>";
+            if (ch >= 0x20 && ch <= 0x7e) return "'" + ch + "'";
+            return "<U+" + String.format("%04X", (int) ch) + ">";
+        }
+        return "<len:" + value.length() + ">";
+    }
+
+    private static String safe(String value) {
+        return value == null ? "<null>" : value;
+    }
+
+    private static void diag(String message) {
+        GboardTextExpansionDiagnostics.record(message);
+        try {
+            Log.i(TAG, DIAG_PREFIX + message);
+        } catch (Throwable ignored) {
+            // 诊断日志不能影响键盘主流程。
         }
     }
 

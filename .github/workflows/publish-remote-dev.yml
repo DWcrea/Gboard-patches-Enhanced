@@ -1,0 +1,112 @@
+name: Publish remote dev bundle
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Resolve version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="$(sed -nE 's/^\s*version\s*=\s*([^#[:space:]]+).*$/\1/p' gradle.properties | head -n1)"
+          if [[ -z "$VERSION" || "$VERSION" != *-dev.* ]]; then
+            echo "Expected a -dev.N version, got: $VERSION" >&2
+            exit 1
+          fi
+          echo "value=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Test Text Expansion
+        env:
+          GITHUB_ACTOR: ${{ github.repository_owner }}
+          GITHUB_TOKEN: ${{ secrets.MORPHE_PACKAGES_TOKEN }}
+        run: |
+          chmod +x ./gradlew
+          ./gradlew :extensions:extension:testDebugUnitTest --tests "dev.jason.gboardpatches.extension.textexpansion.GboardTextExpansionRuntimeTest"
+
+      - name: Build and test patch bundle
+        env:
+          GITHUB_ACTOR: ${{ github.repository_owner }}
+          GITHUB_TOKEN: ${{ secrets.MORPHE_PACKAGES_TOKEN }}
+        run: |
+          ./gradlew :patches:test :patches:buildAndroid generatePatchesList
+
+      - name: Inspect bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.version.outputs.value }}"
+          MPP="patches/build/libs/patches-$VERSION.mpp"
+          test -f "$MPP"
+          unzip -t "$MPP"
+          {
+            echo "version=$VERSION"
+            echo "size=$(stat -c%s "$MPP")"
+            echo "sha256=$(sha256sum "$MPP" | awk '{print $1}')"
+            echo
+            echo "=== META-INF/MANIFEST.MF ==="
+            unzip -p "$MPP" META-INF/MANIFEST.MF || true
+            echo
+            echo "=== archive entries ==="
+            unzip -l "$MPP" | head -n 120
+          } > /tmp/bundle-diagnostics.txt
+
+      - name: Publish GitHub prerelease
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.value }}
+          target_commitish: ${{ github.sha }}
+          prerelease: true
+          make_latest: false
+          fail_on_unmatched_files: true
+          body: |
+            Automated development build for remote Morphe testing.
+
+            Version: `${{ steps.version.outputs.value }}`
+          files: |
+            patches/build/libs/patches-${{ steps.version.outputs.value }}.mpp
+
+      - name: Publish files to remote-dev
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.version.outputs.value }}"
+          cp "patches/build/libs/patches-$VERSION.mpp" /tmp/patches-latest.mpp
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin remote-dev
+          git checkout remote-dev
+          mkdir -p remote
+          cp /tmp/patches-latest.mpp remote/patches-latest.mpp
+          cp /tmp/bundle-diagnostics.txt remote/bundle-diagnostics.txt
+          CREATED_AT="$(date -u +'%Y-%m-%dT%H:%M:%S')"
+          cat > remote/patches-bundle.json <<EOF
+          {
+            "created_at": "$CREATED_AT",
+            "description": "Gboard Patches Enhanced remote dev $VERSION",
+            "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v$VERSION/patches-$VERSION.mpp",
+            "signature_download_url": "",
+            "version": "$VERSION"
+          }
+          EOF
+          git add remote/patches-latest.mpp remote/patches-bundle.json remote/bundle-diagnostics.txt
+          git commit -m "remote: publish $VERSION" || exit 0
+          git push origin remote-dev

@@ -234,6 +234,13 @@ public final class GboardLongPressQuickActions1803Runtime {
         }
     }
 
+    static boolean isKnownDeletePressCarrierCode(int code) {
+        int knownDeleteCode = deletePressCarrierCode;
+        return knownDeleteCode != UNKNOWN_DELETE_PRESS_CARRIER_CODE
+                && code != 0
+                && code == knownDeleteCode;
+    }
+
     public static boolean maybeHandleInputEvent(
             InputMethodService service,
             Object event) {
@@ -251,6 +258,11 @@ public final class GboardLongPressQuickActions1803Runtime {
             int keyId = handles.extractKeyId(metadata);
             String pressText = handles.extractPressText(metadata);
             int selectedCode = handles.extractSelectedEventCode(event);
+            int pressCarrierCode = handles.extractPressCarrierCode(metadata);
+            if (GboardBackspaceSwipeUndoRuntime.maybeConsumeTrailingBackspaceInputEvent(
+                    service, actionTypeName, pressCarrierCode, selectedCode)) {
+                return true;
+            }
             Object selectedPayloadObject = handles.extractSelectedEventPayload(event);
             String selectedPayload = selectedPayloadObject instanceof CharSequence
                     ? selectedPayloadObject.toString() : null;

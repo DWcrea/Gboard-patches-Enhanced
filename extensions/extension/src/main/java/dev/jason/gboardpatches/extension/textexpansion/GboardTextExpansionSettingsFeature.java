@@ -2,6 +2,8 @@ package dev.jason.gboardpatches.extension.textexpansion;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -84,7 +86,7 @@ public final class GboardTextExpansionSettingsFeature
                     "编辑快捷文本",
                     "每行一条：快捷码=展开文本。例如：sjh=13800138000",
                     enabled,
-                    new EditRulesAction(host, entries)));
+                    new EditRulesAction(host)));
             rules.add(new GboardPatchesSettingsContract.InfoRow(
                     "当前规则",
                     entries.size() + " / " + GboardTextExpansionSettings.MAX_ENTRIES,
@@ -116,6 +118,41 @@ public final class GboardTextExpansionSettingsFeature
                             true,
                             () -> importRules(host)));
 
+            int diagnosticLines = GboardTextExpansionDiagnostics.size();
+            List<GboardPatchesSettingsContract.Row> diagnostics = new ArrayList<>();
+            diagnostics.add(new GboardPatchesSettingsContract.ToggleRow(
+                    "诊断模式",
+                    "在 Gboard 进程内记录快捷文本触发链，不依赖系统 logcat。稳定版默认关闭，排障时再开启。",
+                    true,
+                    GboardTextExpansionDiagnostics.isEnabled(),
+                    value -> {
+                        GboardTextExpansionDiagnostics.setEnabled(value);
+                        GboardPatchesSettingsContract.refresh(host);
+                    }));
+            diagnostics.add(new GboardPatchesSettingsContract.InfoRow(
+                    "已记录",
+                    diagnosticLines + " 条（最多保留 600 条）",
+                    true));
+            diagnostics.add(new GboardPatchesSettingsContract.CommandRow(
+                    "查看诊断日志",
+                    "查看 SoftKey、raw token、input event、规则匹配和替换结果。",
+                    diagnosticLines > 0,
+                    () -> showDiagnostics(host)));
+            diagnostics.add(new GboardPatchesSettingsContract.CommandRow(
+                    "复制诊断日志",
+                    "复制到剪贴板后可直接粘贴发送。不会记录展开文本内容。",
+                    diagnosticLines > 0,
+                    () -> copyDiagnostics(host)));
+            diagnostics.add(new GboardPatchesSettingsContract.CommandRow(
+                    "清空诊断日志",
+                    "清除当前进程中已经记录的诊断信息。",
+                    diagnosticLines > 0,
+                    () -> {
+                        GboardTextExpansionDiagnostics.clear();
+                        GboardPatchesSettingsContract.showMessage(host, "诊断日志已清空");
+                        GboardPatchesSettingsContract.refresh(host);
+                    }));
+
             List<GboardPatchesSettingsContract.Row> advanced = Collections.singletonList(
                     new GboardPatchesSettingsContract.DangerRow(
                             "清空全部规则",
@@ -134,12 +171,13 @@ public final class GboardTextExpansionSettingsFeature
                     "Gboard",
                     getEntryTitle(),
                     "支持数字、字母、邮箱、电话号码、网址、地址和常用句子。\n"
-                            + "中文输入时会按实际输入的字母匹配，不受第一候选词影响。",
+                            + "中文输入时按真实字母串匹配；精确命中后会在第一候选位置显示展开文本。",
                     Collections.emptyList(),
                     Arrays.asList(
                             new GboardPatchesSettingsContract.Section("功能", behavior),
                             new GboardPatchesSettingsContract.Section("快捷规则", rules),
                             new GboardPatchesSettingsContract.Section("导入与导出", transfer),
+                            new GboardPatchesSettingsContract.Section("诊断", diagnostics),
                             new GboardPatchesSettingsContract.Section(
                                     "高级",
                                     null,
@@ -155,12 +193,9 @@ public final class GboardTextExpansionSettingsFeature
 
     private static final class EditRulesAction implements Runnable {
         private final GboardPatchesSettingsContract.FeatureHost host;
-        private final List<GboardTextExpansionSettings.Entry> entries;
 
-        EditRulesAction(GboardPatchesSettingsContract.FeatureHost host,
-                List<GboardTextExpansionSettings.Entry> entries) {
+        EditRulesAction(GboardPatchesSettingsContract.FeatureHost host) {
             this.host = host;
-            this.entries = entries;
         }
 
         @Override
@@ -169,8 +204,17 @@ public final class GboardTextExpansionSettingsFeature
                     || activity.isFinishing()) {
                 return;
             }
+
+            // Always reopen the editor from the latest persisted rules instead of the
+            // screen snapshot captured when the row was first rendered. This prevents a
+            // fast second edit from reopening stale content and overwriting the previous save.
+            SharedPreferences preferences = GboardTextExpansionSettings.preferences(activity);
+            GboardTextExpansionSettings.ensureDefaults(preferences);
+            List<GboardTextExpansionSettings.Entry> currentEntries =
+                    GboardTextExpansionSettings.readEntries(preferences);
+
             GboardPatchesSettingsContract.showManagedDialog(host, onDismiss ->
-                    showEditorDialog(activity, host, entries, onDismiss));
+                    showEditorDialog(activity, host, currentEntries, onDismiss));
         }
     }
 
@@ -234,6 +278,61 @@ public final class GboardTextExpansionSettingsFeature
                 }));
         dialog.show();
         return true;
+    }
+
+    private static void showDiagnostics(GboardPatchesSettingsContract.FeatureHost host) {
+        if (host == null || !(host.getContext() instanceof Activity activity)
+                || activity.isFinishing()) {
+            return;
+        }
+        GboardPatchesSettingsContract.showManagedDialog(host, onDismiss ->
+                showDiagnosticsDialog(activity, onDismiss));
+    }
+
+    private static boolean showDiagnosticsDialog(Activity activity, Runnable onDismiss) {
+        TextView text = new TextView(activity);
+        text.setTypeface(Typeface.MONOSPACE);
+        text.setTextIsSelectable(true);
+        text.setText(GboardTextExpansionDiagnostics.snapshot());
+        text.setPadding(dp(activity, 16), dp(activity, 12), dp(activity, 16), dp(activity, 12));
+
+        ScrollView scroll = new ScrollView(activity);
+        scroll.addView(text, new ScrollView.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        AlertDialog dialog = new AlertDialog.Builder(activity)
+                .setTitle("快捷文本诊断日志")
+                .setView(scroll)
+                .setPositiveButton("关闭", null)
+                .create();
+        dialog.setOnDismissListener(ignored -> {
+            if (onDismiss != null) {
+                onDismiss.run();
+            }
+        });
+        dialog.show();
+        return true;
+    }
+
+    private static void copyDiagnostics(GboardPatchesSettingsContract.FeatureHost host) {
+        if (host == null || host.getContext() == null) {
+            return;
+        }
+        try {
+            Context context = host.getContext();
+            ClipboardManager clipboard = (ClipboardManager)
+                    context.getSystemService(Context.CLIPBOARD_SERVICE);
+            if (clipboard == null) {
+                throw new IllegalStateException("剪贴板不可用");
+            }
+            clipboard.setPrimaryClip(ClipData.newPlainText(
+                    "Gboard Text Expansion diagnostics",
+                    GboardTextExpansionDiagnostics.snapshot()));
+            GboardPatchesSettingsContract.showMessage(host, "诊断日志已复制");
+        } catch (Throwable failure) {
+            GboardPatchesSettingsContract.showMessage(
+                    host, "复制失败：" + failure.getMessage());
+        }
     }
 
     private static void exportRules(GboardPatchesSettingsContract.FeatureHost host) {

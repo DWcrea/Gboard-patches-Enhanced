@@ -9,9 +9,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 
-import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -36,11 +36,17 @@ public final class GboardBackspaceSwipeUndoRuntime {
     private static final String TAG = "GboardPatches";
     private static final String LOG_PREFIX = "[backspace-swipe-undo] ";
     private static final long UNDO_WINDOW_MS = 30_000L;
+    private static final long TRAILING_BACKSPACE_GUARD_MS = 450L;
+    private static final long TRAILING_REPAIR_DELAY_MS = 120L;
+    private static final long EMPTY_FIELD_RETRY_DELAY_MS = 90L;
+    private static final int EMPTY_FIELD_RETRY_ATTEMPTS = 4;
     private static final int FALLBACK_CAPTURE_CHARS = 1024 * 1024;
 
     private static final Map<Object, SwipeSession> SESSIONS =
             Collections.synchronizedMap(new WeakHashMap<>());
     private static final Map<InputMethodService, DeletionRecord> LAST_DELETION =
+            Collections.synchronizedMap(new WeakHashMap<>());
+    private static final Map<InputMethodService, Long> TRAILING_BACKSPACE_GUARD =
             Collections.synchronizedMap(new WeakHashMap<>());
     private static final AtomicInteger LOG_COUNT = new AtomicInteger();
 
@@ -151,7 +157,7 @@ public final class GboardBackspaceSwipeUndoRuntime {
                     InputMethodService service = findInputMethodService(origin.getContext());
                     if (service != null) {
                         InputConnection connection = service.getCurrentInputConnection();
-                        DeletionRecord record = captureDeletionRecord(connection);
+                        DeletionRecord record = captureDeletionRecord(service, connection);
                         if (record != null) {
                             LAST_DELETION.put(service, record);
                             log("captured " + record.deletedText.length()
@@ -162,11 +168,18 @@ public final class GboardBackspaceSwipeUndoRuntime {
                 return false;
             }
 
-            // Downward gesture: once the direction is locked, keep it away from stock Gboard.
+            // pvi.t()/pvi.F() are not guaranteed to receive ACTION_UP on this build.
+            // Restore as soon as the downward gesture is confirmed (the dev.11 path that was
+            // stable on-device), then guard/repair the one trailing stock Backspace that Gboard
+            // may emit when the finger is released.
             if (!session.restoreAttempted && dy >= actionDistance) {
                 session.restoreAttempted = true;
                 InputMethodService service = findInputMethodService(origin.getContext());
-                session.restored = service != null && restoreLastDeletion(service);
+                session.restored = service != null
+                        && restoreLastDeletion(service, origin);
+                if (!session.restored && service != null) {
+                    scheduleEmptyFieldRestoreRetry(service, origin);
+                }
                 log("swipe-down restore attempted restored=" + session.restored);
             }
             return true;
@@ -255,6 +268,35 @@ public final class GboardBackspaceSwipeUndoRuntime {
         }
     }
 
+    static boolean maybeConsumeTrailingBackspaceInputEvent(
+            InputMethodService service,
+            String actionTypeName,
+            int pressCarrierCode,
+            int selectedCode) {
+        if (service == null || !"PRESS".equals(actionTypeName)) {
+            return false;
+        }
+        Long restoredAt = TRAILING_BACKSPACE_GUARD.get(service);
+        if (restoredAt == null) {
+            return false;
+        }
+        long now = SystemClock.elapsedRealtime();
+        if (now - restoredAt.longValue() > TRAILING_BACKSPACE_GUARD_MS) {
+            TRAILING_BACKSPACE_GUARD.remove(service);
+            return false;
+        }
+        boolean deleteEvent = GboardLongPressQuickActions1803Runtime
+                .isKnownDeletePressCarrierCode(pressCarrierCode)
+                || GboardLongPressQuickActions1803Runtime
+                .isKnownDeletePressCarrierCode(selectedCode);
+        if (!deleteEvent) {
+            return false;
+        }
+        TRAILING_BACKSPACE_GUARD.remove(service);
+        log("consumed trailing Backspace after swipe-down undo");
+        return true;
+    }
+
     private static View currentBackspaceOwner(
             Object pointerTracker,
             GboardLongPressQuickActions1803ReflectionHandles handles) throws Throwable {
@@ -268,6 +310,11 @@ public final class GboardBackspaceSwipeUndoRuntime {
     }
 
     static DeletionRecord captureDeletionRecord(InputConnection connection) {
+        return captureDeletionRecord(null, connection);
+    }
+
+    static DeletionRecord captureDeletionRecord(
+            InputMethodService service, InputConnection connection) {
         if (connection == null) {
             return null;
         }
@@ -291,7 +338,8 @@ public final class GboardBackspaceSwipeUndoRuntime {
                         fullText.substring(0, boundary),
                         fullText.substring(boundary),
                         true,
-                        SystemClock.elapsedRealtime());
+                        SystemClock.elapsedRealtime(),
+                        editorFingerprint(service));
             }
 
             CharSequence before = connection.getTextBeforeCursor(FALLBACK_CAPTURE_CHARS, 0);
@@ -303,7 +351,8 @@ public final class GboardBackspaceSwipeUndoRuntime {
                     before.toString(),
                     null,
                     false,
-                    SystemClock.elapsedRealtime());
+                    SystemClock.elapsedRealtime(),
+                    editorFingerprint(service));
         } catch (Throwable throwable) {
             logError("Failed to capture swipe-up deletion text", throwable);
             return null;
@@ -311,29 +360,43 @@ public final class GboardBackspaceSwipeUndoRuntime {
     }
 
     static boolean restoreDeletionRecord(InputConnection connection, DeletionRecord record) {
+        return restoreDeletionRecord(null, connection, record);
+    }
+
+    static boolean restoreDeletionRecord(
+            InputMethodService service,
+            InputConnection connection,
+            DeletionRecord record) {
         if (connection == null || record == null || record.deletedText.isEmpty()) {
-            return false;
-        }
-        InputConnection capturedConnection = record.connection.get();
-        if (capturedConnection == null || capturedConnection != connection) {
             return false;
         }
         if (SystemClock.elapsedRealtime() - record.capturedAtMs > UNDO_WINDOW_MS) {
             return false;
         }
 
+        String currentEditor = editorFingerprint(service);
+        if (record.editorFingerprint != null
+                && currentEditor != null
+                && !record.editorFingerprint.equals(currentEditor)) {
+            return false;
+        }
+
+        InputConnection capturedConnection = record.connection;
+        if (capturedConnection != connection) {
+            // A few editors rebuild InputConnection after the field becomes completely empty.
+            // Only permit that for a full snapshot and when we can prove it is still the same
+            // editor through EditorInfo.
+            if (!record.hasFullSnapshot
+                    || record.editorFingerprint == null
+                    || !record.editorFingerprint.equals(currentEditor)) {
+                return false;
+            }
+        }
+
         boolean batchStarted = false;
         try {
             if (record.hasFullSnapshot) {
-                ExtractedTextRequest request = new ExtractedTextRequest();
-                request.hintMaxChars = Integer.MAX_VALUE;
-                ExtractedText extracted = connection.getExtractedText(request, 0);
-                if (extracted == null
-                        || extracted.text == null
-                        || extracted.startOffset != 0
-                        || extracted.selectionStart != 0
-                        || extracted.selectionEnd != 0
-                        || !record.expectedAfterText.equals(extracted.text.toString())) {
+                if (!matchesExpectedPostDeleteState(connection, record.expectedAfterText)) {
                     return false;
                 }
             } else {
@@ -342,7 +405,7 @@ public final class GboardBackspaceSwipeUndoRuntime {
                     return false;
                 }
                 CharSequence before = connection.getTextBeforeCursor(1, 0);
-                if (before == null || before.length() != 0) {
+                if (before != null && before.length() != 0) {
                     return false;
                 }
             }
@@ -363,12 +426,206 @@ public final class GboardBackspaceSwipeUndoRuntime {
         }
     }
 
-    private static boolean restoreLastDeletion(InputMethodService service) {
-        DeletionRecord record = LAST_DELETION.remove(service);
+    private static boolean matchesExpectedPostDeleteState(
+            InputConnection connection, String expectedAfterText) {
+        String expected = expectedAfterText != null ? expectedAfterText : "";
+        try {
+            ExtractedTextRequest request = new ExtractedTextRequest();
+            request.hintMaxChars = Integer.MAX_VALUE;
+            ExtractedText extracted = connection.getExtractedText(request, 0);
+            if (extracted != null
+                    && extracted.text != null
+                    && extracted.startOffset == 0
+                    && extracted.selectionStart == 0
+                    && extracted.selectionEnd == 0
+                    && expected.equals(extracted.text.toString())) {
+                return true;
+            }
+        } catch (Throwable ignored) {
+            // Fall through to cursor-local validation below.
+        }
+
+        try {
+            CharSequence selected = connection.getSelectedText(0);
+            if (selected != null && selected.length() != 0) {
+                return false;
+            }
+            CharSequence before = connection.getTextBeforeCursor(1, 0);
+            if (before != null && before.length() != 0) {
+                return false;
+            }
+            if (expected.length() >= FALLBACK_CAPTURE_CHARS) {
+                return false;
+            }
+            int requested = Math.max(1, expected.length() + 1);
+            CharSequence after = connection.getTextAfterCursor(requested, 0);
+            if (after == null) {
+                // Some editors return null, rather than an empty CharSequence, after deleting
+                // the whole field. At cursor position zero this is a valid empty state.
+                return expected.isEmpty();
+            }
+            return expected.contentEquals(after);
+        } catch (Throwable throwable) {
+            logError("Failed to validate post-delete editor state", throwable);
+            return false;
+        }
+    }
+
+    private static String editorFingerprint(InputMethodService service) {
+        if (service == null) {
+            return null;
+        }
+        try {
+            EditorInfo info = service.getCurrentInputEditorInfo();
+            if (info == null) {
+                return null;
+            }
+            return String.valueOf(info.packageName) + "|"
+                    + info.fieldId + "|"
+                    + String.valueOf(info.fieldName) + "|"
+                    + info.inputType + "|"
+                    + info.imeOptions + "|"
+                    + String.valueOf(info.privateImeOptions);
+        } catch (Throwable ignored) {
+            return null;
+        }
+    }
+
+    private static void scheduleEmptyFieldRestoreRetry(
+            InputMethodService service, View backspaceView) {
+        if (service == null || backspaceView == null) {
+            return;
+        }
+        DeletionRecord record = LAST_DELETION.get(service);
+        if (record == null
+                || !record.hasFullSnapshot
+                || record.expectedAfterText == null
+                || !record.expectedAfterText.isEmpty()) {
+            return;
+        }
+        postEmptyFieldRestoreRetry(service, backspaceView, record, 1);
+    }
+
+    private static void postEmptyFieldRestoreRetry(
+            InputMethodService service,
+            View backspaceView,
+            DeletionRecord record,
+            int attempt) {
+        backspaceView.postDelayed(() -> {
+            DeletionRecord current = LAST_DELETION.get(service);
+            if (current != record) {
+                return;
+            }
+            boolean restored = restoreLastDeletion(service, backspaceView);
+            log("empty-field undo retry attempt=" + attempt + " restored=" + restored);
+            if (!restored
+                    && attempt < EMPTY_FIELD_RETRY_ATTEMPTS
+                    && LAST_DELETION.get(service) == record) {
+                postEmptyFieldRestoreRetry(
+                        service, backspaceView, record, attempt + 1);
+            }
+        }, EMPTY_FIELD_RETRY_DELAY_MS);
+    }
+
+    private static void postTrailingBackspaceRepair(
+            InputMethodService service, View backspaceView, DeletionRecord record) {
+        if (service == null || backspaceView == null || record == null
+                || !record.hasFullSnapshot || record.deletedText.isEmpty()) {
+            return;
+        }
+        backspaceView.postDelayed(() -> {
+            try {
+                InputConnection connection = service.getCurrentInputConnection();
+                if (connection == null) {
+                    return;
+                }
+                String currentEditor = editorFingerprint(service);
+                if (record.editorFingerprint != null
+                        && currentEditor != null
+                        && !record.editorFingerprint.equals(currentEditor)) {
+                    return;
+                }
+
+                ExtractedTextRequest request = new ExtractedTextRequest();
+                request.hintMaxChars = Integer.MAX_VALUE;
+                ExtractedText extracted = connection.getExtractedText(request, 0);
+                if (extracted == null || extracted.text == null
+                        || extracted.startOffset != 0
+                        || extracted.selectionStart < 0
+                        || extracted.selectionEnd < 0) {
+                    return;
+                }
+
+                String suffix = record.expectedAfterText != null
+                        ? record.expectedAfterText : "";
+                String expected = record.deletedText + suffix;
+                String actual = extracted.text.toString();
+                if (expected.equals(actual)) {
+                    return;
+                }
+
+                int repairStart = record.deletedText.offsetByCodePoints(
+                        record.deletedText.length(), -1);
+                String missingUnit = record.deletedText.substring(repairStart);
+                String oneDeleteShort = record.deletedText.substring(0, repairStart) + suffix;
+                if (!oneDeleteShort.equals(actual)
+                        || extracted.selectionStart != repairStart
+                        || extracted.selectionEnd != repairStart) {
+                    return;
+                }
+
+                boolean batchStarted = connection.beginBatchEdit();
+                try {
+                    if (connection.commitText(missingUnit, 1)) {
+                        TRAILING_BACKSPACE_GUARD.remove(service);
+                        log("repaired one trailing Backspace after swipe-down undo");
+                    }
+                } finally {
+                    if (batchStarted) {
+                        connection.endBatchEdit();
+                    }
+                }
+            } catch (Throwable throwable) {
+                logError("Trailing Backspace repair failed", throwable);
+            }
+        }, TRAILING_REPAIR_DELAY_MS);
+    }
+
+    private static boolean restoreLastDeletion(
+            InputMethodService service, View backspaceView) {
+        DeletionRecord record = LAST_DELETION.get(service);
         if (record == null) {
             return false;
         }
-        return restoreDeletionRecord(service.getCurrentInputConnection(), record);
+
+        InputConnection currentConnection = service.getCurrentInputConnection();
+        boolean restored = restoreDeletionRecord(
+                service, currentConnection, record);
+
+        // When deleting the entire field, some editors immediately replace or temporarily
+        // detach their current InputConnection. Keep the exact connection that performed the
+        // deletion alive for the short undo window and try it as a safe fallback. This path is
+        // limited to a full snapshot whose expected post-delete state is empty, so it cannot
+        // restore stale text into the middle of an edited field.
+        if (!restored
+                && record.hasFullSnapshot
+                && record.expectedAfterText != null
+                && record.expectedAfterText.isEmpty()) {
+            InputConnection capturedConnection = record.connection;
+            if (capturedConnection != null && capturedConnection != currentConnection) {
+                restored = restoreDeletionRecord(service, capturedConnection, record);
+                log("empty-field restore via captured connection restored=" + restored);
+            }
+        }
+
+        if (!restored) {
+            return false;
+        }
+        LAST_DELETION.remove(service);
+        TRAILING_BACKSPACE_GUARD.put(
+                service, Long.valueOf(SystemClock.elapsedRealtime()));
+        postTrailingBackspaceRepair(service, backspaceView, record);
+        return true;
     }
 
     private static InputMethodService findInputMethodService(Context context) {
@@ -410,19 +667,26 @@ public final class GboardBackspaceSwipeUndoRuntime {
     }
 
     static final class DeletionRecord {
-        final WeakReference<InputConnection> connection;
+        final InputConnection connection;
         final String deletedText;
         final String expectedAfterText;
         final boolean hasFullSnapshot;
         final long capturedAtMs;
+        final String editorFingerprint;
 
         DeletionRecord(InputConnection connection, String deletedText, String expectedAfterText,
                 boolean hasFullSnapshot, long capturedAtMs) {
-            this.connection = new WeakReference<>(connection);
+            this(connection, deletedText, expectedAfterText, hasFullSnapshot, capturedAtMs, null);
+        }
+
+        DeletionRecord(InputConnection connection, String deletedText, String expectedAfterText,
+                boolean hasFullSnapshot, long capturedAtMs, String editorFingerprint) {
+            this.connection = connection;
             this.deletedText = deletedText != null ? deletedText : "";
             this.expectedAfterText = expectedAfterText;
             this.hasFullSnapshot = hasFullSnapshot;
             this.capturedAtMs = capturedAtMs;
+            this.editorFingerprint = editorFingerprint;
         }
     }
 
@@ -434,6 +698,7 @@ public final class GboardBackspaceSwipeUndoRuntime {
         boolean horizontalLocked;
         int verticalDirection;
         boolean captureAttempted;
+        boolean restoreArmed;
         boolean restoreAttempted;
         boolean restored;
 

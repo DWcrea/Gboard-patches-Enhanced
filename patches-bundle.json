@@ -1,7 +1,7 @@
 {
-    "created_at": "2026-09-30T07:19:30",
-    "description": "### ✨ Enhanced Features\n\n* **Backspace swipe-up:** delete all text before the cursor while preserving text after it.\n* **Numeric keypad:** support the same Backspace swipe-up behavior on numeric/phone layouts.\n* **Chinese swipe-down digits:** normalize the immediately following full-width `：` / `。` to half-width `:` / `.`.\n\n### ✨ 增强功能\n\n* **删除键上滑：** 删除光标前的全部文本，同时保留光标后的内容。\n* **数字键盘：** 在数字/电话键盘布局中同样支持删除键上滑操作。\n* **中文下滑数字：** 下滑输入数字后，紧接着输入的全角 `：` / `。` 自动转换为半角 `:` / `.`。",
-    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.1/patches-3.11.0-enhanced.1.mpp",
+    "created_at": "2026-10-01T12:10:00",
+    "description": "## Gboard Patches Enhanced 3.11.0-enhanced.2\n\n这是基于 Gboard 18.0.3 的第二个增强稳定版，重点完成了快捷文本、删除键手势与中文输入体验的稳定化。\n\n### 主要更新\n\n* **快捷文本正式稳定：** 支持 `快捷码 → 展开文本`，可用于手机号、邮箱、地址、URL 和常用句子。\n* **第一候选显示展开文本：** 快捷码精确命中时，展开文本显示在候选栏第一位置；可直接点击上屏，也可继续按空格展开。\n* **中文输入稳定匹配：** 使用真实 raw token 匹配，不受第一中文候选词影响。\n* **修复 keyCode / Unicode 混淆：** Backspace、字母键、Space、Enter 等按键不再污染快捷码缓冲，解决此前偶发无法展开的问题。\n* **批量导入/导出：** 保留 `gboard-text-expansion.v1` JSON 导入导出，最多 200 条规则。\n* **删除键上滑增强：** 普通键盘和数字/电话键盘均支持上滑删除光标前全部内容，并保留光标后的文本。\n* **中文标点优化：** 中文下滑输入数字后，紧随的全角冒号/句号自动转换为半角形式。\n* **诊断工具保留但默认关闭：** 需要排障时可在快捷文本设置中手动开启，不影响日常使用。\n\n### Compatibility\n\nTarget: `Gboard 18.0.3.954559732-release-arm64-v8a`\n\nThis stable release keeps the upstream patch collection while adding verified Text Expansion, Backspace swipe gestures, numeric keypad compatibility and Chinese input improvements.\n",
+    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2/patches-3.11.0-enhanced.2.mpp",
     "signature_download_url": "",
-    "version": "3.11.0-enhanced.1"
+    "version": "3.11.0-enhanced.2"
 }

@@ -28,6 +28,12 @@ public final class GboardTextExpansionRuntimeSettings {
     private GboardTextExpansionRuntimeSettings() {
     }
 
+    public static void invalidate() {
+        synchronized (LOCK) {
+            cachedSnapshot = null;
+        }
+    }
+
     public static Snapshot snapshot() {
         long now = SystemClock.elapsedRealtime();
         Snapshot cached = cachedSnapshot;
