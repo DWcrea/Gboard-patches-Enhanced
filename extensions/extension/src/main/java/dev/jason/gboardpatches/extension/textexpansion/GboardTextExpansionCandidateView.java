@@ -1,7 +1,6 @@
 package dev.jason.gboardpatches.extension.textexpansion;
 
 import android.graphics.Color;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -107,7 +106,6 @@ final class GboardTextExpansionCandidateView {
             TextView candidate = placement.textView;
             CharSequence previous = candidate.getText();
             candidate.setText(display);
-            candidate.setEllipsize(TextUtils.TruncateAt.END);
 
             View hitbox = new View(placement.host.getContext());
             hitbox.setTag(HITBOX_TAG);
