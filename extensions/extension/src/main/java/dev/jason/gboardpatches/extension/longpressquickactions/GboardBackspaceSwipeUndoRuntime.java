@@ -39,6 +39,8 @@ public final class GboardBackspaceSwipeUndoRuntime {
     private static final long UNDO_WINDOW_MS = 30_000L;
     private static final long TRAILING_BACKSPACE_GUARD_MS = 450L;
     private static final long TRAILING_REPAIR_DELAY_MS = 120L;
+    private static final long EMPTY_FIELD_RETRY_DELAY_MS = 90L;
+    private static final int EMPTY_FIELD_RETRY_ATTEMPTS = 4;
     private static final int FALLBACK_CAPTURE_CHARS = 1024 * 1024;
 
     private static final Map<Object, SwipeSession> SESSIONS =
@@ -176,6 +178,9 @@ public final class GboardBackspaceSwipeUndoRuntime {
                 InputMethodService service = findInputMethodService(origin.getContext());
                 session.restored = service != null
                         && restoreLastDeletion(service, origin);
+                if (!session.restored && service != null) {
+                    scheduleEmptyFieldRestoreRetry(service, origin);
+                }
                 log("swipe-down restore attempted restored=" + session.restored);
             }
             return true;
@@ -485,6 +490,42 @@ public final class GboardBackspaceSwipeUndoRuntime {
         } catch (Throwable ignored) {
             return null;
         }
+    }
+
+    private static void scheduleEmptyFieldRestoreRetry(
+            InputMethodService service, View backspaceView) {
+        if (service == null || backspaceView == null) {
+            return;
+        }
+        DeletionRecord record = LAST_DELETION.get(service);
+        if (record == null
+                || !record.hasFullSnapshot
+                || record.expectedAfterText == null
+                || !record.expectedAfterText.isEmpty()) {
+            return;
+        }
+        postEmptyFieldRestoreRetry(service, backspaceView, record, 1);
+    }
+
+    private static void postEmptyFieldRestoreRetry(
+            InputMethodService service,
+            View backspaceView,
+            DeletionRecord record,
+            int attempt) {
+        backspaceView.postDelayed(() -> {
+            DeletionRecord current = LAST_DELETION.get(service);
+            if (current != record) {
+                return;
+            }
+            boolean restored = restoreLastDeletion(service, backspaceView);
+            log("empty-field undo retry attempt=" + attempt + " restored=" + restored);
+            if (!restored
+                    && attempt < EMPTY_FIELD_RETRY_ATTEMPTS
+                    && LAST_DELETION.get(service) == record) {
+                postEmptyFieldRestoreRetry(
+                        service, backspaceView, record, attempt + 1);
+            }
+        }, EMPTY_FIELD_RETRY_DELAY_MS);
     }
 
     private static void postTrailingBackspaceRepair(
