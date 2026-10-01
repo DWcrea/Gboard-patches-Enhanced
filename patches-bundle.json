@@ -1,7 +1,7 @@
 {
-    "created_at": "2026-10-01T11:20:00",
-    "description": "### 🧪 3.11.0-enhanced.2-dev.17\n\n* **找到快捷文本不稳定触发的根因：** Gboard 的 `selectedCode` 在普通按键路径里是 Android `KeyEvent` keyCode，不是 Unicode 字符码。旧逻辑直接强转会把 Backspace(67) 记成 `C`，把字母 D 的 keyCode 32 误判成空格，还会把 A/C 等键误判成控制类空白符。\n* **修复 raw token 污染：** Backspace 现在只会删除 raw token 的最后一个字符，不再向 token 追加 `C`。\n* **修复误触发分隔符：** 当 `eventText` 存在时，以真实字符为准，不再从 `selectedCode` 猜字符；空格、回车、Tab 仅在 text 缺失时通过明确的 Android keyCode 回退识别。\n* **保留内置诊断：** 仍可在 Gboard 设置 → 快捷文本 → 诊断中查看、复制和清空日志。\n* **增加回归测试：** 覆盖 Backspace=67、D=32、A=29、Space=62、Enter=66 等真实设备日志中的关键值。\n",
-    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.17/patches-3.11.0-enhanced.2-dev.17.mpp",
+    "created_at": "2026-10-01T11:30:00",
+    "description": "### 🧪 3.11.0-enhanced.2-dev.18\n\n* **第一候选预览：** 快捷码精确命中时，把展开文本覆盖显示在候选栏第一位；点击即可直接展开。\n* **空格展开保持 dev.17：** 第一候选只是独立 UI 层，原有 raw token、keyCode 修复和第一次空格展开逻辑不改。\n* **只在精确命中时显示：** 部分输入不会创建候选预览；继续输入导致不再精确匹配时立即隐藏。\n* **点击不附加触发符：** 点击第一候选直接提交展开文本；按空格仍按“保留触发符”设置执行。\n* **失败安全：** 候选预览无法定位或绘制时自动回退到 stock Gboard，不影响输入和空格展开。\n* **保留诊断：** 新增 `CANDIDATE` 诊断记录，方便确认第一候选显示和点击提交状态。\n",
+    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.18/patches-3.11.0-enhanced.2-dev.18.mpp",
     "signature_download_url": "",
-    "version": "3.11.0-enhanced.2-dev.17"
+    "version": "3.11.0-enhanced.2-dev.18"
 }
