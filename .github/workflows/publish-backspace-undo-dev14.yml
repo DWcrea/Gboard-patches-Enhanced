@@ -1,0 +1,66 @@
+name: Publish Backspace Undo dev.14
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - '.github/workflows/publish-backspace-undo-dev14.yml'
+
+permissions:
+  contents: write
+  packages: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout dev
+        uses: actions/checkout@v6
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Prepare dev.14 source
+        run: python .github/scripts/prepare-backspace-undo-dev14.py
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: Test and build dev.14
+        env:
+          GITHUB_ACTOR: ${{ github.repository_owner }}
+          GITHUB_TOKEN: ${{ secrets.MORPHE_PACKAGES_TOKEN }}
+        run: ./gradlew :patches:test :patches:buildAndroid generatePatchesList
+
+      - name: Commit dev.14 source and remove publisher helpers
+        id: commit
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            extensions/extension/src/main/java/dev/jason/gboardpatches/extension/longpressquickactions/GboardBackspaceSwipeUndoRuntime.java \
+            gradle.properties \
+            patches-bundle.json
+          git rm .github/scripts/prepare-backspace-undo-dev14.py
+          git rm .github/workflows/publish-backspace-undo-dev14.yml
+          git commit -m 'fix: retry empty-field Backspace undo dev.14'
+          git push origin HEAD:dev
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Publish dev.14 prerelease
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v3.11.0-enhanced.2-dev.14
+          target_commitish: ${{ steps.commit.outputs.sha }}
+          body_path: release-notes-dev14.md
+          prerelease: true
+          files: |
+            patches/build/libs/patches-3.11.0-enhanced.2-dev.14.mpp
