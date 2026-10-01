@@ -451,6 +451,10 @@ public final class GboardLongPressQuickActions1803Runtime {
     /** V5: intercept Backspace motion before Gboard retargets the pointer to a neighbour. */
     public static boolean maybeInterceptBackspaceMotion(
             Object pointerTracker, MotionEvent event, int pointerIndex) {
+        if (GboardBackspaceSwipeUndoRuntime.maybeInterceptBackspaceUndoMotion(
+                pointerTracker, event, pointerIndex)) {
+            return true;
+        }
         if (pointerTracker == null || event == null) {
             diag("T_ENTER null tracker/event tracker=" + (pointerTracker != null)
                     + " event=" + (event != null));
@@ -595,6 +599,10 @@ public final class GboardLongPressQuickActions1803Runtime {
      */
     public static boolean maybeSuppressBackspaceRetarget(
             Object pointerTracker, MotionEvent event, int pointerIndex) {
+        if (GboardBackspaceSwipeUndoRuntime.maybeSuppressBackspaceUndoRetarget(
+                pointerTracker, event, pointerIndex)) {
+            return true;
+        }
         if (pointerTracker == null || event == null) {
             diag("F_ENTER null tracker/event");
             return false;
