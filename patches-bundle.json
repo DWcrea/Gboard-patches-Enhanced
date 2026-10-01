@@ -1,7 +1,7 @@
 {
-    "created_at": "2026-10-01T13:10:00",
-    "description": "### 🧪 3.11.0-enhanced.2-dev.20\n\n* **原生第一候选外观：** 不再绘制带圆角和阴影的悬浮 TextView，而是临时复用 Gboard 自己的第一候选 TextView，因此字体、字号、颜色、间距和主题都由 Gboard 原生样式决定。\n* **透明点击层：** 点击区域使用透明 hitbox 覆盖原生第一候选槽位，点击仍然提交快捷文本，同时避免直接替换 Gboard 原有 OnClickListener。\n* **安全恢复：** 快捷码失配后，仅在候选文字仍是我们的展开文本时恢复原文字；若 Gboard 已经重新绑定新的候选，则不覆盖它。\n* **失败回退：** 如果无法可靠找到原生候选 View，则不显示快捷文本候选预览，但空格/回车/标点展开仍正常工作，不再回退到旧悬浮卡片。\n* **保留 dev.19：** 动态日期/时间变量、raw token、keyCode 修复、中文 composing 和触发展开逻辑全部保持不变。\n",
-    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.20/patches-3.11.0-enhanced.2-dev.20.mpp",
+    "created_at": "2026-10-01T13:31:00",
+    "description": "### 🧪 3.11.0-enhanced.2-dev.21\n\n* **修复原生候选一闪而过：** dev.20 已经能找到并改写 Gboard 第一候选，但实机反馈显示 Gboard 随后会立即重新绑定该 TextView，导致展开文本只闪一下。dev.21 对命中的原生候选 TextView 增加轻量 TextWatcher，在快捷码仍处于精确命中状态时自动重新应用展开文本。\n* **仍然使用 Gboard 原生样式：** 不重新创建带背景、圆角、阴影的候选卡片，只改原生候选 TextView 的文本。\n* **避免递归：** 内部 setText 使用保护标记，Gboard 重绑后在下一次主线程循环再恢复展开文本，避免在 TextWatcher 回调内递归修改。\n* **安全恢复：** 快捷码失配或候选被接受后先移除 TextWatcher，再按条件恢复原候选，避免把新的 Gboard 候选覆盖回旧内容。\n* **保留 dev.20 点击方案：** 原生候选槽位上继续使用透明 hitbox 接管点击，不替换 Gboard 原始 OnClickListener。\n* **核心触发链不动：** dev.17 的 keyCode/raw token 修复、dev.19 的动态日期时间变量以及空格/回车/标点展开逻辑均保持不变。\n",
+    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.21/patches-3.11.0-enhanced.2-dev.21.mpp",
     "signature_download_url": "",
-    "version": "3.11.0-enhanced.2-dev.20"
+    "version": "3.11.0-enhanced.2-dev.21"
 }
