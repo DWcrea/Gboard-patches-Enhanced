@@ -1,7 +1,7 @@
 {
-    "created_at": "2026-10-01T13:31:00",
-    "description": "### 🧪 3.11.0-enhanced.2-dev.21\n\n* **修复原生候选一闪而过：** dev.20 已经能找到并改写 Gboard 第一候选，但实机反馈显示 Gboard 随后会立即重新绑定该 TextView，导致展开文本只闪一下。dev.21 对命中的原生候选 TextView 增加轻量 TextWatcher，在快捷码仍处于精确命中状态时自动重新应用展开文本。\n* **仍然使用 Gboard 原生样式：** 不重新创建带背景、圆角、阴影的候选卡片，只改原生候选 TextView 的文本。\n* **避免递归：** 内部 setText 使用保护标记，Gboard 重绑后在下一次主线程循环再恢复展开文本，避免在 TextWatcher 回调内递归修改。\n* **安全恢复：** 快捷码失配或候选被接受后先移除 TextWatcher，再按条件恢复原候选，避免把新的 Gboard 候选覆盖回旧内容。\n* **保留 dev.20 点击方案：** 原生候选槽位上继续使用透明 hitbox 接管点击，不替换 Gboard 原始 OnClickListener。\n* **核心触发链不动：** dev.17 的 keyCode/raw token 修复、dev.19 的动态日期时间变量以及空格/回车/标点展开逻辑均保持不变。\n",
-    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.21/patches-3.11.0-enhanced.2-dev.21.mpp",
+    "created_at": "2026-10-01T13:58:00",
+    "description": "### 🧪 3.11.0-enhanced.2-dev.22\n\n* **根据 dev.21 实机诊断改进原生候选：** 诊断能稳定找到 `id_0x7f0b0651`，但完全没有 `rebound=` 记录，说明 Gboard 不是在同一个 TextView 上重写文字，而是在候选刷新时直接替换/回收候选 View。\n* **新增原生候选重新捕获：** 精确命中快捷码后，在接下来的几个主线程帧和短时间窗口内重新扫描原生第一候选。如果 Gboard 换成了新的 TextView 对象，会自动接管新对象并继续显示展开文本。\n* **保留同对象重绑保护：** dev.21 的 TextWatcher 仍保留；如果某些布局只是对同一个候选 View 调用 setText，也会自动恢复展开文本。\n* **无自绘候选：** 仍然不使用旧版圆角悬浮卡片，显示目标始终是 Gboard 自己的原生候选 TextView。\n* **点击与安全恢复：** 透明 hitbox 会跟随重新捕获后的候选位置更新；退出匹配时取消后续探测并安全恢复当前原生候选。\n* **核心触发链不动：** 空格上屏、raw token/keyCode 修复、动态日期时间变量和中文 composing 逻辑均保持 dev.19/21 行为。\n* **新增诊断：** 若发生 View 替换，会记录 `NATIVE_CANDIDATE recapture=... old=... new=...`，便于确认 Gboard 的候选对象生命周期。\n",
+    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.22/patches-3.11.0-enhanced.2-dev.22.mpp",
     "signature_download_url": "",
-    "version": "3.11.0-enhanced.2-dev.21"
+    "version": "3.11.0-enhanced.2-dev.22"
 }
