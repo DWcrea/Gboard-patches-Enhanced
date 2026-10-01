@@ -122,7 +122,7 @@ public final class GboardTextExpansionSettingsFeature
             List<GboardPatchesSettingsContract.Row> diagnostics = new ArrayList<>();
             diagnostics.add(new GboardPatchesSettingsContract.ToggleRow(
                     "诊断模式",
-                    "在 Gboard 进程内记录快捷文本触发链，不依赖系统 logcat。诊断版默认开启。",
+                    "在 Gboard 进程内记录快捷文本触发链，不依赖系统 logcat。稳定版默认关闭，排障时再开启。",
                     true,
                     GboardTextExpansionDiagnostics.isEnabled(),
                     value -> {
@@ -171,7 +171,7 @@ public final class GboardTextExpansionSettingsFeature
                     "Gboard",
                     getEntryTitle(),
                     "支持数字、字母、邮箱、电话号码、网址、地址和常用句子。\n"
-                            + "中文输入时会按实际输入的字母匹配，不受第一候选词影响。",
+                            + "中文输入时按真实字母串匹配；精确命中后会在第一候选位置显示展开文本。",
                     Collections.emptyList(),
                     Arrays.asList(
                             new GboardPatchesSettingsContract.Section("功能", behavior),
