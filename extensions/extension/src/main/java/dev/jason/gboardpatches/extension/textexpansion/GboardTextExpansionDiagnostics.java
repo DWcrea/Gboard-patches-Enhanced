@@ -1,7 +1,5 @@
 package dev.jason.gboardpatches.extension.textexpansion;
 
-import android.os.SystemClock;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +18,7 @@ public final class GboardTextExpansionDiagnostics {
 
     // Development diagnostic builds start enabled so a fresh reinstall is immediately useful.
     private static volatile boolean enabled = true;
-    private static final long START_ELAPSED_MS = SystemClock.elapsedRealtime();
+    private static final long START_NANOS = System.nanoTime();
 
     private GboardTextExpansionDiagnostics() {
     }
@@ -41,7 +39,7 @@ public final class GboardTextExpansionDiagnostics {
             return;
         }
         try {
-            long elapsed = Math.max(0L, SystemClock.elapsedRealtime() - START_ELAPSED_MS);
+            long elapsed = Math.max(0L, (System.nanoTime() - START_NANOS) / 1_000_000L);
             long minutes = elapsed / 60_000L;
             long seconds = (elapsed / 1_000L) % 60L;
             long millis = elapsed % 1_000L;
