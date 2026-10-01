@@ -3,6 +3,8 @@ name: Release
 on:
   workflow_dispatch:
   push:
+    branches:
+      - publish-enhanced-2
     tags:
       - 'v*'
 
@@ -55,9 +57,9 @@ jobs:
           $tag = "v$actualVersion"
           $isPrerelease = $actualVersion -match '-dev\.'
 
-          if ($env:EVENT_NAME -eq "push") {
+          if ($env:EVENT_NAME -eq "push" -and $env:REF_NAME -ne "publish-enhanced-2") {
               if ($env:REF_NAME -ne $tag) {
-                  throw "Pushed tag '$($env:REF_NAME)' does not match expected '$tag'."
+                  throw "Pushed ref '$($env:REF_NAME)' does not match expected '$tag'."
               }
           }
 
