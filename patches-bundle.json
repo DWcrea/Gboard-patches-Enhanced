@@ -1,7 +1,7 @@
 {
-    "created_at": "2026-10-01T07:07:45",
-    "description": "### 🧪 3.11.0-enhanced.2-dev.15\n\n* **继续修复全文删除撤销：** 全文删除后若编辑器替换/临时脱离当前 InputConnection，会保留并回退尝试原删除连接。\n* **仅限空字段安全路径：** 该回退只用于完整快照且删除后预期为空的情况，不改变文本中间撤销逻辑。\n* **保留 dev.13/dev.14 修复：** 下滑稳定触发、尾随 Backspace 拦截、单字符自修复与短时重试继续保留。\n* **诊断增强：** 日志会标记是否通过原删除连接完成全文恢复。\n",
-    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.15/patches-3.11.0-enhanced.2-dev.15.mpp",
+    "created_at": "2026-10-01T10:55:00",
+    "description": "### 🧪 3.11.0-enhanced.2-dev.16\n\n* **内置快捷文本诊断：** 不再依赖 ADB/logcat，直接在 Gboard 设置 → 快捷文本中记录和查看触发链。\n* **可查看/复制/清空：** 诊断页记录 SoftKey、raw token、input event、规则匹配和替换结果，最多保留 600 条。\n* **默认开启诊断模式：** 新安装后即可直接复现问题，之后可在设置中关闭。\n* **隐私保护：** 不记录展开文本内容；仅记录快捷码相关按键/状态与替换是否成功。\n* **不改快捷文本触发策略：** 这版重点是定位不稳定触发，不再继续猜测 Gboard 的空格/候选事件。\n* **继承 dev.15：** 保留全文删除撤销、尾随 Backspace 拦截、单字符自修复与短时重试等现有修复。\n",
+    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.16/patches-3.11.0-enhanced.2-dev.16.mpp",
     "signature_download_url": "",
-    "version": "3.11.0-enhanced.2-dev.15"
+    "version": "3.11.0-enhanced.2-dev.16"
 }
