@@ -1,7 +1,7 @@
 {
-    "created_at": "2026-10-01T06:57:12",
-    "description": "### 🧪 3.11.0-enhanced.2-dev.14\n\n* **修复文本末尾全文删除后无法撤销：** 当上滑删除使输入框变为空时，下滑若遇到 InputConnection 短暂为空或重建，会进行短时安全重试。\n* **不影响已修复场景：** 文本中间撤销仍立即恢复，尾随 Backspace 拦截和单字符自修复逻辑保持不变。\n* **安全限制保持：** 仅对完整快照且删除后预期为空的记录启用重试，并继续校验同一编辑器、30 秒撤销窗口及删除后的文本状态。\n",
-    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.14/patches-3.11.0-enhanced.2-dev.14.mpp",
+    "created_at": "2026-10-01T07:07:45",
+    "description": "### 🧪 3.11.0-enhanced.2-dev.15\n\n* **继续修复全文删除撤销：** 全文删除后若编辑器替换/临时脱离当前 InputConnection，会保留并回退尝试原删除连接。\n* **仅限空字段安全路径：** 该回退只用于完整快照且删除后预期为空的情况，不改变文本中间撤销逻辑。\n* **保留 dev.13/dev.14 修复：** 下滑稳定触发、尾随 Backspace 拦截、单字符自修复与短时重试继续保留。\n* **诊断增强：** 日志会标记是否通过原删除连接完成全文恢复。\n",
+    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.15/patches-3.11.0-enhanced.2-dev.15.mpp",
     "signature_download_url": "",
-    "version": "3.11.0-enhanced.2-dev.14"
+    "version": "3.11.0-enhanced.2-dev.15"
 }

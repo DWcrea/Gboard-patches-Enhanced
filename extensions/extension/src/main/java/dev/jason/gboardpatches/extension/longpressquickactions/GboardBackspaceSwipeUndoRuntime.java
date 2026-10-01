@@ -12,7 +12,6 @@ import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 
-import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -382,7 +381,7 @@ public final class GboardBackspaceSwipeUndoRuntime {
             return false;
         }
 
-        InputConnection capturedConnection = record.connection.get();
+        InputConnection capturedConnection = record.connection;
         if (capturedConnection != connection) {
             // A few editors rebuild InputConnection after the field becomes completely empty.
             // Only permit that for a full snapshot and when we can prove it is still the same
@@ -598,8 +597,27 @@ public final class GboardBackspaceSwipeUndoRuntime {
         if (record == null) {
             return false;
         }
+
+        InputConnection currentConnection = service.getCurrentInputConnection();
         boolean restored = restoreDeletionRecord(
-                service, service.getCurrentInputConnection(), record);
+                service, currentConnection, record);
+
+        // When deleting the entire field, some editors immediately replace or temporarily
+        // detach their current InputConnection. Keep the exact connection that performed the
+        // deletion alive for the short undo window and try it as a safe fallback. This path is
+        // limited to a full snapshot whose expected post-delete state is empty, so it cannot
+        // restore stale text into the middle of an edited field.
+        if (!restored
+                && record.hasFullSnapshot
+                && record.expectedAfterText != null
+                && record.expectedAfterText.isEmpty()) {
+            InputConnection capturedConnection = record.connection;
+            if (capturedConnection != null && capturedConnection != currentConnection) {
+                restored = restoreDeletionRecord(service, capturedConnection, record);
+                log("empty-field restore via captured connection restored=" + restored);
+            }
+        }
+
         if (!restored) {
             return false;
         }
@@ -649,7 +667,7 @@ public final class GboardBackspaceSwipeUndoRuntime {
     }
 
     static final class DeletionRecord {
-        final WeakReference<InputConnection> connection;
+        final InputConnection connection;
         final String deletedText;
         final String expectedAfterText;
         final boolean hasFullSnapshot;
@@ -663,7 +681,7 @@ public final class GboardBackspaceSwipeUndoRuntime {
 
         DeletionRecord(InputConnection connection, String deletedText, String expectedAfterText,
                 boolean hasFullSnapshot, long capturedAtMs, String editorFingerprint) {
-            this.connection = new WeakReference<>(connection);
+            this.connection = connection;
             this.deletedText = deletedText != null ? deletedText : "";
             this.expectedAfterText = expectedAfterText;
             this.hasFullSnapshot = hasFullSnapshot;
