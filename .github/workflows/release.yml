@@ -63,7 +63,8 @@ jobs:
               }
           }
 
-          $bundle = Get-Content -LiteralPath "patches-bundle.json" -Raw | ConvertFrom-Json
+          $bundleRaw = Get-Content -LiteralPath "patches-bundle.json" -Raw
+          $bundle = $bundleRaw | ConvertFrom-Json
           if ([string]$bundle.version -ne $actualVersion) {
               throw "patches-bundle.json version '$($bundle.version)' does not match '$actualVersion'. Build releases from the matching channel branch: main for stable, dev for prerelease."
           }
@@ -76,7 +77,11 @@ jobs:
               throw "patches-bundle.json signature_download_url must be empty for the public repo."
           }
 
-          $createdAt = [string]$bundle.created_at
+          $createdAtMatch = [regex]::Match($bundleRaw, '"created_at"\s*:\s*"([^"]+)"')
+          if (-not $createdAtMatch.Success) {
+              throw "patches-bundle.json created_at is missing."
+          }
+          $createdAt = $createdAtMatch.Groups[1].Value
           if ($createdAt -notmatch '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$') {
               throw "patches-bundle.json created_at must use yyyy-MM-ddTHH:mm:ss with no timezone suffix."
           }
