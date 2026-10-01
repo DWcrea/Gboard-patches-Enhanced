@@ -23,14 +23,22 @@ import dev.jason.gboardpatches.extension.longpressquickactions.GboardLongPressQu
  * 快捷文本运行时。
  *
  * 除了读取 InputConnection 中可见的文本，还会独立记录实际按下的字母/数字。
- * 这样即使中文输入法已经把 sjh 转换成候选“手机号”，按空格时仍能按照原始按键
- * sjh 命中快捷文本，而不会被第一候选词影响。
+ * 中文输入状态下，实际按键串和候选词提交事件可能不是同一条路径；因此物理空格键
+ * 会在 pointer-owner / SoftKeyView 阶段单独记录，并在后续 PRESS 事件中完成展开。
  */
 public final class GboardTextExpansionRuntime {
     private static final long RAW_TOKEN_TIMEOUT_MS = 15_000L;
     private static final long DUPLICATE_KEY_WINDOW_MS = 35L;
+    private static final long PENDING_SPACE_TIMEOUT_MS = 1_500L;
+
+    // 这里只用于 SoftKey metadata 的物理空格键识别。Gboard 18.0.3 自身的
+    // SpacebarLogo 运行时也使用 62 判断空格 SoftKey。不要再把 input-event 的
+    // selectedCode=62 直接解释成空格；两者不是同一个契约。
+    private static final int SOFT_KEY_SPACE_CARRIER_CODE = 62;
 
     private static final Map<InputMethodService, RawShortcutSession> RAW_SESSIONS =
+            Collections.synchronizedMap(new WeakHashMap<>());
+    private static final Map<InputMethodService, PendingSpaceExpansion> PENDING_SPACE_EXPANSIONS =
             Collections.synchronizedMap(new WeakHashMap<>());
     private static final Map<Object, Boolean> CAPTURED_POINTERS =
             Collections.synchronizedMap(new WeakHashMap<>());
@@ -44,6 +52,10 @@ public final class GboardTextExpansionRuntime {
      * 中文拼音/双拼的普通字母通常不会以可识别的字母事件到达后面的 input-event
      * dispatcher，所以只在 maybeHandleInputEvent() 里记录按键是不够的。这里直接从
      * SoftKeyView metadata 读取 PRESS payload，能在候选生成之前得到 s/j/h 这类原始键值。
+     *
+     * 当这里识别到真实的物理空格键时，如果 raw token 已经精确命中规则，就只“武装”
+     * 一次待展开状态；真正替换仍等后面的 PRESS input event 到来。这样既不依赖候选词
+     * payload，也不会在触摸 DOWN 阶段过早修改编辑器。
      */
     public static void observeSoftKeyPress(Object pointerTracker, View softKeyView) {
         if (softKeyView == null) {
@@ -65,6 +77,7 @@ public final class GboardTextExpansionRuntime {
             GboardTextExpansionRuntimeSettings.Snapshot settings =
                     GboardTextExpansionRuntimeSettings.snapshot();
             if (!settings.enabled || settings.entries.isEmpty() || isSensitiveEditor(service)) {
+                clearPendingSpaceExpansion(service);
                 clearRawSession(service);
                 return;
             }
@@ -86,6 +99,28 @@ public final class GboardTextExpansionRuntime {
 
             String pressText = handles.extractPressText(metadata);
             int pressCode = handles.extractPressCarrierCode(metadata);
+
+            // 关键修复：在物理 SoftKey 层识别空格，而不是根据后面的中文候选提交事件
+            // 猜 selectedCode / payload。此时 raw token 仍然保留着用户实际输入的 sjh 等。
+            if (isPhysicalSpaceSoftKey(pressCode, pressText)) {
+                GboardTextExpansionSettings.Entry entry =
+                        findMatchingEntryForRawToken(rawToken(service), settings.entries);
+                if (entry != null) {
+                    armPendingSpaceExpansion(
+                            service,
+                            entry,
+                            settings.keepTrigger ? " " : "");
+                } else {
+                    clearPendingSpaceExpansion(service);
+                }
+                // 空格天然是 token 边界。匹配内容已经复制到 PendingSpaceExpansion 中。
+                clearRawSession(service);
+                return;
+            }
+
+            // 在待展开空格之后如果又开始了另一个物理按键，旧 pending 不能误伤下一键。
+            clearPendingSpaceExpansion(service);
+
             String raw = rawInputText("PRESS", pressCode, pressText);
 
             // 部分中文拼音/双拼布局的 PRESS metadata 不直接暴露 ASCII 字母。
@@ -127,8 +162,25 @@ public final class GboardTextExpansionRuntime {
         GboardTextExpansionRuntimeSettings.Snapshot settings =
                 GboardTextExpansionRuntimeSettings.snapshot();
         if (!settings.enabled || settings.entries.isEmpty() || isSensitiveEditor(service)) {
+            clearPendingSpaceExpansion(service);
             clearRawSession(service);
             return false;
+        }
+
+        // 物理空格已经在 SoftKey 层精确命中规则时，不再关心这个 PRESS 事件的
+        // selectedCode 或 candidate payload 是什么。第一候选可以是“散户”、
+        // “手机号”或任何其他中文词，都只按之前记录的真实快捷码展开。
+        if ("PRESS".equals(actionTypeName)) {
+            PendingSpaceExpansion pending = takePendingSpaceExpansion(service);
+            if (pending != null) {
+                InputConnection connection = service.getCurrentInputConnection();
+                if (connection != null
+                        && replaceFromRawToken(connection, pending.entry, pending.trigger)) {
+                    clearRawSession(service);
+                    return true;
+                }
+                // 替换失败时放行原生 Gboard 行为，避免吞掉用户的空格。
+            }
         }
 
         String trigger = triggerText(selectedCode, eventText);
@@ -139,8 +191,7 @@ public final class GboardTextExpansionRuntime {
                 return false;
             }
 
-            // 优先使用我们自己记录的“原始按键串”。这是修复中文候选干扰的关键：
-            // sjh 即使当前第一候选已经显示为“手机号”，仍然按 sjh 匹配。
+            // 英文键盘或某些没有经过 SoftKey physical-space 路径的布局仍保留旧 fallback。
             String rawToken = rawToken(service);
             GboardTextExpansionSettings.Entry rawEntry =
                     findMatchingEntryForRawToken(rawToken, settings.entries);
@@ -150,8 +201,6 @@ public final class GboardTextExpansionRuntime {
                             rawEntry,
                             settings.keepTrigger ? trigger : "");
 
-            // 英文键盘或某些编辑器里，快捷码可能已经直接出现在光标前。
-            // 保留原来的可见文本匹配作为兼容 fallback。
             if (!handled) {
                 GboardTextExpansionSettings.Entry visibleEntry =
                         findMatchingEntry(connection, settings.entries);
@@ -168,6 +217,11 @@ public final class GboardTextExpansionRuntime {
 
         updateRawSession(service, actionTypeName, selectedCode, eventText);
         return false;
+    }
+
+    static boolean isPhysicalSpaceSoftKey(int pressCode, String pressText) {
+        return pressCode == SOFT_KEY_SPACE_CARRIER_CODE
+                || " ".equals(pressText);
     }
 
     static GboardTextExpansionSettings.Entry findMatchingEntryForRawToken(
@@ -213,8 +267,8 @@ public final class GboardTextExpansionRuntime {
     }
 
     /**
-     * 中文输入场景：当前编辑器里可能显示的是候选“手机号”，而用户实际按键是 sjh。
-     * 先清空 composing span，再提交快捷文本，从而绕开第一候选词。
+     * 中文输入场景：当前编辑器里可能显示的是候选词，而用户实际按键是快捷码。
+     * setComposingText() 会直接替换当前 composing span，因此不需要先提交第一候选。
      */
     static boolean replaceFromRawToken(
             InputConnection connection,
@@ -232,11 +286,6 @@ public final class GboardTextExpansionRuntime {
                 return replaceVisibleShortcut(connection, entry, trigger);
             }
 
-            // 中文拼音/双拼场景里，sjh 仍处于 composing 状态，光标前看到的可能是
-            // “手机号”等第一候选词，也可能完全不暴露 composing span。
-            //
-            // setComposingText() 会直接替换当前 composing span，因此不需要先让候选词
-            // 上屏，也不需要第二次空格。随后 finishComposingText() 固化展开结果。
             boolean replaced = connection.setComposingText(entry.text + trigger, 1);
             if (!replaced) {
                 return false;
@@ -288,8 +337,6 @@ public final class GboardTextExpansionRuntime {
             String eventText) {
         String raw = rawInputText(actionTypeName, selectedCode, eventText);
         if (raw != null) {
-            // 这是 pointer-owner 记录的兼容补充路径。不要因为中文输入事件本身不携带
-            // ASCII payload 就清空 raw token，否则刚记录的 s/j/h 会在候选生成时被抹掉。
             appendRawInput(service, raw);
         }
     }
@@ -307,7 +354,6 @@ public final class GboardTextExpansionRuntime {
             }
 
             // 同一个实体按键有时会先从 pointer-owner，再从 input-event 各观察一次。
-            // 极短窗口内的相同字符视为同一次按键，避免 sjh 被记录成 ssjjhh。
             if (raw.equals(session.lastAppended)
                     && now - session.lastUpdatedElapsedMs <= DUPLICATE_KEY_WINDOW_MS) {
                 return;
@@ -357,6 +403,46 @@ public final class GboardTextExpansionRuntime {
     private static void clearRawSession(InputMethodService service) {
         synchronized (RAW_SESSIONS) {
             RAW_SESSIONS.remove(service);
+        }
+    }
+
+    private static void armPendingSpaceExpansion(
+            InputMethodService service,
+            GboardTextExpansionSettings.Entry entry,
+            String trigger) {
+        if (service == null || entry == null) {
+            return;
+        }
+        synchronized (PENDING_SPACE_EXPANSIONS) {
+            PENDING_SPACE_EXPANSIONS.put(
+                    service,
+                    new PendingSpaceExpansion(
+                            entry,
+                            trigger == null ? "" : trigger,
+                            SystemClock.elapsedRealtime()));
+        }
+    }
+
+    private static PendingSpaceExpansion takePendingSpaceExpansion(InputMethodService service) {
+        if (service == null) {
+            return null;
+        }
+        synchronized (PENDING_SPACE_EXPANSIONS) {
+            PendingSpaceExpansion pending = PENDING_SPACE_EXPANSIONS.remove(service);
+            if (pending == null) {
+                return null;
+            }
+            long age = SystemClock.elapsedRealtime() - pending.armedAtElapsedMs;
+            return age >= 0L && age <= PENDING_SPACE_TIMEOUT_MS ? pending : null;
+        }
+    }
+
+    private static void clearPendingSpaceExpansion(InputMethodService service) {
+        if (service == null) {
+            return;
+        }
+        synchronized (PENDING_SPACE_EXPANSIONS) {
+            PENDING_SPACE_EXPANSIONS.remove(service);
         }
     }
 
@@ -516,5 +602,20 @@ public final class GboardTextExpansionRuntime {
         final StringBuilder token = new StringBuilder();
         String lastAppended = "";
         long lastUpdatedElapsedMs = SystemClock.elapsedRealtime();
+    }
+
+    private static final class PendingSpaceExpansion {
+        final GboardTextExpansionSettings.Entry entry;
+        final String trigger;
+        final long armedAtElapsedMs;
+
+        PendingSpaceExpansion(
+                GboardTextExpansionSettings.Entry entry,
+                String trigger,
+                long armedAtElapsedMs) {
+            this.entry = entry;
+            this.trigger = trigger;
+            this.armedAtElapsedMs = armedAtElapsedMs;
+        }
     }
 }
