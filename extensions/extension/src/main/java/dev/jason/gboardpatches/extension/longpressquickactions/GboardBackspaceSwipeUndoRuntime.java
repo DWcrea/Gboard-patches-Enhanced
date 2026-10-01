@@ -37,12 +37,15 @@ public final class GboardBackspaceSwipeUndoRuntime {
     private static final String TAG = "GboardPatches";
     private static final String LOG_PREFIX = "[backspace-swipe-undo] ";
     private static final long UNDO_WINDOW_MS = 30_000L;
-    private static final long RESTORE_AFTER_RELEASE_DELAY_MS = 80L;
+    private static final long TRAILING_BACKSPACE_GUARD_MS = 450L;
+    private static final long TRAILING_REPAIR_DELAY_MS = 120L;
     private static final int FALLBACK_CAPTURE_CHARS = 1024 * 1024;
 
     private static final Map<Object, SwipeSession> SESSIONS =
             Collections.synchronizedMap(new WeakHashMap<>());
     private static final Map<InputMethodService, DeletionRecord> LAST_DELETION =
+            Collections.synchronizedMap(new WeakHashMap<>());
+    private static final Map<InputMethodService, Long> TRAILING_BACKSPACE_GUARD =
             Collections.synchronizedMap(new WeakHashMap<>());
     private static final AtomicInteger LOG_COUNT = new AtomicInteger();
 
@@ -94,15 +97,6 @@ public final class GboardBackspaceSwipeUndoRuntime {
                 boolean consume = session != null
                         && session.verticalLocked
                         && session.verticalDirection > 0;
-                if (consume
-                        && actionMasked != MotionEvent.ACTION_CANCEL
-                        && session.restoreArmed) {
-                    InputMethodService service = findInputMethodService(
-                            session.backspaceView.getContext());
-                    if (service != null) {
-                        postRestoreAfterRelease(service, session.backspaceView);
-                    }
-                }
                 SESSIONS.remove(pointerTracker);
                 return consume;
             }
@@ -173,12 +167,16 @@ public final class GboardBackspaceSwipeUndoRuntime {
                 return false;
             }
 
-            // Downward gesture: once the direction is locked, keep it away from stock Gboard.
-            // Arm the undo here, but wait until ACTION_UP before restoring. This prevents the
-            // stock Backspace action emitted on release from deleting the first restored char.
-            if (!session.restoreArmed && dy >= actionDistance) {
-                session.restoreArmed = true;
-                log("swipe-down restore armed");
+            // pvi.t()/pvi.F() are not guaranteed to receive ACTION_UP on this build.
+            // Restore as soon as the downward gesture is confirmed (the dev.11 path that was
+            // stable on-device), then guard/repair the one trailing stock Backspace that Gboard
+            // may emit when the finger is released.
+            if (!session.restoreAttempted && dy >= actionDistance) {
+                session.restoreAttempted = true;
+                InputMethodService service = findInputMethodService(origin.getContext());
+                session.restored = service != null
+                        && restoreLastDeletion(service, origin);
+                log("swipe-down restore attempted restored=" + session.restored);
             }
             return true;
         } catch (Throwable throwable) {
@@ -225,15 +223,6 @@ public final class GboardBackspaceSwipeUndoRuntime {
                 boolean consume = session != null
                         && session.verticalLocked
                         && session.verticalDirection > 0;
-                if (consume
-                        && actionMasked != MotionEvent.ACTION_CANCEL
-                        && session.restoreArmed) {
-                    InputMethodService service = findInputMethodService(
-                            session.backspaceView.getContext());
-                    if (service != null) {
-                        postRestoreAfterRelease(service, session.backspaceView);
-                    }
-                }
                 SESSIONS.remove(pointerTracker);
                 return consume;
             }
@@ -273,6 +262,35 @@ public final class GboardBackspaceSwipeUndoRuntime {
             logError("Backspace swipe-down retarget suppression failed", throwable);
             return false;
         }
+    }
+
+    static boolean maybeConsumeTrailingBackspaceInputEvent(
+            InputMethodService service,
+            String actionTypeName,
+            int pressCarrierCode,
+            int selectedCode) {
+        if (service == null || !"PRESS".equals(actionTypeName)) {
+            return false;
+        }
+        Long restoredAt = TRAILING_BACKSPACE_GUARD.get(service);
+        if (restoredAt == null) {
+            return false;
+        }
+        long now = SystemClock.elapsedRealtime();
+        if (now - restoredAt.longValue() > TRAILING_BACKSPACE_GUARD_MS) {
+            TRAILING_BACKSPACE_GUARD.remove(service);
+            return false;
+        }
+        boolean deleteEvent = GboardLongPressQuickActions1803Runtime
+                .isKnownDeletePressCarrierCode(pressCarrierCode)
+                || GboardLongPressQuickActions1803Runtime
+                .isKnownDeletePressCarrierCode(selectedCode);
+        if (!deleteEvent) {
+            return false;
+        }
+        TRAILING_BACKSPACE_GUARD.remove(service);
+        log("consumed trailing Backspace after swipe-down undo");
+        return true;
     }
 
     private static View currentBackspaceOwner(
@@ -469,24 +487,86 @@ public final class GboardBackspaceSwipeUndoRuntime {
         }
     }
 
-    private static void postRestoreAfterRelease(
-            InputMethodService service, View backspaceView) {
-        if (service == null || backspaceView == null) {
+    private static void postTrailingBackspaceRepair(
+            InputMethodService service, View backspaceView, DeletionRecord record) {
+        if (service == null || backspaceView == null || record == null
+                || !record.hasFullSnapshot || record.deletedText.isEmpty()) {
             return;
         }
         backspaceView.postDelayed(() -> {
-            boolean restored = restoreLastDeletion(service);
-            log("post-release swipe-down restore restored=" + restored);
-        }, RESTORE_AFTER_RELEASE_DELAY_MS);
+            try {
+                InputConnection connection = service.getCurrentInputConnection();
+                if (connection == null) {
+                    return;
+                }
+                String currentEditor = editorFingerprint(service);
+                if (record.editorFingerprint != null
+                        && currentEditor != null
+                        && !record.editorFingerprint.equals(currentEditor)) {
+                    return;
+                }
+
+                ExtractedTextRequest request = new ExtractedTextRequest();
+                request.hintMaxChars = Integer.MAX_VALUE;
+                ExtractedText extracted = connection.getExtractedText(request, 0);
+                if (extracted == null || extracted.text == null
+                        || extracted.startOffset != 0
+                        || extracted.selectionStart < 0
+                        || extracted.selectionEnd < 0) {
+                    return;
+                }
+
+                String suffix = record.expectedAfterText != null
+                        ? record.expectedAfterText : "";
+                String expected = record.deletedText + suffix;
+                String actual = extracted.text.toString();
+                if (expected.equals(actual)) {
+                    return;
+                }
+
+                int repairStart = record.deletedText.offsetByCodePoints(
+                        record.deletedText.length(), -1);
+                String missingUnit = record.deletedText.substring(repairStart);
+                String oneDeleteShort = record.deletedText.substring(0, repairStart) + suffix;
+                if (!oneDeleteShort.equals(actual)
+                        || extracted.selectionStart != repairStart
+                        || extracted.selectionEnd != repairStart) {
+                    return;
+                }
+
+                boolean batchStarted = connection.beginBatchEdit();
+                try {
+                    if (connection.commitText(missingUnit, 1)) {
+                        TRAILING_BACKSPACE_GUARD.remove(service);
+                        log("repaired one trailing Backspace after swipe-down undo");
+                    }
+                } finally {
+                    if (batchStarted) {
+                        connection.endBatchEdit();
+                    }
+                }
+            } catch (Throwable throwable) {
+                logError("Trailing Backspace repair failed", throwable);
+            }
+        }, TRAILING_REPAIR_DELAY_MS);
     }
 
-    private static boolean restoreLastDeletion(InputMethodService service) {
-        DeletionRecord record = LAST_DELETION.remove(service);
+    private static boolean restoreLastDeletion(
+            InputMethodService service, View backspaceView) {
+        DeletionRecord record = LAST_DELETION.get(service);
         if (record == null) {
             return false;
         }
-        return restoreDeletionRecord(
+        boolean restored = restoreDeletionRecord(
                 service, service.getCurrentInputConnection(), record);
+        if (!restored) {
+            return false;
+        }
+        LAST_DELETION.remove(service);
+        TRAILING_BACKSPACE_GUARD.put(
+                service, Long.valueOf(SystemClock.elapsedRealtime()));
+        postTrailingBackspaceRepair(service, backspaceView, record);
+        return true;
     }
 
     private static InputMethodService findInputMethodService(Context context) {

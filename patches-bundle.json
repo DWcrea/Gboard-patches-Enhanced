@@ -1,7 +1,7 @@
 {
-    "created_at": "2026-10-01T06:12:20",
-    "description": "### 🧪 3.11.0-enhanced.2-dev.12\n\n* **修复全文删除后的撤销：** 光标位于文本末尾、上滑删除后输入框变为空时，下滑也可以恢复刚刚删除的全文。\n* **修复撤销后多删 1 个字符：** 下滑手势改为松手后再恢复，避开 Gboard 在释放手指时产生的尾随 Backspace 删除。\n* **安全恢复：** 仍校验删除后的文本状态；若空文本导致 InputConnection 被重建，仅在 EditorInfo 仍指向同一输入框时允许恢复。\n* **原有功能保持：** 点按删除、长按连续删除、左滑删除、上滑删除光标前文本及 Text Expansion dev.10 逻辑保持不变。",
-    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.12/patches-3.11.0-enhanced.2-dev.12.mpp",
+    "created_at": "2026-10-01T06:46:28",
+    "description": "### 3.11.0-enhanced.2-dev.13\n\n* Fix undo trigger: restore no longer depends on ACTION_UP reaching the patched pointer hooks.\n* Fix extra deletion: consume the first trailing stock Backspace after a successful undo.\n* Self-repair fallback: if Gboard still removes one restored Unicode code point, repair that exact code point after state verification.\n* Keep dev.12 safety: empty-field undo and same-editor validation remain enabled.\n",
+    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.13/patches-3.11.0-enhanced.2-dev.13.mpp",
     "signature_download_url": "",
-    "version": "3.11.0-enhanced.2-dev.12"
+    "version": "3.11.0-enhanced.2-dev.13"
 }
