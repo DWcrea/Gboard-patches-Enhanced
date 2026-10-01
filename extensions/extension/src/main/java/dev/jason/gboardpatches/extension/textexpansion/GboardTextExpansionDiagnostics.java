@@ -16,8 +16,8 @@ public final class GboardTextExpansionDiagnostics {
     private static final int MAX_LINES = 600;
     private static final ArrayDeque<String> LINES = new ArrayDeque<>();
 
-    // Development diagnostic builds start enabled so a fresh reinstall is immediately useful.
-    private static volatile boolean enabled = true;
+    // Stable builds keep diagnostics available for troubleshooting, but off by default.
+    private static volatile boolean enabled = false;
     private static final long START_NANOS = System.nanoTime();
 
     private GboardTextExpansionDiagnostics() {
