@@ -1,7 +1,7 @@
 {
-    "created_at": "2026-09-30T13:54:00",
-    "description": "### 🧪 3.11.0-enhanced.2-dev.8\n\n* **回滚 dev.7：** 撤销对 `selectedCode=62` 的空格特判；Gboard 的内部 `selectedCode` 不能可靠等同于 Android KeyEvent keyCode，这个假设会导致触发状态不稳定。\n* **恢复 dev.6 稳定基线：** 快捷文本运行时和相关测试恢复到 dev.6。\n* **保留连续添加修复：** 每次打开编辑器都读取最新规则，后续新增条目不会被旧快照覆盖。\n* **保留设置即时生效：** 保存、导入或切换设置后立即清除运行时缓存。\n* **暂不实现第一候选注入：** 下一步改用物理空格键前置拦截方案验证，不再猜测候选事件的 selectedCode。",
-    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.8/patches-3.11.0-enhanced.2-dev.8.mpp",
+    "created_at": "2026-10-01T04:55:00",
+    "description": "### 🧪 3.11.0-enhanced.2-dev.9\n\n* **物理空格键前置识别：** 不再根据中文候选提交事件的 `selectedCode` 或候选文本猜测是否按了空格，而是在 SoftKey / pointer-owner 阶段直接识别真实空格键。\n* **强候选无关：** `sjh` 第一候选即使是‘散户’，只要原始按键串精确命中快捷码，下一次空格 PRESS 就直接展开配置文本。\n* **一次性 pending：** 物理空格命中后只武装一次待展开状态；真正替换仍在后续 PRESS 事件中执行，避免在触摸 DOWN 阶段过早修改编辑器。\n* **安全回退：** 若展开失败则放行 Gboard 原生空格，不吞键；后续物理按键会自动清理过期 pending。\n* **保留多条规则修复：** 编辑器继续读取最新规则并即时刷新运行时缓存。",
+    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.9/patches-3.11.0-enhanced.2-dev.9.mpp",
     "signature_download_url": "",
-    "version": "3.11.0-enhanced.2-dev.8"
+    "version": "3.11.0-enhanced.2-dev.9"
 }
