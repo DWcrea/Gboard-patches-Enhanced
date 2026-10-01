@@ -1,7 +1,7 @@
 {
-    "created_at": "2026-10-01T12:46:00",
-    "description": "### 🧪 3.11.0-enhanced.2-dev.19\n\n* **动态日期/时间变量：** 快捷文本新增 `%yyyy%`、`%MM%`、`%dd%`、`%HH%`、`%mm%` 五个变量，按设备当前时间和时区解析。\n* **现有词库可直接使用：** `rq=%yyyy%-%MM%-%dd%` 会展开为当前日期，`sj=%HH%:%mm%` 会展开为当前时间。\n* **第一候选同步解析：** 精确命中快捷码后，候选栏第一位直接显示已经解析后的日期/时间，而不是变量原文。\n* **点击与空格路径一致：** 点击第一候选、空格/回车/标点展开、可见文本 fallback 都统一经过同一个解析器。\n* **普通快捷文本不受影响：** 不包含变量的手机号、邮箱、地址等文本原样输出；未知变量保持原样。\n* **不改触发链：** dev.17 的 keyCode 修复、dev.18 的第一候选逻辑、raw token 与中文 composing 行为均保持不变。\n",
-    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.19/patches-3.11.0-enhanced.2-dev.19.mpp",
+    "created_at": "2026-10-01T13:10:00",
+    "description": "### 🧪 3.11.0-enhanced.2-dev.20\n\n* **原生第一候选外观：** 不再绘制带圆角和阴影的悬浮 TextView，而是临时复用 Gboard 自己的第一候选 TextView，因此字体、字号、颜色、间距和主题都由 Gboard 原生样式决定。\n* **透明点击层：** 点击区域使用透明 hitbox 覆盖原生第一候选槽位，点击仍然提交快捷文本，同时避免直接替换 Gboard 原有 OnClickListener。\n* **安全恢复：** 快捷码失配后，仅在候选文字仍是我们的展开文本时恢复原文字；若 Gboard 已经重新绑定新的候选，则不覆盖它。\n* **失败回退：** 如果无法可靠找到原生候选 View，则不显示快捷文本候选预览，但空格/回车/标点展开仍正常工作，不再回退到旧悬浮卡片。\n* **保留 dev.19：** 动态日期/时间变量、raw token、keyCode 修复、中文 composing 和触发展开逻辑全部保持不变。\n",
+    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.20/patches-3.11.0-enhanced.2-dev.20.mpp",
     "signature_download_url": "",
-    "version": "3.11.0-enhanced.2-dev.19"
+    "version": "3.11.0-enhanced.2-dev.20"
 }
