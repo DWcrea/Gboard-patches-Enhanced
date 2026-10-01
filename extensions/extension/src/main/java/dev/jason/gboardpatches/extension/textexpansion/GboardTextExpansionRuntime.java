@@ -6,6 +6,7 @@ import android.inputmethodservice.InputMethodService;
 import android.os.SystemClock;
 import android.text.InputType;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -23,8 +24,9 @@ import dev.jason.gboardpatches.extension.longpressquickactions.GboardLongPressQu
 /**
  * 快捷文本运行时。
  *
- * dev.16 在保留现有触发逻辑和 logcat 诊断的同时，把同一份诊断信息写入应用内环形缓冲区，
- * 这样在限制系统日志读取的设备上也能直接从 Gboard 设置里查看和复制。
+ * dev.17 修复诊断日志定位出的 keyCode / Unicode 混淆：Gboard 的 selectedCode 在普通按键路径
+ * 中是 Android KeyEvent keyCode，不能直接强转为字符。否则 Backspace(67) 会被记录成 C，
+ * 字母 D(32) 会被误判成空格，A(29) 等按键也可能被误判成控制类空白字符。
  */
 public final class GboardTextExpansionRuntime {
     private static final String TAG = "GboardPatches";
@@ -305,6 +307,12 @@ public final class GboardTextExpansionRuntime {
             String actionTypeName,
             int selectedCode,
             String eventText) {
+        if ("PRESS".equals(actionTypeName) && selectedCode == KeyEvent.KEYCODE_DEL) {
+            // selectedCode is an Android keyCode on this path. Backspace must edit the raw
+            // shortcut buffer, never be interpreted as Unicode 67 ('C').
+            removeLastRawCharacter(service);
+            return;
+        }
         String raw = rawInputText(actionTypeName, selectedCode, eventText);
         if (raw != null) {
             appendRawInput(service, raw, "input-event");
@@ -386,7 +394,7 @@ public final class GboardTextExpansionRuntime {
         }
     }
 
-    private static String rawInputText(
+    static String rawInputText(
             String actionTypeName,
             int selectedCode,
             String eventText) {
@@ -395,17 +403,27 @@ public final class GboardTextExpansionRuntime {
                 || "SLIDE_UP".equals(actionTypeName))) {
             return null;
         }
-        if (eventText != null && eventText.length() == 1) {
-            char value = eventText.charAt(0);
-            if (isShortcutInputChar(value)) {
-                return String.valueOf(value);
+
+        // When Gboard gives us text, it is the authoritative character. Never fall through
+        // to selectedCode for a non-shortcut text event: selectedCode is a KeyEvent keyCode,
+        // not a Unicode code point.
+        if (eventText != null) {
+            if (eventText.length() == 1) {
+                char value = eventText.charAt(0);
+                if (isShortcutInputChar(value)) {
+                    return String.valueOf(value);
+                }
             }
+            return null;
         }
-        if (selectedCode >= 0 && selectedCode <= Character.MAX_VALUE) {
-            char value = (char) selectedCode;
-            if (isShortcutInputChar(value)) {
-                return String.valueOf(value);
-            }
+
+        // Text-less key events are mapped explicitly from Android key codes. This preserves
+        // ASCII shortcut capture without turning Backspace(67) into 'C' or Enter(66) into 'B'.
+        if (selectedCode >= KeyEvent.KEYCODE_A && selectedCode <= KeyEvent.KEYCODE_Z) {
+            return String.valueOf((char) ('a' + selectedCode - KeyEvent.KEYCODE_A));
+        }
+        if (selectedCode >= KeyEvent.KEYCODE_0 && selectedCode <= KeyEvent.KEYCODE_9) {
+            return String.valueOf((char) ('0' + selectedCode - KeyEvent.KEYCODE_0));
         }
         return null;
     }
@@ -417,16 +435,26 @@ public final class GboardTextExpansionRuntime {
                 || value == '_';
     }
 
-    private static String triggerText(int selectedCode, String eventText) {
-        if (eventText != null && eventText.length() == 1
-                && isDelimiter(eventText.charAt(0))) {
-            return eventText;
-        }
-        if (selectedCode >= 0 && selectedCode <= Character.MAX_VALUE) {
-            char value = (char) selectedCode;
-            if (isDelimiter(value)) {
-                return String.valueOf(value);
+    static String triggerText(int selectedCode, String eventText) {
+        // If an explicit event character exists, trust it. This is crucial for ordinary
+        // letters such as D (KEYCODE_D=32): casting selectedCode 32 to char would falsely
+        // turn the letter into a space delimiter.
+        if (eventText != null) {
+            if (eventText.length() == 1 && isDelimiter(eventText.charAt(0))) {
+                return eventText;
             }
+            return null;
+        }
+
+        // Only well-defined text-less Android key codes are accepted as delimiter fallbacks.
+        if (selectedCode == KeyEvent.KEYCODE_SPACE) {
+            return " ";
+        }
+        if (selectedCode == KeyEvent.KEYCODE_ENTER) {
+            return "\n";
+        }
+        if (selectedCode == KeyEvent.KEYCODE_TAB) {
+            return "\t";
         }
         return null;
     }
