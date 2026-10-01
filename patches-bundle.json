@@ -1,7 +1,7 @@
 {
-    "created_at": "2026-10-01T04:55:00",
-    "description": "### 🧪 3.11.0-enhanced.2-dev.9\n\n* **物理空格键前置识别：** 不再根据中文候选提交事件的 `selectedCode` 或候选文本猜测是否按了空格，而是在 SoftKey / pointer-owner 阶段直接识别真实空格键。\n* **强候选无关：** `sjh` 第一候选即使是‘散户’，只要原始按键串精确命中快捷码，下一次空格 PRESS 就直接展开配置文本。\n* **一次性 pending：** 物理空格命中后只武装一次待展开状态；真正替换仍在后续 PRESS 事件中执行，避免在触摸 DOWN 阶段过早修改编辑器。\n* **安全回退：** 若展开失败则放行 Gboard 原生空格，不吞键；后续物理按键会自动清理过期 pending。\n* **保留多条规则修复：** 编辑器继续读取最新规则并即时刷新运行时缓存。",
-    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.9/patches-3.11.0-enhanced.2-dev.9.mpp",
+    "created_at": "2026-10-01T05:03:00",
+    "description": "### 🧪 3.11.0-enhanced.2-dev.10\n\n* **诊断构建，不改触发策略：** 功能逻辑恢复到 dev.8 基线，只加入快捷文本触发链日志。\n* **记录 SoftKey：** 记录真实按键 view、PRESS code、pressText、raw 字符和 raw token。\n* **记录 input event：** 记录 action、selectedCode、eventText 类型、trigger、raw token 和是否命中规则。\n* **记录替换结果：** 区分 composing 替换、可见文本替换、删除失败和 commit 失败。\n* **隐私保护：** 不记录展开文本内容，较长候选文本只记录长度。\n* **用途：** 用实际设备日志定位“不稳定触发”到底发生在按键捕获、空格事件识别、规则匹配还是 InputConnection 替换阶段。",
+    "download_url": "https://github.com/DWcrea/Gboard-patches-Enhanced/releases/download/v3.11.0-enhanced.2-dev.10/patches-3.11.0-enhanced.2-dev.10.mpp",
     "signature_download_url": "",
-    "version": "3.11.0-enhanced.2-dev.9"
+    "version": "3.11.0-enhanced.2-dev.10"
 }

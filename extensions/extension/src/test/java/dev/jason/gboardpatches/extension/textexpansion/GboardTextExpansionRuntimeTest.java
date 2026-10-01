@@ -43,17 +43,6 @@ public final class GboardTextExpansionRuntimeTest {
     }
 
     @Test
-    public void physicalSpaceDetectionUsesSoftKeyMetadataNotCandidateEventPayload() {
-        Assert.assertTrue(GboardTextExpansionRuntime.isPhysicalSpaceSoftKey(62, null));
-        Assert.assertTrue(GboardTextExpansionRuntime.isPhysicalSpaceSoftKey(0, " "));
-        Assert.assertTrue(GboardTextExpansionRuntime.isPhysicalSpaceSoftKey(62, "散户"));
-
-        Assert.assertFalse(GboardTextExpansionRuntime.isPhysicalSpaceSoftKey('h', "户"));
-        Assert.assertFalse(GboardTextExpansionRuntime.isPhysicalSpaceSoftKey('j', "手机号"));
-        Assert.assertFalse(GboardTextExpansionRuntime.isPhysicalSpaceSoftKey(0, null));
-    }
-
-    @Test
     public void replacingRawShortcutReplacesChineseComposingTextBeforeFirstCandidateCommits() {
         AtomicReference<String> text = new AtomicReference<>("前文");
         AtomicReference<Boolean> composing = new AtomicReference<>(Boolean.TRUE);

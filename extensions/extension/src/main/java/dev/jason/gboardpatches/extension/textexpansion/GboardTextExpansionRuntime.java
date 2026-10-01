@@ -5,11 +5,12 @@ import android.content.ContextWrapper;
 import android.inputmethodservice.InputMethodService;
 import android.os.SystemClock;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
+import android.widget.TextView;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,23 +23,16 @@ import dev.jason.gboardpatches.extension.longpressquickactions.GboardLongPressQu
 /**
  * 快捷文本运行时。
  *
- * 除了读取 InputConnection 中可见的文本，还会独立记录实际按下的字母/数字。
- * 中文输入状态下，实际按键串和候选词提交事件可能不是同一条路径；因此物理空格键
- * 会在 pointer-owner / SoftKeyView 阶段单独记录，并在后续 PRESS 事件中完成展开。
+ * dev.10 维持 dev.8 的实际触发逻辑，只增加诊断日志。这样可以直接观察真实设备上的
+ * SoftKey 捕获、raw token、input-event 和替换结果，而不再根据现象猜测 Gboard 内部事件。
  */
 public final class GboardTextExpansionRuntime {
+    private static final String TAG = "GboardPatches";
+    private static final String DIAG_PREFIX = "[text-expansion-diag] ";
     private static final long RAW_TOKEN_TIMEOUT_MS = 15_000L;
     private static final long DUPLICATE_KEY_WINDOW_MS = 35L;
-    private static final long PENDING_SPACE_TIMEOUT_MS = 1_500L;
-
-    // 这里只用于 SoftKey metadata 的物理空格键识别。Gboard 18.0.3 自身的
-    // SpacebarLogo 运行时也使用 62 判断空格 SoftKey。不要再把 input-event 的
-    // selectedCode=62 直接解释成空格；两者不是同一个契约。
-    private static final int SOFT_KEY_SPACE_CARRIER_CODE = 62;
 
     private static final Map<InputMethodService, RawShortcutSession> RAW_SESSIONS =
-            Collections.synchronizedMap(new WeakHashMap<>());
-    private static final Map<InputMethodService, PendingSpaceExpansion> PENDING_SPACE_EXPANSIONS =
             Collections.synchronizedMap(new WeakHashMap<>());
     private static final Map<Object, Boolean> CAPTURED_POINTERS =
             Collections.synchronizedMap(new WeakHashMap<>());
@@ -46,17 +40,6 @@ public final class GboardTextExpansionRuntime {
     private GboardTextExpansionRuntime() {
     }
 
-    /**
-     * 在 Gboard 的 pointer-owner 阶段记录真实按下的软键。
-     *
-     * 中文拼音/双拼的普通字母通常不会以可识别的字母事件到达后面的 input-event
-     * dispatcher，所以只在 maybeHandleInputEvent() 里记录按键是不够的。这里直接从
-     * SoftKeyView metadata 读取 PRESS payload，能在候选生成之前得到 s/j/h 这类原始键值。
-     *
-     * 当这里识别到真实的物理空格键时，如果 raw token 已经精确命中规则，就只“武装”
-     * 一次待展开状态；真正替换仍等后面的 PRESS input event 到来。这样既不依赖候选词
-     * payload，也不会在触摸 DOWN 阶段过早修改编辑器。
-     */
     public static void observeSoftKeyPress(Object pointerTracker, View softKeyView) {
         if (softKeyView == null) {
             return;
@@ -64,6 +47,7 @@ public final class GboardTextExpansionRuntime {
         if (pointerTracker != null) {
             synchronized (CAPTURED_POINTERS) {
                 if (Boolean.TRUE.equals(CAPTURED_POINTERS.get(pointerTracker))) {
+                    diag("SOFTKEY skip=duplicate-pointer view=" + viewName(softKeyView));
                     return;
                 }
                 CAPTURED_POINTERS.put(pointerTracker, Boolean.TRUE);
@@ -72,13 +56,14 @@ public final class GboardTextExpansionRuntime {
         try {
             InputMethodService service = findInputMethodService(softKeyView.getContext());
             if (service == null) {
+                diag("SOFTKEY skip=no-service view=" + viewName(softKeyView));
                 return;
             }
             GboardTextExpansionRuntimeSettings.Snapshot settings =
                     GboardTextExpansionRuntimeSettings.snapshot();
             if (!settings.enabled || settings.entries.isEmpty() || isSensitiveEditor(service)) {
-                clearPendingSpaceExpansion(service);
-                clearRawSession(service);
+                diag("SOFTKEY skip=disabled-or-sensitive entries=" + settings.entries.size());
+                clearRawSession(service, "disabled-or-sensitive");
                 return;
             }
 
@@ -87,6 +72,7 @@ public final class GboardTextExpansionRuntime {
                 classLoader = pointerTracker.getClass().getClassLoader();
             }
             if (classLoader == null) {
+                diag("SOFTKEY skip=no-classloader view=" + viewName(softKeyView));
                 return;
             }
 
@@ -94,50 +80,37 @@ public final class GboardTextExpansionRuntime {
                     GboardLongPressQuickActions1803Runtime.reflectionHandles(classLoader);
             Object metadata = handles.extractSoftKeyMetadata(softKeyView);
             if (metadata == null) {
+                diag("SOFTKEY skip=no-metadata view=" + viewName(softKeyView));
                 return;
             }
 
             String pressText = handles.extractPressText(metadata);
             int pressCode = handles.extractPressCarrierCode(metadata);
-
-            // 关键修复：在物理 SoftKey 层识别空格，而不是根据后面的中文候选提交事件
-            // 猜 selectedCode / payload。此时 raw token 仍然保留着用户实际输入的 sjh 等。
-            if (isPhysicalSpaceSoftKey(pressCode, pressText)) {
-                GboardTextExpansionSettings.Entry entry =
-                        findMatchingEntryForRawToken(rawToken(service), settings.entries);
-                if (entry != null) {
-                    armPendingSpaceExpansion(
-                            service,
-                            entry,
-                            settings.keepTrigger ? " " : "");
-                } else {
-                    clearPendingSpaceExpansion(service);
-                }
-                // 空格天然是 token 边界。匹配内容已经复制到 PendingSpaceExpansion 中。
-                clearRawSession(service);
-                return;
-            }
-
-            // 在待展开空格之后如果又开始了另一个物理按键，旧 pending 不能误伤下一键。
-            clearPendingSpaceExpansion(service);
-
             String raw = rawInputText("PRESS", pressCode, pressText);
+            String source = "metadata";
 
-            // 部分中文拼音/双拼布局的 PRESS metadata 不直接暴露 ASCII 字母。
-            // 这时从真实键帽/无障碍标签回退读取 s、j、h 等物理键字符。
             if (raw == null) {
                 raw = visibleAsciiKeyLabel(softKeyView);
+                source = "label";
             }
+
+            diag("SOFTKEY view=" + viewName(softKeyView)
+                    + " code=" + pressCode
+                    + " pressText=" + describeText(pressText)
+                    + " raw=" + describeText(raw)
+                    + " source=" + source
+                    + " tokenBefore=" + rawToken(service));
+
             if (raw != null) {
-                appendRawInput(service, raw);
+                appendRawInput(service, raw, "softkey-" + source);
                 return;
             }
 
             if (isDeleteKeyView(softKeyView)) {
                 removeLastRawCharacter(service);
             }
-        } catch (Throwable ignored) {
-            // 原始按键观察失败时直接回退到普通 Gboard 行为，不能影响键盘主流程。
+        } catch (Throwable throwable) {
+            diag("SOFTKEY exception=" + throwable.getClass().getSimpleName());
         }
     }
 
@@ -162,66 +135,58 @@ public final class GboardTextExpansionRuntime {
         GboardTextExpansionRuntimeSettings.Snapshot settings =
                 GboardTextExpansionRuntimeSettings.snapshot();
         if (!settings.enabled || settings.entries.isEmpty() || isSensitiveEditor(service)) {
-            clearPendingSpaceExpansion(service);
-            clearRawSession(service);
+            diag("EVENT skip=disabled-or-sensitive action=" + actionTypeName);
+            clearRawSession(service, "disabled-or-sensitive-event");
             return false;
         }
 
-        // 物理空格已经在 SoftKey 层精确命中规则时，不再关心这个 PRESS 事件的
-        // selectedCode 或 candidate payload 是什么。第一候选可以是“散户”、
-        // “手机号”或任何其他中文词，都只按之前记录的真实快捷码展开。
-        if ("PRESS".equals(actionTypeName)) {
-            PendingSpaceExpansion pending = takePendingSpaceExpansion(service);
-            if (pending != null) {
-                InputConnection connection = service.getCurrentInputConnection();
-                if (connection != null
-                        && replaceFromRawToken(connection, pending.entry, pending.trigger)) {
-                    clearRawSession(service);
-                    return true;
-                }
-                // 替换失败时放行原生 Gboard 行为，避免吞掉用户的空格。
-            }
-        }
-
+        String tokenBefore = rawToken(service);
         String trigger = triggerText(selectedCode, eventText);
+        diag("EVENT action=" + safe(actionTypeName)
+                + " code=" + selectedCode
+                + " text=" + describeText(eventText)
+                + " trigger=" + describeText(trigger)
+                + " token=" + tokenBefore);
+
         if (trigger != null && "PRESS".equals(actionTypeName)) {
             InputConnection connection = service.getCurrentInputConnection();
             if (connection == null) {
-                clearRawSession(service);
+                diag("TRIGGER result=no-connection token=" + tokenBefore);
+                clearRawSession(service, "no-connection");
                 return false;
             }
 
-            // 英文键盘或某些没有经过 SoftKey physical-space 路径的布局仍保留旧 fallback。
-            String rawToken = rawToken(service);
             GboardTextExpansionSettings.Entry rawEntry =
-                    findMatchingEntryForRawToken(rawToken, settings.entries);
+                    findMatchingEntryForRawToken(tokenBefore, settings.entries);
+            diag("TRIGGER rawMatch=" + (rawEntry != null)
+                    + " token=" + tokenBefore
+                    + " trigger=" + describeText(trigger));
+
             boolean handled = rawEntry != null
                     && replaceFromRawToken(
                             connection,
                             rawEntry,
                             settings.keepTrigger ? trigger : "");
+            diag("TRIGGER rawHandled=" + handled + " token=" + tokenBefore);
 
             if (!handled) {
                 GboardTextExpansionSettings.Entry visibleEntry =
                         findMatchingEntry(connection, settings.entries);
+                diag("TRIGGER visibleMatch=" + (visibleEntry != null));
                 handled = visibleEntry != null
                         && replaceVisibleShortcut(
                                 connection,
                                 visibleEntry,
                                 settings.keepTrigger ? trigger : "");
+                diag("TRIGGER visibleHandled=" + handled);
             }
 
-            clearRawSession(service);
+            clearRawSession(service, "trigger-finished");
             return handled;
         }
 
         updateRawSession(service, actionTypeName, selectedCode, eventText);
         return false;
-    }
-
-    static boolean isPhysicalSpaceSoftKey(int pressCode, String pressText) {
-        return pressCode == SOFT_KEY_SPACE_CARRIER_CODE
-                || " ".equals(pressText);
     }
 
     static GboardTextExpansionSettings.Entry findMatchingEntryForRawToken(
@@ -266,10 +231,6 @@ public final class GboardTextExpansionRuntime {
         return null;
     }
 
-    /**
-     * 中文输入场景：当前编辑器里可能显示的是候选词，而用户实际按键是快捷码。
-     * setComposingText() 会直接替换当前 composing span，因此不需要先提交第一候选。
-     */
     static boolean replaceFromRawToken(
             InputConnection connection,
             GboardTextExpansionSettings.Entry entry,
@@ -278,25 +239,29 @@ public final class GboardTextExpansionRuntime {
             return false;
         }
         try {
-            // 英文键盘等场景里，快捷码已经作为普通文本提交到了编辑器。
-            // 这种情况继续走“删除可见快捷码 → 提交展开文本”的稳定路径。
             CharSequence visible = connection.getTextBeforeCursor(
                     Math.max(256, entry.shortcut.length() + 16), 0);
             if (visible != null && endsWithIgnoreCase(visible.toString(), entry.shortcut)) {
-                return replaceVisibleShortcut(connection, entry, trigger);
+                boolean result = replaceVisibleShortcut(connection, entry, trigger);
+                diag("REPLACE mode=visible shortcutLen=" + entry.shortcut.length()
+                        + " result=" + result);
+                return result;
             }
 
             boolean replaced = connection.setComposingText(entry.text + trigger, 1);
+            diag("REPLACE mode=composing shortcutLen=" + entry.shortcut.length()
+                    + " setComposing=" + replaced);
             if (!replaced) {
                 return false;
             }
             try {
                 connection.finishComposingText();
             } catch (Throwable ignored) {
-                // setComposingText 已成功时，结束 composing 失败也不应让空格继续落入 stock。
+                diag("REPLACE finishComposing=exception");
             }
             return true;
-        } catch (Throwable ignored) {
+        } catch (Throwable throwable) {
+            diag("REPLACE exception=" + throwable.getClass().getSimpleName());
             return false;
         }
     }
@@ -311,20 +276,25 @@ public final class GboardTextExpansionRuntime {
             connection.finishComposingText();
             CharSequence before = connection.getTextBeforeCursor(entry.shortcut.length(), 0);
             if (before == null || !endsWithIgnoreCase(before.toString(), entry.shortcut)) {
+                diag("VISIBLE result=suffix-miss shortcutLen=" + entry.shortcut.length());
                 return false;
             }
             if (!connection.deleteSurroundingText(entry.shortcut.length(), 0)) {
+                diag("VISIBLE result=delete-failed shortcutLen=" + entry.shortcut.length());
                 return false;
             }
-            return connection.commitText(entry.text + trigger, 1);
-        } catch (Throwable ignored) {
+            boolean committed = connection.commitText(entry.text + trigger, 1);
+            diag("VISIBLE result=commit-" + committed + " shortcutLen=" + entry.shortcut.length());
+            return committed;
+        } catch (Throwable throwable) {
+            diag("VISIBLE exception=" + throwable.getClass().getSimpleName());
             return false;
         } finally {
             if (batch) {
                 try {
                     connection.endBatchEdit();
                 } catch (Throwable ignored) {
-                    // 尽力结束批量编辑，不影响键盘主流程。
+                    diag("VISIBLE endBatch=exception");
                 }
             }
         }
@@ -337,11 +307,11 @@ public final class GboardTextExpansionRuntime {
             String eventText) {
         String raw = rawInputText(actionTypeName, selectedCode, eventText);
         if (raw != null) {
-            appendRawInput(service, raw);
+            appendRawInput(service, raw, "input-event");
         }
     }
 
-    private static void appendRawInput(InputMethodService service, String raw) {
+    private static void appendRawInput(InputMethodService service, String raw, String source) {
         if (service == null || raw == null || raw.isEmpty()) {
             return;
         }
@@ -351,11 +321,14 @@ public final class GboardTextExpansionRuntime {
             if (session == null || now - session.lastUpdatedElapsedMs > RAW_TOKEN_TIMEOUT_MS) {
                 session = new RawShortcutSession();
                 RAW_SESSIONS.put(service, session);
+                diag("TOKEN new-session source=" + source);
             }
 
-            // 同一个实体按键有时会先从 pointer-owner，再从 input-event 各观察一次。
             if (raw.equals(session.lastAppended)
                     && now - session.lastUpdatedElapsedMs <= DUPLICATE_KEY_WINDOW_MS) {
+                diag("TOKEN duplicate-suppressed raw=" + raw
+                        + " source=" + source
+                        + " token=" + session.token);
                 return;
             }
 
@@ -367,6 +340,7 @@ public final class GboardTextExpansionRuntime {
                         0,
                         session.token.length() - GboardTextExpansionSettings.MAX_SHORTCUT_LENGTH);
             }
+            diag("TOKEN append=" + raw + " source=" + source + " token=" + session.token);
         }
     }
 
@@ -377,11 +351,13 @@ public final class GboardTextExpansionRuntime {
         synchronized (RAW_SESSIONS) {
             RawShortcutSession session = RAW_SESSIONS.get(service);
             if (session == null || session.token.length() == 0) {
+                diag("TOKEN delete ignored=empty");
                 return;
             }
             session.token.deleteCharAt(session.token.length() - 1);
             session.lastAppended = "";
             session.lastUpdatedElapsedMs = SystemClock.elapsedRealtime();
+            diag("TOKEN delete token=" + session.token);
         }
     }
 
@@ -394,55 +370,19 @@ public final class GboardTextExpansionRuntime {
             long now = SystemClock.elapsedRealtime();
             if (now - session.lastUpdatedElapsedMs > RAW_TOKEN_TIMEOUT_MS) {
                 RAW_SESSIONS.remove(service);
+                diag("TOKEN expired");
                 return "";
             }
             return session.token.toString();
         }
     }
 
-    private static void clearRawSession(InputMethodService service) {
+    private static void clearRawSession(InputMethodService service, String reason) {
         synchronized (RAW_SESSIONS) {
-            RAW_SESSIONS.remove(service);
-        }
-    }
-
-    private static void armPendingSpaceExpansion(
-            InputMethodService service,
-            GboardTextExpansionSettings.Entry entry,
-            String trigger) {
-        if (service == null || entry == null) {
-            return;
-        }
-        synchronized (PENDING_SPACE_EXPANSIONS) {
-            PENDING_SPACE_EXPANSIONS.put(
-                    service,
-                    new PendingSpaceExpansion(
-                            entry,
-                            trigger == null ? "" : trigger,
-                            SystemClock.elapsedRealtime()));
-        }
-    }
-
-    private static PendingSpaceExpansion takePendingSpaceExpansion(InputMethodService service) {
-        if (service == null) {
-            return null;
-        }
-        synchronized (PENDING_SPACE_EXPANSIONS) {
-            PendingSpaceExpansion pending = PENDING_SPACE_EXPANSIONS.remove(service);
-            if (pending == null) {
-                return null;
+            RawShortcutSession previous = RAW_SESSIONS.remove(service);
+            if (previous != null) {
+                diag("TOKEN clear reason=" + reason + " old=" + previous.token);
             }
-            long age = SystemClock.elapsedRealtime() - pending.armedAtElapsedMs;
-            return age >= 0L && age <= PENDING_SPACE_TIMEOUT_MS ? pending : null;
-        }
-    }
-
-    private static void clearPendingSpaceExpansion(InputMethodService service) {
-        if (service == null) {
-            return;
-        }
-        synchronized (PENDING_SPACE_EXPANSIONS) {
-            PENDING_SPACE_EXPANSIONS.remove(service);
         }
     }
 
@@ -552,10 +492,53 @@ public final class GboardTextExpansionRuntime {
             return false;
         }
         try {
-            return "key_pos_del".equals(
-                    view.getResources().getResourceEntryName(view.getId()));
+            return "key_pos_del".equals(view.getResources().getResourceEntryName(view.getId()));
         } catch (Throwable ignored) {
             return false;
+        }
+    }
+
+    private static String viewName(View view) {
+        if (view == null) {
+            return "null";
+        }
+        try {
+            if (view.getId() != View.NO_ID) {
+                return view.getResources().getResourceEntryName(view.getId());
+            }
+        } catch (Throwable ignored) {
+            // fall through
+        }
+        return view.getClass().getSimpleName();
+    }
+
+    private static String describeText(String value) {
+        if (value == null) {
+            return "<null>";
+        }
+        if (value.isEmpty()) {
+            return "<empty>";
+        }
+        if (value.length() == 1) {
+            char ch = value.charAt(0);
+            if (ch == ' ') return "<space>";
+            if (ch == '\n') return "<newline>";
+            if (ch == '\t') return "<tab>";
+            if (ch >= 0x20 && ch <= 0x7e) return "'" + ch + "'";
+            return "<U+" + String.format("%04X", (int) ch) + ">";
+        }
+        return "<len:" + value.length() + ">";
+    }
+
+    private static String safe(String value) {
+        return value == null ? "<null>" : value;
+    }
+
+    private static void diag(String message) {
+        try {
+            Log.i(TAG, DIAG_PREFIX + message);
+        } catch (Throwable ignored) {
+            // 诊断日志不能影响键盘主流程。
         }
     }
 
@@ -602,20 +585,5 @@ public final class GboardTextExpansionRuntime {
         final StringBuilder token = new StringBuilder();
         String lastAppended = "";
         long lastUpdatedElapsedMs = SystemClock.elapsedRealtime();
-    }
-
-    private static final class PendingSpaceExpansion {
-        final GboardTextExpansionSettings.Entry entry;
-        final String trigger;
-        final long armedAtElapsedMs;
-
-        PendingSpaceExpansion(
-                GboardTextExpansionSettings.Entry entry,
-                String trigger,
-                long armedAtElapsedMs) {
-            this.entry = entry;
-            this.trigger = trigger;
-            this.armedAtElapsedMs = armedAtElapsedMs;
-        }
     }
 }
