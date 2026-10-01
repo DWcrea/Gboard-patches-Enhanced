@@ -24,9 +24,8 @@ import dev.jason.gboardpatches.extension.longpressquickactions.GboardLongPressQu
 /**
  * 快捷文本运行时。
  *
- * dev.17 修复诊断日志定位出的 keyCode / Unicode 混淆：Gboard 的 selectedCode 在普通按键路径
- * 中是 Android KeyEvent keyCode，不能直接强转为字符。否则 Backspace(67) 会被记录成 C，
- * 字母 D(32) 会被误判成空格，A(29) 等按键也可能被误判成控制类空白字符。
+ * dev.18 以已经实机稳定的 dev.17 keyCode 修复为基线，仅增加“精确命中时显示第一候选”
+ * 的可选 UI 行为。raw token、触发符识别和空格展开路径保持 dev.17 逻辑不变。
  */
 public final class GboardTextExpansionRuntime {
     private static final String TAG = "GboardPatches";
@@ -66,6 +65,7 @@ public final class GboardTextExpansionRuntime {
             if (!settings.enabled || settings.entries.isEmpty() || isSensitiveEditor(service)) {
                 diag("SOFTKEY skip=disabled-or-sensitive entries=" + settings.entries.size());
                 clearRawSession(service, "disabled-or-sensitive");
+                GboardTextExpansionCandidateView.hide();
                 return;
             }
 
@@ -105,11 +105,13 @@ public final class GboardTextExpansionRuntime {
 
             if (raw != null) {
                 appendRawInput(service, raw, "softkey-" + source);
+                refreshFirstCandidate(service, softKeyView, settings.entries);
                 return;
             }
 
             if (isDeleteKeyView(softKeyView)) {
                 removeLastRawCharacter(service);
+                refreshFirstCandidate(service, softKeyView, settings.entries);
             }
         } catch (Throwable throwable) {
             diag("SOFTKEY exception=" + throwable.getClass().getSimpleName());
@@ -139,6 +141,7 @@ public final class GboardTextExpansionRuntime {
         if (!settings.enabled || settings.entries.isEmpty() || isSensitiveEditor(service)) {
             diag("EVENT skip=disabled-or-sensitive action=" + actionTypeName);
             clearRawSession(service, "disabled-or-sensitive-event");
+            GboardTextExpansionCandidateView.hide();
             return false;
         }
 
@@ -155,6 +158,7 @@ public final class GboardTextExpansionRuntime {
             if (connection == null) {
                 diag("TRIGGER result=no-connection token=" + tokenBefore);
                 clearRawSession(service, "no-connection");
+                GboardTextExpansionCandidateView.hide();
                 return false;
             }
 
@@ -184,10 +188,12 @@ public final class GboardTextExpansionRuntime {
             }
 
             clearRawSession(service, "trigger-finished");
+            GboardTextExpansionCandidateView.hide();
             return handled;
         }
 
         updateRawSession(service, actionTypeName, selectedCode, eventText);
+        refreshFirstCandidate(service, resolveInputAnchor(service), settings.entries);
         return false;
     }
 
@@ -391,6 +397,79 @@ public final class GboardTextExpansionRuntime {
             if (previous != null) {
                 diag("TOKEN clear reason=" + reason + " old=" + previous.token);
             }
+        }
+    }
+
+    private static void refreshFirstCandidate(
+            InputMethodService service,
+            View anchor,
+            List<GboardTextExpansionSettings.Entry> entries) {
+        try {
+            if (service == null || anchor == null || isSensitiveEditor(service)) {
+                GboardTextExpansionCandidateView.hide();
+                return;
+            }
+            String token = rawToken(service);
+            GboardTextExpansionSettings.Entry entry =
+                    findMatchingEntryForRawToken(token, entries);
+            if (entry == null || entry.text == null || entry.text.isEmpty()) {
+                GboardTextExpansionCandidateView.hide();
+                return;
+            }
+            diag("CANDIDATE exact token=" + token + " shortcutLen=" + entry.shortcut.length());
+            String expectedShortcut = entry.shortcut;
+            GboardTextExpansionCandidateView.show(
+                    anchor,
+                    entry.text,
+                    () -> acceptFirstCandidate(service, expectedShortcut));
+        } catch (Throwable throwable) {
+            diag("CANDIDATE refresh exception=" + throwable.getClass().getSimpleName());
+        }
+    }
+
+    private static void acceptFirstCandidate(
+            InputMethodService service,
+            String expectedShortcut) {
+        try {
+            if (service == null || expectedShortcut == null || isSensitiveEditor(service)) {
+                GboardTextExpansionCandidateView.hide();
+                return;
+            }
+            GboardTextExpansionRuntimeSettings.Snapshot settings =
+                    GboardTextExpansionRuntimeSettings.snapshot();
+            String token = rawToken(service);
+            GboardTextExpansionSettings.Entry current =
+                    findMatchingEntryForRawToken(token, settings.entries);
+            if (current == null || !expectedShortcut.equalsIgnoreCase(current.shortcut)) {
+                diag("CANDIDATE accept stale token=" + token);
+                GboardTextExpansionCandidateView.hide();
+                return;
+            }
+            InputConnection connection = service.getCurrentInputConnection();
+            boolean handled = connection != null
+                    && replaceFromRawToken(connection, current, "");
+            diag("CANDIDATE accept handled=" + handled + " token=" + token);
+            if (handled) {
+                clearRawSession(service, "candidate-accepted");
+            }
+            GboardTextExpansionCandidateView.hide();
+        } catch (Throwable throwable) {
+            diag("CANDIDATE accept exception=" + throwable.getClass().getSimpleName());
+            GboardTextExpansionCandidateView.hide();
+        }
+    }
+
+    private static View resolveInputAnchor(InputMethodService service) {
+        if (service == null) {
+            return null;
+        }
+        try {
+            if (service.getWindow() == null || service.getWindow().getWindow() == null) {
+                return null;
+            }
+            return service.getWindow().getWindow().getDecorView();
+        } catch (Throwable ignored) {
+            return null;
         }
     }
 
